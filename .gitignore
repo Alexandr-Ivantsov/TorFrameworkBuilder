@@ -1,0 +1,23 @@
+# Исходники (загружаются автоматически)
+sources/
+
+# Артефакты сборки
+build/
+*.o
+*.a
+*.dylib
+
+# Временные файлы
+*.log
+.DS_Store
+*.tar.gz
+*.zip
+*.sha256sum
+*.asc
+
+# Xcode
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# Можно коммитить готовый результат (раскомментировать если нужно):
+# !output/Tor.xcframework
