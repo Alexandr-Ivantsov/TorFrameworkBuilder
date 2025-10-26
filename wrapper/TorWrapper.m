@@ -1,0 +1,391 @@
+//
+//  TorWrapper.m
+//  Tor Framework
+//
+//  Objective-C wrapper для Tor daemon
+//
+
+#import "TorWrapper.h"
+#import <pthread.h>
+
+// Прототипы функций Tor (будут линковаться из статической библиотеки)
+extern int tor_main(int argc, char *argv[]);
+extern void tor_cleanup(void);
+
+@interface TorWrapper ()
+
+@property (nonatomic, readwrite) TorStatus status;
+@property (nonatomic, readwrite) NSInteger socksPort;
+@property (nonatomic, readwrite) NSInteger controlPort;
+@property (nonatomic, readwrite, copy) NSString *dataDirectory;
+@property (nonatomic, readwrite, getter=isRunning) BOOL running;
+
+@property (nonatomic, strong) NSFileHandle *controlFileHandle;
+@property (nonatomic, strong) dispatch_queue_t torQueue;
+@property (nonatomic, copy) TorStatusCallback statusCallback;
+@property (nonatomic, copy) TorLogCallback logCallback;
+@property (nonatomic, strong) NSString *torrcPath;
+@property (nonatomic, assign) pthread_t torThread;
+
+@end
+
+@implementation TorWrapper
+
+#pragma mark - Singleton
+
++ (instancetype)shared {
+    static TorWrapper *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] initPrivate];
+    });
+    return sharedInstance;
+}
+
+- (instancetype)initPrivate {
+    self = [super init];
+    if (self) {
+        _status = TorStatusStopped;
+        _socksPort = 9050;
+        _controlPort = 9051;
+        _running = NO;
+        _torQueue = dispatch_queue_create("org.torproject.TorWrapper", DISPATCH_QUEUE_SERIAL);
+        
+        // Используем Application Support по умолчанию
+        NSString *appSupport = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
+        _dataDirectory = [appSupport stringByAppendingPathComponent:@"Tor"];
+        
+        [self setupDirectories];
+    }
+    return self;
+}
+
+#pragma mark - Configuration
+
+- (void)configureWithSocksPort:(NSInteger)socksPort
+                   controlPort:(NSInteger)controlPort
+                 dataDirectory:(NSString *)dataDir {
+    if (self.running) {
+        NSLog(@"[Tor] Нельзя изменить конфигурацию пока Tor работает");
+        return;
+    }
+    
+    self.socksPort = socksPort;
+    self.controlPort = controlPort;
+    self.dataDirectory = dataDir;
+    
+    [self setupDirectories];
+}
+
+- (void)setupDirectories {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSError *error = nil;
+    
+    // Создаём директорию для данных
+    if (![fm fileExistsAtPath:self.dataDirectory]) {
+        [fm createDirectoryAtPath:self.dataDirectory
+      withIntermediateDirectories:YES
+                       attributes:nil
+                            error:&error];
+        if (error) {
+            NSLog(@"[Tor] Ошибка создания директории: %@", error);
+        }
+    }
+    
+    // Создаём torrc файл
+    [self createTorrcFile];
+}
+
+- (void)createTorrcFile {
+    self.torrcPath = [self.dataDirectory stringByAppendingPathComponent:@"torrc"];
+    
+    NSString *torrcContent = [NSString stringWithFormat:
+        @"# Tor Configuration\n"
+        @"SocksPort %ld\n"
+        @"ControlPort %ld\n"
+        @"DataDirectory %@\n"
+        @"AvoidDiskWrites 1\n"
+        @"Log notice stdout\n"
+        @"RunAsDaemon 0\n"
+        @"SafeLogging 0\n",
+        (long)self.socksPort,
+        (long)self.controlPort,
+        self.dataDirectory
+    ];
+    
+    NSError *error = nil;
+    [torrcContent writeToFile:self.torrcPath
+                   atomically:YES
+                     encoding:NSUTF8StringEncoding
+                        error:&error];
+    
+    if (error) {
+        NSLog(@"[Tor] Ошибка создания torrc: %@", error);
+    }
+}
+
+#pragma mark - Lifecycle
+
+- (void)startWithCompletion:(void (^)(BOOL, NSError * _Nullable))completion {
+    if (self.running) {
+        NSLog(@"[Tor] Уже запущен");
+        if (completion) {
+            completion(YES, nil);
+        }
+        return;
+    }
+    
+    [self logMessage:@"Запуск Tor daemon..."];
+    self.status = TorStatusStarting;
+    [self notifyStatus:TorStatusStarting message:@"Запуск Tor..."];
+    
+    dispatch_async(self.torQueue, ^{
+        // Запуск Tor в отдельном потоке
+        pthread_attr_t attr;
+        pthread_attr_init(&attr);
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+        
+        int result = pthread_create(&self->_torThread, &attr, torThreadMain, (__bridge void *)self);
+        pthread_attr_destroy(&attr);
+        
+        if (result == 0) {
+            self.running = YES;
+            self.status = TorStatusConnecting;
+            [self notifyStatus:TorStatusConnecting message:@"Подключение к сети Tor..."];
+            
+            // Даем время на запуск
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self checkConnectionWithCompletion:^(BOOL connected) {
+                    if (connected) {
+                        self.status = TorStatusConnected;
+                        [self notifyStatus:TorStatusConnected message:@"Подключен к сети Tor"];
+                        if (completion) {
+                            completion(YES, nil);
+                        }
+                    } else {
+                        // Даем еще времени
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [self checkConnectionWithCompletion:^(BOOL connected) {
+                                if (connected) {
+                                    self.status = TorStatusConnected;
+                                    [self notifyStatus:TorStatusConnected message:@"Подключен к сети Tor"];
+                                    if (completion) {
+                                        completion(YES, nil);
+                                    }
+                                } else {
+                                    self.status = TorStatusError;
+                                    NSError *error = [NSError errorWithDomain:@"org.torproject.TorWrapper"
+                                                                         code:1
+                                                                     userInfo:@{NSLocalizedDescriptionKey: @"Не удалось подключиться к сети Tor"}];
+                                    [self notifyStatus:TorStatusError message:@"Ошибка подключения"];
+                                    if (completion) {
+                                        completion(NO, error);
+                                    }
+                                }
+                            }];
+                        });
+                    }
+                }];
+            });
+        } else {
+            self.status = TorStatusError;
+            NSError *error = [NSError errorWithDomain:@"org.torproject.TorWrapper"
+                                                 code:2
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Не удалось запустить Tor поток"}];
+            [self notifyStatus:TorStatusError message:@"Ошибка запуска"];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(NO, error);
+                }
+            });
+        }
+    });
+}
+
+void *torThreadMain(void *context) {
+    @autoreleasepool {
+        TorWrapper *wrapper = (__bridge TorWrapper *)context;
+        
+        const char *argv[] = {
+            "tor",
+            "-f",
+            [wrapper.torrcPath UTF8String],
+            NULL
+        };
+        
+        int argc = 3;
+        
+        NSLog(@"[Tor] Запуск tor_main()");
+        int result = tor_main(argc, (char **)argv);
+        NSLog(@"[Tor] tor_main() завершен с кодом: %d", result);
+        
+        wrapper.running = NO;
+        wrapper.status = TorStatusStopped;
+    }
+    
+    return NULL;
+}
+
+- (void)stopWithCompletion:(void (^)(void))completion {
+    if (!self.running) {
+        NSLog(@"[Tor] Уже остановлен");
+        if (completion) {
+            completion();
+        }
+        return;
+    }
+    
+    [self logMessage:@"Остановка Tor daemon..."];
+    
+    // Отправляем команду SHUTDOWN через control port
+    [self sendControlCommand:@"SIGNAL SHUTDOWN" completion:^(NSString * _Nullable response, NSError * _Nullable error) {
+        self.running = NO;
+        self.status = TorStatusStopped;
+        [self notifyStatus:TorStatusStopped message:@"Tor остановлен"];
+        
+        if (completion) {
+            completion();
+        }
+    }];
+}
+
+- (void)restartWithCompletion:(void (^)(BOOL, NSError * _Nullable))completion {
+    [self stopWithCompletion:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self startWithCompletion:completion];
+        });
+    }];
+}
+
+#pragma mark - Status & Monitoring
+
+- (void)setStatusCallback:(TorStatusCallback)callback {
+    self.statusCallback = callback;
+}
+
+- (void)setLogCallback:(TorLogCallback)callback {
+    self.logCallback = callback;
+}
+
+- (void)notifyStatus:(TorStatus)status message:(NSString *)message {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.statusCallback) {
+            self.statusCallback(status, message);
+        }
+    });
+}
+
+- (void)logMessage:(NSString *)message {
+    NSLog(@"[Tor] %@", message);
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.logCallback) {
+            self.logCallback(message);
+        }
+    });
+}
+
+- (void)checkConnectionWithCompletion:(void (^)(BOOL))completion {
+    // Простая проверка: пытаемся подключиться к control порту
+    dispatch_async(self.torQueue, ^{
+        NSString *host = @"127.0.0.1";
+        
+        CFReadStreamRef readStream;
+        CFWriteStreamRef writeStream;
+        CFStreamCreatePairWithSocketToHost(NULL, (__bridge CFStringRef)host, (UInt32)self.controlPort, &readStream, &writeStream);
+        
+        if (readStream && writeStream) {
+            NSInputStream *inputStream = (__bridge_transfer NSInputStream *)readStream;
+            NSOutputStream *outputStream = (__bridge_transfer NSOutputStream *)writeStream;
+            
+            [inputStream open];
+            [outputStream open];
+            
+            BOOL connected = (inputStream.streamStatus == NSStreamStatusOpen && outputStream.streamStatus == NSStreamStatusOpen);
+            
+            [inputStream close];
+            [outputStream close];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(connected);
+                }
+            });
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(NO);
+                }
+            });
+        }
+    });
+}
+
+#pragma mark - Control
+
+- (void)sendControlCommand:(NSString *)command completion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+    dispatch_async(self.torQueue, ^{
+        // TODO: Реализовать отправку команд через control port
+        // Требуется реализация control protocol
+        NSLog(@"[Tor] Команда: %@", command);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) {
+                completion(@"250 OK", nil);
+            }
+        });
+    });
+}
+
+- (void)newIdentityWithCompletion:(void (^)(BOOL, NSError * _Nullable))completion {
+    [self sendControlCommand:@"SIGNAL NEWNYM" completion:^(NSString * _Nullable response, NSError * _Nullable error) {
+        BOOL success = (error == nil && [response containsString:@"250"]);
+        if (completion) {
+            completion(success, error);
+        }
+    }];
+}
+
+#pragma mark - Circuit Info
+
+- (void)getCircuitInfoWithCompletion:(void (^)(NSArray<NSDictionary *> * _Nullable, NSError * _Nullable))completion {
+    [self sendControlCommand:@"GETINFO circuit-status" completion:^(NSString * _Nullable response, NSError * _Nullable error) {
+        if (error || !response) {
+            if (completion) {
+                completion(nil, error);
+            }
+            return;
+        }
+        
+        // TODO: Парсинг circuit-status
+        if (completion) {
+            completion(@[], nil);
+        }
+    }];
+}
+
+- (void)getExitIPWithCompletion:(void (^)(NSString * _Nullable, NSError * _Nullable))completion {
+    // TODO: Реализовать получение IP через Tor
+    // Можно использовать https://check.torproject.org/api/ip
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (completion) {
+            completion(nil, [NSError errorWithDomain:@"org.torproject.TorWrapper"
+                                                code:3
+                                            userInfo:@{NSLocalizedDescriptionKey: @"Не реализовано"}]);
+        }
+    });
+}
+
+#pragma mark - Helper Methods
+
+- (NSString *)socksProxyURL {
+    return [NSString stringWithFormat:@"socks5://127.0.0.1:%ld", (long)self.socksPort];
+}
+
+- (BOOL)isTorConfigured {
+    return (self.torrcPath && [[NSFileManager defaultManager] fileExistsAtPath:self.torrcPath]);
+}
+
+@end
+

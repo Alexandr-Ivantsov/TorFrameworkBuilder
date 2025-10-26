@@ -1,13 +1,10 @@
-# Исходники (загружаются автоматически)
-sources/
-
-# Артефакты сборки
+# Build artifacts
 build/
 *.o
 *.a
 *.dylib
 
-# Временные файлы
+# Temporary files
 *.log
 .DS_Store
 *.tar.gz
@@ -18,6 +15,27 @@ build/
 # Xcode
 xcuserdata/
 *.xcworkspace/xcuserdata/
+DerivedData/
+*.xcodeproj
 
-# Можно коммитить готовый результат (раскомментировать если нужно):
-# !output/Tor.xcframework
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# Tuist
+.tuist/
+Derived/
+graph.json
+
+# Keep these in repo for distribution
+!output/Tor.xcframework/
+!wrapper/
+
+# Sources (downloaded, can be re-downloaded)
+# Исключаем для минимизации размера репозитория
+sources/
+tor-0.4.8.19/
+tor-ios-fixed/
+
+# Keep build scripts for future updates
+!scripts/

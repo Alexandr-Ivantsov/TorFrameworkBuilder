@@ -1,0 +1,18 @@
+framework module Tor {
+    umbrella header "Tor.h"
+    
+    export *
+    module * { export * }
+    
+    explicit module OpenSSL {
+        header "openssl/ssl.h"
+        header "openssl/crypto.h"
+        export *
+    }
+    
+    explicit module LibEvent {
+        header "event2/event.h"
+        export *
+    }
+}
+

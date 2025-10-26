@@ -7,13 +7,13 @@
 - [x] Создание структуры проекта
 - [x] Инициализация git
 
-### Фаза 2: Создание скриптов сборки
-- [ ] download_tor.sh - скачивание исходников
-- [ ] build_openssl.sh - сборка OpenSSL 3.4.0
-- [ ] build_libevent.sh - сборка libevent 2.1.12
-- [ ] build_xz.sh - сборка xz 5.6.3
-- [ ] build_tor.sh - сборка Tor 0.4.8.19
-- [ ] build_all.sh - мастер-скрипт
+### Фаза 2: Создание скриптов сборки ✅
+- [x] download_tor.sh - скачивание исходников
+- [x] build_openssl.sh - сборка OpenSSL 3.4.0
+- [x] build_libevent.sh - сборка libevent 2.1.12
+- [x] build_xz.sh - сборка xz 5.6.3
+- [x] build_tor.sh - сборка Tor 0.4.8.19
+- [x] build_all.sh - мастер-скрипт
 
 ### Фаза 3: Сборка зависимостей
 - [ ] OpenSSL скомпилирован
@@ -21,19 +21,19 @@
 - [ ] xz скомпилирован
 - [ ] Tor скомпилирован
 
-### Фаза 4: Создание XCFramework
-- [ ] create_xcframework.sh - объединение библиотек
-- [ ] Создание framework структуры
-- [ ] Копирование headers
+### Фаза 4: Создание XCFramework ✅
+- [x] create_xcframework.sh - объединение библиотек
+- [x] Создание framework структуры
+- [x] Копирование headers
 
-### Фаза 5: Objective-C Wrapper
-- [ ] TorWrapper.h - интерфейс
-- [ ] TorWrapper.m - реализация
-- [ ] Tor.h - umbrella header
-- [ ] module.modulemap
+### Фаза 5: Objective-C Wrapper ✅
+- [x] TorWrapper.h - интерфейс
+- [x] TorWrapper.m - реализация
+- [x] Tor.h - umbrella header
+- [x] module.modulemap
 
 ### Фаза 6: Интеграция
-- [ ] deploy.sh - копирование в TorApp
+- [x] deploy.sh - копирование в TorApp
 - [ ] Обновление Project.swift
 - [ ] Обновление TorService.swift
 - [ ] Тестирование
