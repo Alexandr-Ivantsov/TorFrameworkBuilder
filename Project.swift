@@ -17,24 +17,10 @@ let project = Project(
                     "CFBundleDevelopmentRegion": "en"
                 ]
             ),
-            sources: ["Sources/TorFramework/**"],
+            sources: [],
             resources: ["Resources/**"],
-            scripts: [
-                // Опционально: SwiftLint для качества кода
-                .pre(
-                    script: """
-                        if which swiftlint >/dev/null 2>&1; then
-                            swiftlint --config .swiftlint.yml || true
-                        else
-                            echo "⚠️  SwiftLint не установлен (опционально)"
-                        fi
-                    """,
-                    name: "SwiftLint",
-                    basedOnDependencyAnalysis: false
-                )
-            ],
             dependencies: [
-                // Tor.xcframework как local framework
+                // Tor.xcframework как единственная зависимость
                 .xcframework(path: "output/Tor.xcframework")
             ],
             settings: .settings(

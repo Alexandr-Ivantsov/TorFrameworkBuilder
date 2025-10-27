@@ -26,24 +26,10 @@ let package = Package(
         // Нет внешних зависимостей - всё включено в XCFramework
     ],
     targets: [
-        .target(
+        // Binary target с готовым XCFramework
+        .binaryTarget(
             name: "TorFramework",
-            dependencies: [],
-            path: "Sources/TorFramework",
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("include")
-            ],
-            linkerSettings: [
-                .linkedFramework("Security"),
-                .linkedFramework("SystemConfiguration"),
-                .linkedLibrary("z")  // zlib для iOS
-            ]
-        ),
-        .testTarget(
-            name: "TorFrameworkTests",
-            dependencies: ["TorFramework"],
-            path: "Tests/TorFrameworkTests"
+            path: "output/Tor.xcframework"
         )
     ]
 )
