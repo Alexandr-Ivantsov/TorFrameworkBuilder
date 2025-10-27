@@ -74,13 +74,23 @@ libtool -static -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
 
 echo "✅ Simulator framework: $(du -h ${SIMULATOR_FW}/${FRAMEWORK_NAME} | cut -f1)"
 
-# Копирование заголовков (одинаковые для обеих платформ)
+# Копирование заголовков
 echo "📋 Копирование headers..."
+
+# Device framework - используем device headers
+cp -R "${OPENSSL_DIR_DEVICE}/include/openssl" "${DEVICE_FW}/Headers/" 2>/dev/null || true
+cp "${LIBEVENT_DIR_DEVICE}"/include/*.h "${DEVICE_FW}/Headers/" 2>/dev/null || true
+cp -R "${LIBEVENT_DIR_DEVICE}/include/event2" "${DEVICE_FW}/Headers/" 2>/dev/null || true
+cp wrapper/*.h "${DEVICE_FW}/Headers/" 2>/dev/null || true
+
+# Simulator framework - используем simulator headers
+cp -R "${OPENSSL_DIR_SIMULATOR}/include/openssl" "${SIMULATOR_FW}/Headers/" 2>/dev/null || true
+cp "${LIBEVENT_DIR_SIMULATOR}"/include/*.h "${SIMULATOR_FW}/Headers/" 2>/dev/null || true
+cp -R "${LIBEVENT_DIR_SIMULATOR}/include/event2" "${SIMULATOR_FW}/Headers/" 2>/dev/null || true
+cp wrapper/*.h "${SIMULATOR_FW}/Headers/" 2>/dev/null || true
+
+# Info.plist и module.modulemap для обоих
 for framework_path in "$DEVICE_FW" "$SIMULATOR_FW"; do
-    cp -R "${OPENSSL_DIR_DEVICE}/include/openssl" "${framework_path}/Headers/" 2>/dev/null || true
-    cp "${LIBEVENT_DIR_DEVICE}"/include/*.h "${framework_path}/Headers/" 2>/dev/null || true
-    cp -R "${LIBEVENT_DIR_DEVICE}/include/event2" "${framework_path}/Headers/" 2>/dev/null || true
-    cp wrapper/*.h "${framework_path}/Headers/" 2>/dev/null || true
     
     # Info.plist
     cat > "${framework_path}/Info.plist" << EOF
