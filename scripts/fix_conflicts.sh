@@ -45,6 +45,17 @@ rm -f src/ext/readpassphrase.c
 echo "  📝 Исправление equix includes..."
 find src/ext/equix -name "*.c" -exec sed -i '' 's/#include <equix\.h>/#include "..\/..\/..\/ext\/equix\/include\/equix.h"/' {} \;
 
+# 5. Добавить SIZEOF_SOCKLEN_T в orconfig.h
+echo "  📝 Добавление SIZEOF_SOCKLEN_T в orconfig.h..."
+if ! grep -q "SIZEOF_SOCKLEN_T" orconfig.h; then
+    sed -i '' '/^#define SIZEOF_UINT64_T 8$/a\
+#define SIZEOF_SOCKLEN_T 4
+' orconfig.h
+    echo "    ✅ SIZEOF_SOCKLEN_T добавлен"
+else
+    echo "    ℹ️  SIZEOF_SOCKLEN_T уже определен"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"

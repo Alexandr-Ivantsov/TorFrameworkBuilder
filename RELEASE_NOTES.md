@@ -1,6 +1,95 @@
-# 📦 TorFrameworkBuilder v1.0.3
+# 📦 TorFrameworkBuilder Release Notes
 
-## 🎉 Что нового
+## v1.0.8 (2025-10-27) 🔧
+
+### 🐛 Критическое исправление: tor_main
+
+**Проблема:**
+```
+Undefined symbols for architecture arm64
+  "_tor_main", referenced from:
+      _torThreadMain in Tor[1285](TorWrapper.o)
+```
+
+**Причина:**
+- `tor_api.c` не компилировался из-за конфликта `typedef socklen_t`
+- Это приводило к отсутствию `tor_main` в `libtor.a`
+
+**Решение:**
+1. ✅ Добавлено `#define SIZEOF_SOCKLEN_T 4` в `tor-ios-fixed/orconfig.h`
+2. ✅ Исправлен `scripts/direct_build.sh` для работы из корня проекта
+3. ✅ Пересобраны `libtor.a` для device и simulator с включением `tor_api.c`
+4. ✅ Пересоздан `Tor.xcframework` с символом `tor_main`
+
+**Результат:**
+- ✅ `tor_main` теперь определен в обоих срезах XCFramework
+- ✅ Линковка в TorApp больше не падает
+- ✅ Все Tor API функции доступны
+
+### 📋 Измененные файлы
+- `tor-ios-fixed/orconfig.h` - добавлено `SIZEOF_SOCKLEN_T 4`
+- `scripts/direct_build.sh` - исправлен путь к PROJECT_ROOT
+- `output/Tor.xcframework/` - обновлены бинарники
+
+---
+
+## v1.0.7 (2025-10-27) 🔧
+
+### 🐛 Исправление: TorWrapper.o в бинарнике
+
+**Проблема:**
+```
+Undefined symbols for architecture arm64
+  "_OBJC_CLASS_$_TorWrapper", referenced from: TorManager.swift
+```
+
+**Решение:**
+- ✅ Добавлена компиляция `TorWrapper.m` в `TorWrapper.o` для device и simulator
+- ✅ Включение `TorWrapper.o` в `libtool` при создании framework
+- ✅ Исключены временные `output/device-obj/`, `output/simulator-obj/` в `.gitignore`
+
+**Результат:**
+- ✅ `TorWrapper.o` присутствует в бинарниках обоих срезов
+- ✅ Все методы TorWrapper доступны для использования
+
+---
+
+## v1.0.6 (2025-10-27) 🔧
+
+### 🐛 Исправление: module.modulemap
+
+**Проблема:**
+```
+fatal error: 'openssl/macros.h' file not found
+```
+
+**Решение:**
+- ✅ Упрощен `module.modulemap` до:
+  ```
+  framework module Tor {
+      umbrella header "Tor.h"
+      export *
+      module * { export * }
+  }
+  ```
+- Clang автоматически находит все заголовки
+
+---
+
+## v1.0.4 (2025-10-27) 🔧
+
+### 🐛 Исправление: Platform-specific headers
+
+**Проблема:**
+- OpenSSL headers были одинаковые для device и simulator
+
+**Решение:**
+- ✅ Device framework использует headers из `openssl-device/`
+- ✅ Simulator framework использует headers из `openssl-simulator/`
+
+---
+
+## v1.0.3 (2025-10-25) 🎉
 
 ### ✅ Поддержка iOS Simulator
 
