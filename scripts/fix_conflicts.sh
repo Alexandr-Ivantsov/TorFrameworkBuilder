@@ -199,8 +199,8 @@ else
     echo "    ℹ️  SSIZE_MAX уже определен"
 fi
 
-# 14. Добавить SHARE_DATADIR, CONFDIR, COMPILER и др. для config.c
-echo "  📝 Добавление SHARE_DATADIR, CONFDIR, COMPILER..."
+# 14. Добавить SHARE_DATADIR, CONFDIR, COMPILER, APPROX_RELEASE_DATE и др. для config.c и versions.c
+echo "  📝 Добавление SHARE_DATADIR, CONFDIR, COMPILER, APPROX_RELEASE_DATE..."
 if ! grep -q "SHARE_DATADIR" orconfig.h; then
     sed -i '' '/^#define WORDS_BIGENDIAN 0$/a\
 \
@@ -224,9 +224,12 @@ if ! grep -q "SHARE_DATADIR" orconfig.h; then
 #endif\
 #ifndef LOCALSTATEDIR\
 #define LOCALSTATEDIR "/var"\
+#endif\
+#ifndef APPROX_RELEASE_DATE\
+#define APPROX_RELEASE_DATE "2024-10-06"\
 #endif
 ' orconfig.h
-    echo "    ✅ SHARE_DATADIR, CONFDIR, COMPILER и др. добавлены"
+    echo "    ✅ SHARE_DATADIR, CONFDIR, COMPILER, APPROX_RELEASE_DATE и др. добавлены"
 else
     echo "    ℹ️  SHARE_DATADIR уже определен"
 fi
@@ -293,8 +296,8 @@ else
     echo "    ℹ️  OpenSSL 3.x defines уже добавлены"
 fi
 
-# 20. Добавить HAVE_RLIM_T для restrict.h (избежать typedef redefinition)
-echo "  📝 Добавление HAVE_RLIM_T..."
+# 20. Добавить HAVE_RLIM_T, HAVE_CRT_EXTERNS_H, HAVE_SYS_RESOURCE_H
+echo "  📝 Добавление HAVE_RLIM_T, HAVE_CRT_EXTERNS_H, HAVE_SYS_RESOURCE_H..."
 if ! grep -q "HAVE_RLIM_T" orconfig.h; then
     sed -i '' '/^#define HAVE_GETRLIMIT 1$/a\
 #define HAVE_RLIM_T 1
@@ -302,6 +305,30 @@ if ! grep -q "HAVE_RLIM_T" orconfig.h; then
     echo "    ✅ HAVE_RLIM_T добавлен"
 else
     echo "    ℹ️  HAVE_RLIM_T уже определен"
+fi
+if ! grep -q "HAVE_CRT_EXTERNS_H" orconfig.h; then
+    sed -i '' '/^#define HAVE_LIMITS_H 1$/a\
+#define HAVE_CRT_EXTERNS_H 1\
+#define HAVE_SYS_RESOURCE_H 1
+' orconfig.h
+    echo "    ✅ HAVE_CRT_EXTERNS_H и HAVE_SYS_RESOURCE_H добавлены"
+else
+    echo "    ℹ️  HAVE_CRT_EXTERNS_H уже определен"
+fi
+
+# 20b. Исправить restrict.h для include sys/resource.h
+echo "  📝 Исправление restrict.h..."
+if ! grep -q "sys/resource.h" src/lib/process/restrict.h; then
+    sed -i '' '/#if !defined(HAVE_RLIM_T)/i\
+\
+#ifdef HAVE_SYS_RESOURCE_H\
+#include <sys/resource.h>\
+#endif\
+
+' src/lib/process/restrict.h
+    echo "    ✅ restrict.h исправлен"
+else
+    echo "    ℹ️  restrict.h уже исправлен"
 fi
 
 # 21. Создать micro-revision.i для git_revision.c

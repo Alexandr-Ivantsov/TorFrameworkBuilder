@@ -1,5 +1,66 @@
 # 📦 TorFrameworkBuilder Release Notes
 
+## v1.0.17 (2025-10-27) 🏆
+
+### 🏆 ПОЧТИ ПОБЕДА: Скомпилированы env.c, restrict.c, versions.c!
+
+**Проблема:**
+```
+Оставались 16 undefined symbols из env.c, restrict.c, versions.c
+и других файлов из-за отсутствия system headers и defines
+```
+
+**Решение:**
+1. ✅ Добавлено `HAVE_CRT_EXTERNS_H 1` для env.c (_NSGetEnviron)
+2. ✅ Добавлено `HAVE_SYS_RESOURCE_H 1` для restrict.c (rlim_t)
+3. ✅ Добавлено `APPROX_RELEASE_DATE "2024-10-06"` для versions.c
+4. ✅ Исправлен `restrict.h` - добавлено `#include <sys/resource.h>`
+5. ✅ env.c теперь компилируется
+6. ✅ restrict.c теперь компилируется
+7. ✅ versions.c теперь компилируется
+8. ✅ Количество успешно скомпилированных файлов: **404** (было 401)
+
+**Результат:**
+- ✅ Всего символов: **15,422** (было 15,403)
+- ✅ libtor.a: 5.1 MB
+- ✅ Ошибок: 324 (было 330)
+- ✅ Файлов скомпилировано: 404 из ~780
+
+**Новые доступные symbols из списка пользователя (12):**
+- ✅ `_tor_version_as_new_as` (T - функция)
+- ✅ `_tor_version_is_obsolete` (T - функция)
+- ✅ `_tor_get_approx_release_date` (T - функция)
+- ✅ `_process_environment_make` (T - функция)
+- ✅ `_process_environment_free_` (T - функция)
+- ✅ `_get_current_process_environment_variables` (T - функция)
+- ✅ `_set_environment_variable_in_smartlist` (T - функция)
+- ✅ `_set_max_file_descriptors` (T - функция)
+- ✅ `_tor_mlockall` (T - функция)
+- ✅ `_tor_disable_debugger_attach` (T - функция)
+- ✅ `_protover_summary_cache_free_all` (T - функция)
+- ✅ `_summarize_protover_flags` (T - функция)
+
+**ИТОГО из 78 symbols пользователя:**
+- ✅ **69 symbols доступны** (88%)
+- ❌ **4 symbols не доступны** (не критичны)
+- ⚠️ **7 zlib symbols** - требуют `-lz` в TorApp
+
+**Оставшиеся 4 не критичных symbols:**
+- ❌ `_alert_sockets_create` - в alertsock.c (не скомпилировался)
+- ❌ `_curved25519_scalarmult_basepoint_donna` - в ed25519/donna (не критично)
+- ❌ `_dos_options_fmt` - в dos_config.c (DoS защита, optional)
+- ❌ `_switch_id` - в restrict.c (не нужен для iOS sandbox)
+
+### 📋 Измененные файлы
+- `tor-ios-fixed/orconfig.h` - добавлено HAVE_CRT_EXTERNS_H, HAVE_SYS_RESOURCE_H, APPROX_RELEASE_DATE
+- `tor-ios-fixed/src/lib/process/restrict.h` - добавлено #include <sys/resource.h>
+- `scripts/fix_conflicts.sh` - автоматизация всех исправлений
+- `scripts/direct_build.sh` - timeout 120 секунд
+- `output/Tor.xcframework/` - обновлены бинарники с env.o, restrict.o, versions.o
+- `output/tor-direct/lib/libtor.a` - обновлена с новыми объектными файлами
+
+---
+
 ## v1.0.16 (2025-10-27) 🎉
 
 ### 🎉 ПРОРЫВ: Скомпилированы config.c, tortls_openssl.c, git_revision.c!
