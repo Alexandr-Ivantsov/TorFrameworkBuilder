@@ -56,6 +56,35 @@ else
     echo "    ℹ️  SIZEOF_SOCKLEN_T уже определен"
 fi
 
+# 6. Добавить includes для bool и timeval в orconfig.h
+echo "  📝 Исправление orconfig.h для main.c..."
+if ! grep -q "#include <stdbool.h>" orconfig.h; then
+    sed -i '' '/#define TOR_ORCONFIG_H$/a\
+\
+/* Include stdbool.h first for bool type */\
+#include <stdbool.h>\
+#include <sys/time.h>
+' orconfig.h
+    echo "    ✅ Добавлены includes для bool и timeval"
+else
+    echo "    ℹ️  Includes уже добавлены"
+fi
+
+# 7. Исправить HAVE_SYSTEMD и добавить HAVE_STRUCT_TIMEVAL
+echo "  📝 Исправление HAVE_SYSTEMD и timeval..."
+sed -i '' 's/#define HAVE_SYSTEMD 0/\/* #undef HAVE_SYSTEMD *\//' orconfig.h
+if ! grep -q "HAVE_STRUCT_TIMEVAL_TV_SEC" orconfig.h; then
+    sed -i '' '/USE_BUFFEREVENTS/a\
+\
+/* timeval structure */\
+#define HAVE_STRUCT_TIMEVAL_TV_SEC 1\
+#define HAVE_STRUCT_TIMEVAL_TV_USEC 1
+' orconfig.h
+    echo "    ✅ HAVE_STRUCT_TIMEVAL добавлены"
+else
+    echo "    ℹ️  HAVE_STRUCT_TIMEVAL уже определены"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
