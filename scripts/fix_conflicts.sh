@@ -140,6 +140,50 @@ else
     echo "    ℹ️  TOR_PRIuSZ уже определен"
 fi
 
+# 12. Добавить INT_MAX/INT_MIN для binascii.c
+echo "  📝 Добавление INT_MAX/INT_MIN..."
+if ! grep -q "^#ifndef INT_MAX" orconfig.h; then
+    sed -i '' '/^#define SIZEOF_SSIZE_T 8$/a\
+\
+/* INT_MAX for 32-bit int on iOS */\
+#ifndef INT_MAX\
+#define INT_MAX 2147483647\
+#endif\
+#ifndef INT_MIN\
+#define INT_MIN (-INT_MAX - 1)\
+#endif
+' orconfig.h
+    echo "    ✅ INT_MAX/INT_MIN добавлены"
+else
+    echo "    ℹ️  INT_MAX уже определен"
+fi
+
+# 13. Добавить SSIZE_MAX и SIZE_T_CEILING для binascii.c
+echo "  📝 Добавление SSIZE_MAX и SIZE_T_CEILING..."
+if ! grep -q "SSIZE_MAX" orconfig.h; then
+    sed -i '' '/^#define SIZEOF_SOCKLEN_T 4$/a\
+#define SIZEOF_SSIZE_T 8
+' orconfig.h
+    sed -i '' '/^#define TIME_MAX INT64_MAX$/a\
+\
+/* ssize_t is 64-bit on iOS (signed size_t) */\
+#ifndef SSIZE_MAX\
+#define SSIZE_MAX INT64_MAX\
+#endif\
+\
+/* SIZE_T_CEILING and SSIZE_T_CEILING for overflow checks */\
+#ifndef SIZE_T_CEILING\
+#define SIZE_T_CEILING ((size_t)(SSIZE_MAX-16))\
+#endif\
+#ifndef SSIZE_T_CEILING\
+#define SSIZE_T_CEILING ((ssize_t)(SSIZE_MAX-16))\
+#endif
+' orconfig.h
+    echo "    ✅ SSIZE_MAX и SIZE_T_CEILING добавлены"
+else
+    echo "    ℹ️  SSIZE_MAX уже определен"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
