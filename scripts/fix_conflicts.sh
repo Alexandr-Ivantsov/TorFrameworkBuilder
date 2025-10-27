@@ -107,6 +107,39 @@ else
     echo "    ℹ️  limits.h уже включен в type_defs.c"
 fi
 
+# 10. Добавить TIME_MAX для connection_edge.c
+echo "  📝 Добавление TIME_MAX..."
+if ! grep -q "TIME_MAX" orconfig.h; then
+    sed -i '' '/^#define SIZEOF_SOCKLEN_T 4$/a\
+\
+/* time_t is 64-bit on iOS, so TIME_MAX is INT64_MAX */\
+#ifndef TIME_MAX\
+#define TIME_MAX INT64_MAX\
+#endif
+' orconfig.h
+    echo "    ✅ TIME_MAX добавлен"
+else
+    echo "    ℹ️  TIME_MAX уже определен"
+fi
+
+# 11. Добавить TOR_PRIuSZ для circuitlist.c
+echo "  📝 Добавление TOR_PRIuSZ..."
+if ! grep -q "TOR_PRIuSZ" orconfig.h; then
+    sed -i '' '/^#endif$/a\
+\
+/* Printf format for size_t */\
+#ifndef TOR_PRIuSZ\
+#define TOR_PRIuSZ "zu"\
+#endif\
+#ifndef TOR_PRIdSZ\
+#define TOR_PRIdSZ "zd"\
+#endif
+' orconfig.h
+    echo "    ✅ TOR_PRIuSZ добавлен"
+else
+    echo "    ℹ️  TOR_PRIuSZ уже определен"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
