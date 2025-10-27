@@ -140,8 +140,8 @@ else
     echo "    ℹ️  TOR_PRIuSZ уже определен"
 fi
 
-# 12. Добавить INT_MAX/INT_MIN для binascii.c
-echo "  📝 Добавление INT_MAX/INT_MIN..."
+# 12. Добавить INT_MAX/INT_MIN/UINT_MAX для binascii.c и crypto_rand_numeric.c
+echo "  📝 Добавление INT_MAX/INT_MIN/UINT_MAX..."
 if ! grep -q "^#ifndef INT_MAX" orconfig.h; then
     sed -i '' '/^#define SIZEOF_SSIZE_T 8$/a\
 \
@@ -151,9 +151,12 @@ if ! grep -q "^#ifndef INT_MAX" orconfig.h; then
 #endif\
 #ifndef INT_MIN\
 #define INT_MIN (-INT_MAX - 1)\
+#endif\
+#ifndef UINT_MAX\
+#define UINT_MAX 4294967295U\
 #endif
 ' orconfig.h
-    echo "    ✅ INT_MAX/INT_MIN добавлены"
+    echo "    ✅ INT_MAX/INT_MIN/UINT_MAX добавлены"
 else
     echo "    ℹ️  INT_MAX уже определен"
 fi
@@ -182,6 +185,44 @@ if ! grep -q "SSIZE_MAX" orconfig.h; then
     echo "    ✅ SSIZE_MAX и SIZE_T_CEILING добавлены"
 else
     echo "    ℹ️  SSIZE_MAX уже определен"
+fi
+
+# 14. Добавить SHARE_DATADIR, CONFDIR и COMPILER_VENDOR для config.c
+echo "  📝 Добавление SHARE_DATADIR, CONFDIR и COMPILER_VENDOR..."
+if ! grep -q "SHARE_DATADIR" orconfig.h; then
+    sed -i '' '/^#define WORDS_BIGENDIAN 0$/a\
+\
+/* Paths for iOS (not used, but required for compilation) */\
+#ifndef SHARE_DATADIR\
+#define SHARE_DATADIR "/usr/share"\
+#endif\
+#ifndef CONFDIR\
+#define CONFDIR "/etc/tor"\
+#endif\
+\
+/* Compiler info (not accurate, but required for compilation) */\
+#ifndef COMPILER_VENDOR\
+#define COMPILER_VENDOR "apple"\
+#endif
+' orconfig.h
+    echo "    ✅ SHARE_DATADIR, CONFDIR и COMPILER_VENDOR добавлены"
+else
+    echo "    ℹ️  SHARE_DATADIR уже определен"
+fi
+
+# 15. Добавить HAVE_UTIME и HAVE_GETDELIM для files.c
+echo "  📝 Добавление HAVE_UTIME и HAVE_GETDELIM..."
+if ! grep -q "HAVE_GETDELIM" orconfig.h; then
+    sed -i '' '/^#define HAVE_UNAME 1$/a\
+#define HAVE_GETDELIM 1
+' orconfig.h
+    sed -i '' '/^#define HAVE_SYSCONF 1$/a\
+#define HAVE_UTIME_H 1\
+#define HAVE_UTIME 1
+' orconfig.h
+    echo "    ✅ HAVE_UTIME и HAVE_GETDELIM добавлены"
+else
+    echo "    ℹ️  HAVE_GETDELIM уже определен"
 fi
 
 cd ..

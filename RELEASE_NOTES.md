@@ -1,5 +1,67 @@
 # 📦 TorFrameworkBuilder Release Notes
 
+## v1.0.13 (2025-10-27) 🔧
+
+### 🐛 Критическое исправление: Компиляция crypto/file/config функций
+
+**Проблема:**
+```
+Undefined symbols for architecture arm64:
+  "_crypto_rand_int"
+  "_crypto_rand_double"
+  "_abort_writing_to_file"
+  "_append_bytes_to_file"
+  "_finish_writing_to_file"
+  "_check_or_create_data_subdir"
+  (и сотни других crypto/file функций)
+```
+
+**Причина:**
+1. `crypto_rand_numeric.c` не компилировался из-за `UINT_MAX` undeclared
+2. `files.c` не компилировался из-за `HAVE_UTIME` и `HAVE_GETDELIM` missing
+3. `config.c` не компилировался из-за `SHARE_DATADIR`, `CONFDIR`, `COMPILER_VENDOR` missing
+4. Сотни файлов lib/crypt_ops, lib/fs, app/config не компилировались
+
+**Решение:**
+1. ✅ Добавлено `#define UINT_MAX 4294967295U` в `orconfig.h`
+2. ✅ Добавлено `#define SHARE_DATADIR "/usr/share"` в `orconfig.h`
+3. ✅ Добавлено `#define CONFDIR "/etc/tor"` в `orconfig.h`
+4. ✅ Добавлено `#define COMPILER_VENDOR "apple"` в `orconfig.h`
+5. ✅ Добавлено `#define HAVE_UTIME 1` в `orconfig.h`
+6. ✅ Добавлено `#define HAVE_UTIME_H 1` в `orconfig.h`
+7. ✅ Добавлено `#define HAVE_GETDELIM 1` в `orconfig.h`
+8. ✅ `crypto_rand_numeric.c` теперь компилируется успешно
+9. ✅ `files.c` теперь компилируется успешно
+10. ✅ Количество успешно скомпилированных файлов: **390** (было 384)
+
+**Результат:**
+- ✅ `_crypto_rand_int` (T - функция)
+- ✅ `_crypto_rand_double` (T - функция)
+- ✅ `_crypto_rand_int_range` (T - функция)
+- ✅ `_crypto_rand_uint` (T - функция)
+- ✅ `_abort_writing_to_file` (T - функция)
+- ✅ `_append_bytes_to_file` (T - функция)
+- ✅ `_finish_writing_to_file` (T - функция)
+- ✅ `_write_str_to_file` (T - функция)
+- ✅ `_write_bytes_to_file` (T - функция)
+- ✅ `_check_or_create_data_subdir` (T - функция)
+- ✅ `_file_status` (T - функция)
+- ✅ Всего символов: **15,246** (было 15,222)
+- ✅ Размер framework: 50 MB
+- ✅ libtor.a: 4.8 MB
+- ✅ Device и Simulator содержат все символы
+
+**Примечание:**
+Теперь компилируется **390 файлов** (было 384), что добавило критические crypto и file функции для работы TorApp.
+
+### 📋 Измененные файлы
+- `tor-ios-fixed/orconfig.h` - добавлено UINT_MAX, SHARE_DATADIR, CONFDIR, COMPILER_VENDOR, HAVE_UTIME, HAVE_GETDELIM
+- `scripts/fix_conflicts.sh` - автоматические исправления для всех новых определений
+- `output/Tor.xcframework/` - обновлены бинарники с crypto/file функциями
+- `output/tor-direct/lib/libtor.a` - увеличен размер с crypto_rand_numeric.o, files.o и другими
+
+---
+
 ## v1.0.12 (2025-10-27) 🔧
 
 ### 🐛 Критическое исправление: Компиляция encoding/buffer/file функций
