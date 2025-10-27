@@ -64,6 +64,7 @@ CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
 CFLAGS="$CFLAGS -O2"
 CFLAGS="$CFLAGS -Wno-error"
 CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=0"
+CFLAGS="$CFLAGS -fvisibility=default"
 
 # Файлы для пропуска
 SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c"

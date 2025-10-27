@@ -85,6 +85,28 @@ else
     echo "    ℹ️  HAVE_STRUCT_TIMEVAL уже определены"
 fi
 
+# 8. Добавить HAVE_LIMITS_H для INT_MIN/INT_MAX
+echo "  📝 Добавление HAVE_LIMITS_H..."
+if ! grep -q "HAVE_LIMITS_H" orconfig.h; then
+    sed -i '' '/^#define HAVE_GLOB_H 1$/a\
+#define HAVE_LIMITS_H 1
+' orconfig.h
+    echo "    ✅ HAVE_LIMITS_H добавлен"
+else
+    echo "    ℹ️  HAVE_LIMITS_H уже определен"
+fi
+
+# 9. Добавить #include <limits.h> в type_defs.c
+echo "  📝 Исправление type_defs.c..."
+if ! grep -q "#include <limits.h>" src/lib/confmgt/type_defs.c; then
+    sed -i '' '/#include "orconfig.h"/a\
+#include <limits.h>
+' src/lib/confmgt/type_defs.c
+    echo "    ✅ #include <limits.h> добавлен в type_defs.c"
+else
+    echo "    ℹ️  limits.h уже включен в type_defs.c"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
