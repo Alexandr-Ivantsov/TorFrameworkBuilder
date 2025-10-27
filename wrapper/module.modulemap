@@ -5,8 +5,7 @@ framework module Tor {
     module * { export * }
     
     explicit module OpenSSL {
-        header "openssl/ssl.h"
-        header "openssl/crypto.h"
+        umbrella "openssl"
         export *
     }
     
@@ -15,4 +14,3 @@ framework module Tor {
         export *
     }
 }
-
