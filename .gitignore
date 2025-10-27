@@ -26,6 +26,8 @@ graph.json
 # Temporary framework directories (simulator build artifacts)
 output/device/
 output/simulator/
+output/device-obj/
+output/simulator-obj/
 output/openssl-simulator/
 output/libevent-simulator/
 output/xz-simulator/

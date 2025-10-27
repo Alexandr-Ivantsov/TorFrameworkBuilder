@@ -46,15 +46,32 @@ rm -rf output/device output/simulator "$XCFRAMEWORK_DIR"
 echo "🔨 Создание framework для устройства..."
 mkdir -p "${DEVICE_FW}/Headers"
 mkdir -p "${DEVICE_FW}/Modules"
+mkdir -p "output/device-obj"
 
-# Объединение библиотек для устройства
+# Компиляция TorWrapper.m для устройства
+echo "📝 Компиляция TorWrapper для устройства..."
+DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
+    -x objective-c \
+    -c wrapper/TorWrapper.m \
+    -o output/device-obj/TorWrapper.o \
+    -fobjc-arc \
+    -arch arm64 \
+    -isysroot "${DEVICE_SDK_PATH}" \
+    -mios-version-min=16.0 \
+    -I"${OPENSSL_DIR_DEVICE}/include" \
+    -I"${LIBEVENT_DIR_DEVICE}/include" \
+    -Iwrapper
+
+# Объединение библиотек для устройства (включая TorWrapper)
 libtool -static -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
     "$TOR_LIB_DEVICE" \
     "${OPENSSL_DIR_DEVICE}/lib/libssl.a" \
     "${OPENSSL_DIR_DEVICE}/lib/libcrypto.a" \
     "${LIBEVENT_DIR_DEVICE}/lib/libevent.a" \
     "${LIBEVENT_DIR_DEVICE}/lib/libevent_core.a" \
-    "${XZ_DIR_DEVICE}/lib/liblzma.a"
+    "${XZ_DIR_DEVICE}/lib/liblzma.a" \
+    output/device-obj/TorWrapper.o
 
 echo "✅ Device framework: $(du -h ${DEVICE_FW}/${FRAMEWORK_NAME} | cut -f1)"
 
@@ -62,15 +79,32 @@ echo "✅ Device framework: $(du -h ${DEVICE_FW}/${FRAMEWORK_NAME} | cut -f1)"
 echo "🔨 Создание framework для симулятора..."
 mkdir -p "${SIMULATOR_FW}/Headers"
 mkdir -p "${SIMULATOR_FW}/Modules"
+mkdir -p "output/simulator-obj"
 
-# Объединение библиотек для симулятора
+# Компиляция TorWrapper.m для симулятора
+echo "📝 Компиляция TorWrapper для симулятора..."
+SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk"
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
+    -x objective-c \
+    -c wrapper/TorWrapper.m \
+    -o output/simulator-obj/TorWrapper.o \
+    -fobjc-arc \
+    -arch arm64 \
+    -isysroot "${SIMULATOR_SDK_PATH}" \
+    -mios-simulator-version-min=16.0 \
+    -I"${OPENSSL_DIR_SIMULATOR}/include" \
+    -I"${LIBEVENT_DIR_SIMULATOR}/include" \
+    -Iwrapper
+
+# Объединение библиотек для симулятора (включая TorWrapper)
 libtool -static -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
     "$TOR_LIB_SIMULATOR" \
     "${OPENSSL_DIR_SIMULATOR}/lib/libssl.a" \
     "${OPENSSL_DIR_SIMULATOR}/lib/libcrypto.a" \
     "${LIBEVENT_DIR_SIMULATOR}/lib/libevent.a" \
     "${LIBEVENT_DIR_SIMULATOR}/lib/libevent_core.a" \
-    "${XZ_DIR_SIMULATOR}/lib/liblzma.a"
+    "${XZ_DIR_SIMULATOR}/lib/liblzma.a" \
+    output/simulator-obj/TorWrapper.o
 
 echo "✅ Simulator framework: $(du -h ${SIMULATOR_FW}/${FRAMEWORK_NAME} | cut -f1)"
 
