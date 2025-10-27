@@ -64,6 +64,7 @@ DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
     -Iwrapper
 
 # Объединение библиотек для устройства (включая TorWrapper)
+# NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
 libtool -static -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
     "$TOR_LIB_DEVICE" \
     "${OPENSSL_DIR_DEVICE}/lib/libssl.a" \
@@ -97,6 +98,7 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
     -Iwrapper
 
 # Объединение библиотек для симулятора (включая TorWrapper)
+# NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
 libtool -static -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
     "$TOR_LIB_SIMULATOR" \
     "${OPENSSL_DIR_SIMULATOR}/lib/libssl.a" \

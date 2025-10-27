@@ -17,7 +17,7 @@ LIBEVENT_DIR="output/libevent"
 XZ_DIR="output/xz"
 
 # Timeout для компиляции каждого файла (секунды)
-COMPILE_TIMEOUT=30
+COMPILE_TIMEOUT=60
 
 # iOS настройки
 SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
@@ -33,6 +33,7 @@ CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/src"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}"
 CFLAGS="$CFLAGS -I${OPENSSL_DIR}/include"
 CFLAGS="$CFLAGS -I${LIBEVENT_DIR}/include"

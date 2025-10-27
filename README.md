@@ -6,6 +6,8 @@
 
 **✅ Поддерживается iOS Simulator!** (arm64 для Apple Silicon)
 
+**⚠️ Требуется libz (zlib):** Добавьте `-lz` в `OTHER_LDFLAGS` вашего проекта для функций сжатия.
+
 ---
 
 ## 🚀 Установка через Tuist
@@ -32,7 +34,12 @@ let dependencies = Dependencies(
 ```swift
 dependencies: [
     .external(name: "TorFrameworkBuilder")
-]
+],
+settings: .settings(
+    base: [
+        "OTHER_LDFLAGS": "-lz"  // ⚠️ ОБЯЗАТЕЛЬНО для zlib
+    ]
+)
 ```
 
 #### 3. Установите:
