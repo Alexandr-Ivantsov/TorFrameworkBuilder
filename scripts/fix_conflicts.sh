@@ -107,17 +107,20 @@ else
     echo "    ℹ️  limits.h уже включен в type_defs.c"
 fi
 
-# 10. Добавить TIME_MAX для connection_edge.c
-echo "  📝 Добавление TIME_MAX..."
+# 10. Добавить TIME_MAX и TIME_MIN для connection_edge.c и periodic.c
+echo "  📝 Добавление TIME_MAX и TIME_MIN..."
 if ! grep -q "TIME_MAX" orconfig.h; then
     sed -i '' '/^#define SIZEOF_SOCKLEN_T 4$/a\
 \
 /* time_t is 64-bit on iOS, so TIME_MAX is INT64_MAX */\
 #ifndef TIME_MAX\
 #define TIME_MAX INT64_MAX\
+#endif\
+#ifndef TIME_MIN\
+#define TIME_MIN INT64_MIN\
 #endif
 ' orconfig.h
-    echo "    ✅ TIME_MAX добавлен"
+    echo "    ✅ TIME_MAX и TIME_MIN добавлены"
 else
     echo "    ℹ️  TIME_MAX уже определен"
 fi
@@ -140,8 +143,8 @@ else
     echo "    ℹ️  TOR_PRIuSZ уже определен"
 fi
 
-# 12. Добавить INT_MAX/INT_MIN/UINT_MAX для binascii.c и crypto_rand_numeric.c
-echo "  📝 Добавление INT_MAX/INT_MIN/UINT_MAX..."
+# 12. Добавить INT_MAX/INT_MIN/UINT_MAX/LONG_MAX для binascii.c и crypto_rand_numeric.c
+echo "  📝 Добавление INT_MAX/INT_MIN/UINT_MAX/LONG_MAX..."
 if ! grep -q "^#ifndef INT_MAX" orconfig.h; then
     sed -i '' '/^#define SIZEOF_SSIZE_T 8$/a\
 \
@@ -154,9 +157,18 @@ if ! grep -q "^#ifndef INT_MAX" orconfig.h; then
 #endif\
 #ifndef UINT_MAX\
 #define UINT_MAX 4294967295U\
+#endif\
+#ifndef LONG_MAX\
+#define LONG_MAX 9223372036854775807L\
+#endif\
+#ifndef LONG_MIN\
+#define LONG_MIN (-LONG_MAX - 1L)\
+#endif\
+#ifndef ULONG_MAX\
+#define ULONG_MAX 18446744073709551615UL\
 #endif
 ' orconfig.h
-    echo "    ✅ INT_MAX/INT_MIN/UINT_MAX добавлены"
+    echo "    ✅ INT_MAX/INT_MIN/UINT_MAX/LONG_MAX добавлены"
 else
     echo "    ℹ️  INT_MAX уже определен"
 fi
@@ -187,8 +199,8 @@ else
     echo "    ℹ️  SSIZE_MAX уже определен"
 fi
 
-# 14. Добавить SHARE_DATADIR, CONFDIR и COMPILER_VENDOR для config.c
-echo "  📝 Добавление SHARE_DATADIR, CONFDIR и COMPILER_VENDOR..."
+# 14. Добавить SHARE_DATADIR, CONFDIR, COMPILER и др. для config.c
+echo "  📝 Добавление SHARE_DATADIR, CONFDIR, COMPILER..."
 if ! grep -q "SHARE_DATADIR" orconfig.h; then
     sed -i '' '/^#define WORDS_BIGENDIAN 0$/a\
 \
@@ -203,9 +215,18 @@ if ! grep -q "SHARE_DATADIR" orconfig.h; then
 /* Compiler info (not accurate, but required for compilation) */\
 #ifndef COMPILER_VENDOR\
 #define COMPILER_VENDOR "apple"\
+#endif\
+#ifndef COMPILER\
+#define COMPILER "clang"\
+#endif\
+#ifndef COMPILER_VERSION\
+#define COMPILER_VERSION "15.0"\
+#endif\
+#ifndef LOCALSTATEDIR\
+#define LOCALSTATEDIR "/var"\
 #endif
 ' orconfig.h
-    echo "    ✅ SHARE_DATADIR, CONFDIR и COMPILER_VENDOR добавлены"
+    echo "    ✅ SHARE_DATADIR, CONFDIR, COMPILER и др. добавлены"
 else
     echo "    ℹ️  SHARE_DATADIR уже определен"
 fi
@@ -223,6 +244,37 @@ if ! grep -q "HAVE_GETDELIM" orconfig.h; then
     echo "    ✅ HAVE_UTIME и HAVE_GETDELIM добавлены"
 else
     echo "    ℹ️  HAVE_GETDELIM уже определен"
+fi
+
+# 16. Убрать HAVE_EXPLICIT_BZERO и HAVE_TIMINGSAFE_MEMCMP для использования OpenSSL fallback
+echo "  📝 Отключение HAVE_EXPLICIT_BZERO и HAVE_TIMINGSAFE_MEMCMP..."
+sed -i '' 's/#define HAVE_EXPLICIT_BZERO 0/\/* #undef HAVE_EXPLICIT_BZERO *\//' orconfig.h
+sed -i '' 's/#define HAVE_TIMINGSAFE_MEMCMP 0/\/* #undef HAVE_TIMINGSAFE_MEMCMP *\//' orconfig.h
+echo "    ✅ HAVE_EXPLICIT_BZERO и HAVE_TIMINGSAFE_MEMCMP отключены (будет использоваться OpenSSL)"
+
+# 17. Добавить RSHIFT_DOES_SIGN_EXTEND для di_ops.c
+echo "  📝 Добавление RSHIFT_DOES_SIGN_EXTEND..."
+if ! grep -q "RSHIFT_DOES_SIGN_EXTEND" orconfig.h; then
+    sed -i '' '/^#define WORDS_BIGENDIAN 0$/a\
+\
+/* Arithmetic right-shift performs sign extension on iOS */\
+#define RSHIFT_DOES_SIGN_EXTEND 1
+' orconfig.h
+    echo "    ✅ RSHIFT_DOES_SIGN_EXTEND добавлен"
+else
+    echo "    ℹ️  RSHIFT_DOES_SIGN_EXTEND уже определен"
+fi
+
+# 18. Исправить token_bucket.h для использования bool
+echo "  📝 Исправление token_bucket.h..."
+if ! grep -q "#include <stdbool.h>" src/lib/evloop/token_bucket.h; then
+    sed -i '' '/#define TOR_TOKEN_BUCKET_H$/a\
+\
+#include <stdbool.h>
+' src/lib/evloop/token_bucket.h
+    echo "    ✅ #include <stdbool.h> добавлен в token_bucket.h"
+else
+    echo "    ℹ️  stdbool.h уже включен в token_bucket.h"
 fi
 
 cd ..

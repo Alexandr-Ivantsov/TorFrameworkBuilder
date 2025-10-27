@@ -1,5 +1,94 @@
 # 📦 TorFrameworkBuilder Release Notes
 
+## v1.0.14 (2025-10-27) 🔧
+
+### 🐛 Критическое исправление: Компиляция di_ops, periodic, token_bucket и time функций
+
+**Проблема:**
+```
+Undefined symbols for architecture arm64:
+  "_memwipe"
+  "_tor_memcmp"
+  "_tor_memeq"
+  "_safe_mem_is_zero"
+  "_token_bucket_ctr_init"
+  "_token_bucket_rw_init"
+  "_periodic_events_register"
+  "_format_iso_time"
+  "_tor_gmtime_r"
+  (и сотни других utility функций)
+```
+
+**Причина:**
+1. `di_ops.c` не компилировался из-за `RSHIFT_DOES_SIGN_EXTEND` и `HAVE_TIMINGSAFE_MEMCMP`
+2. `crypto_util.c` не компилировался из-за `HAVE_EXPLICIT_BZERO`
+3. `time_fmt.c` не компилировался из-за `LONG_MAX`
+4. `token_bucket.c` не компилировался из-за `bool` type в token_bucket.h
+5. `periodic.c` не компилировался из-за `TIME_MIN`
+6. `config.c` не компилировался полностью из-за `COMPILER`, `COMPILER_VERSION`, `LOCALSTATEDIR`
+
+**Решение:**
+1. ✅ Добавлено `#define LONG_MAX 9223372036854775807L` в `orconfig.h`
+2. ✅ Добавлено `#define LONG_MIN (-LONG_MAX - 1L)` в `orconfig.h`
+3. ✅ Добавлено `#define ULONG_MAX 18446744073709551615UL` в `orconfig.h`
+4. ✅ Добавлено `#define TIME_MIN INT64_MIN` в `orconfig.h`
+5. ✅ Добавлено `#define COMPILER "clang"` в `orconfig.h`
+6. ✅ Добавлено `#define COMPILER_VERSION "15.0"` в `orconfig.h`
+7. ✅ Добавлено `#define LOCALSTATEDIR "/var"` в `orconfig.h`
+8. ✅ Добавлено `#define RSHIFT_DOES_SIGN_EXTEND 1` в `orconfig.h`
+9. ✅ Изменено `HAVE_EXPLICIT_BZERO 0` на `/* #undef */` (использовать OpenSSL)
+10. ✅ Изменено `HAVE_TIMINGSAFE_MEMCMP 0` на `/* #undef */` (использовать fallback)
+11. ✅ Добавлено `#include <stdbool.h>` в `token_bucket.h`
+12. ✅ Количество успешно скомпилированных файлов: **398** (было 390)
+
+**Результат:**
+- ✅ `_memwipe` (T - функция)
+- ✅ `_tor_memcmp` (T - функция)
+- ✅ `_tor_memeq` (T - функция)
+- ✅ `_safe_mem_is_zero` (T - функция)
+- ✅ `_token_bucket_ctr_init` (T - функция)
+- ✅ `_token_bucket_ctr_adjust` (T - функция)
+- ✅ `_token_bucket_ctr_refill` (T - функция)
+- ✅ `_token_bucket_rw_init` (T - функция)
+- ✅ `_token_bucket_rw_adjust` (T - функция)
+- ✅ `_token_bucket_rw_dec` (T - функция)
+- ✅ `_token_bucket_rw_refill` (T - функция)
+- ✅ `_token_bucket_rw_reset` (T - функция)
+- ✅ `_token_bucket_raw_dec` (T - функция)
+- ✅ `_periodic_events_register` (T - функция)
+- ✅ `_periodic_events_connect_all` (T - функция)
+- ✅ `_periodic_events_disconnect_all` (T - функция)
+- ✅ `_periodic_events_find` (T - функция)
+- ✅ `_periodic_events_reset_all` (T - функция)
+- ✅ `_format_iso_time` (T - функция)
+- ✅ `_format_iso_time_nospace` (T - функция)
+- ✅ `_format_local_iso_time` (T - функция)
+- ✅ `_format_rfc1123_time` (T - функция)
+- ✅ `_format_time_interval` (T - функция)
+- ✅ `_parse_iso_time` (T - функция)
+- ✅ `_parse_rfc1123_time` (T - функция)
+- ✅ `_tor_gmtime_r` (T - функция)
+- ✅ `_tor_localtime_r` (T - функция)
+- ✅ `_tor_sscanf` (T - функция)
+- ✅ Всего символов: **15,309** (было 15,246)
+- ✅ Размер framework: 50 MB
+- ✅ libtor.a: 4.8 MB
+- ✅ Device и Simulator содержат все символы
+
+**Примечание:**
+Теперь компилируется **398 файлов** (было 390), что добавило критические di_ops, periodic, token_bucket и time функции. Количество ошибок уменьшилось до 342 (было 368).
+
+Некоторые функции из списка пользователя (`get_options`, `set_options`, `addressmap_register_auto` и др.) находятся в файлах которые еще не компилируются из-за других зависимостей. Эти файлы можно будет добавить по мере необходимости.
+
+### 📋 Измененные файлы
+- `tor-ios-fixed/orconfig.h` - добавлено LONG_MAX, LONG_MIN, ULONG_MAX, TIME_MIN, COMPILER, COMPILER_VERSION, LOCALSTATEDIR, RSHIFT_DOES_SIGN_EXTEND; отключено HAVE_EXPLICIT_BZERO и HAVE_TIMINGSAFE_MEMCMP
+- `tor-ios-fixed/src/lib/evloop/token_bucket.h` - добавлено #include <stdbool.h>
+- `scripts/fix_conflicts.sh` - автоматические исправления для всех новых определений
+- `output/Tor.xcframework/` - обновлены бинарники с di_ops, periodic, token_bucket функциями
+- `output/tor-direct/lib/libtor.a` - обновлена с новыми .o файлами
+
+---
+
 ## v1.0.13 (2025-10-27) 🔧
 
 ### 🐛 Критическое исправление: Компиляция crypto/file/config функций
