@@ -1,5 +1,86 @@
 # 📦 TorFrameworkBuilder Release Notes
 
+## v1.0.16 (2025-10-27) 🎉
+
+### 🎉 ПРОРЫВ: Скомпилированы config.c, tortls_openssl.c, git_revision.c!
+
+**Проблема:**
+```
+Большинство config и TLS функций отсутствовали из-за несовместимости
+с iOS и OpenSSL 3.x
+```
+
+**Решение:**
+1. ✅ Увеличен COMPILE_TIMEOUT до 120 секунд для огромных файлов (config.c >7000 строк)
+2. ✅ Добавлено `HAVE_SSL_GET_CLIENT_CIPHERS 1` для OpenSSL 3.x
+3. ✅ Добавлено `HAVE_RLIM_T 1` для избежания typedef redefinition rlim_t
+4. ✅ Создан `micro-revision.i` для git_revision.c
+5. ✅ config.c (242 KB объектник!) теперь компилируется
+6. ✅ tortls_openssl.c теперь компилируется
+7. ✅ git_revision.c теперь компилируется
+8. ✅ Количество успешно скомпилированных файлов: **401** (было 398)
+
+**Результат:**
+- ✅ Всего символов: **15,403** (было 15,309)
+- ✅ TLS symbols: **54 функции** (все tor_tls_* функции)
+- ✅ Config symbols: **101 функция** (options_*, config_*, port_cfg_*)
+- ✅ Version symbols: `_tor_git_revision`, `_tor_bug_suffix` (S - данные)
+- ✅ Размер libtor.a: 5.1 MB (было 4.8 MB)
+- ✅ Размер framework: 50 MB
+
+**Все ключевые символы из списка пользователя:**
+- ✅ `_get_options`, `_set_options`, `_config_free_all`
+- ✅ `_addressmap_register_auto`, `_config_parse_commandline`
+- ✅ `_options_init_from_torrc`, `_options_init_from_string`
+- ✅ `_option_get_assignment`, `_option_is_recognized`, `_options_dump`
+- ✅ `_port_cfg_free_`, `_port_cfg_new`, `_port_cfg_line_extract_addrport`
+- ✅ `_portconf_get_first_advertised_addr/port`
+- ✅ `_get_configured_ports`, `_get_torrc_fname`, `_get_protocol_warning_severity_level`
+- ✅ `_using_default_dir_authorities`, `_write_to_data_subdir`
+- ✅ `_parsed_cmdline_free_`, `_options_save_current`, `_options_trial_assign`
+- ✅ `_options_any_client_port_set`, `_options_get_dir_fname2_suffix`
+- ✅ `_escaped_safe_str`, `_escaped_safe_str_client`
+- ✅ Все 54 tor_tls_* функции
+- ✅ `_tor_git_revision`, `_tor_bug_suffix`
+- ✅ `_check_no_tls_errors_`, `_tls_log_errors`, `_tls_get_write_overhead_ratio`
+- ✅ `_try_to_extract_certs_from_tls`
+
+**Оставшиеся undefined symbols (~21 из 78):**
+- ❌ `_alert_sockets_create` - в различных файлах
+- ❌ `_create_keys_directory` - требует дополнительных исправлений
+- ❌ `_curved25519_scalarmult_basepoint_donna` - ed25519/donna
+- ❌ `_dos_options_fmt` - в dos_config.c
+- ❌ `_get_current_process_environment_variables` - в env.c
+- ❌ `_get_first_listener_addrport_string` - требует исправлений
+- ❌ `_get_num_cpus` - в cpuworker.c
+- ❌ `_getinfo_helper_config` - в control_getinfo.c
+- ❌ `_init_cookie_authentication` - в control_auth.c
+- ❌ `_init_protocol_warning_severity_level` - требует исправлений
+- ❌ `_port_exists_by_type_addr_port` - требует исправлений
+- ❌ `_process_environment_free_`, `_process_environment_make` - в env.c
+- ❌ `_protover_summary_cache_free_all` - в protover.c
+- ❌ `_safe_str_client_opts`, `_safe_str_opts` - в log.c
+- ❌ `_set_environment_variable_in_smartlist` - в env.c
+- ❌ `_summarize_protover_flags` - в protover.c
+- ❌ `_tor_get_approx_release_date` - в version.c
+- ❌ `_tor_version_as_new_as`, `_tor_version_is_obsolete` - в version.c
+
+**Примечание:**
+Основной прогресс достигнут! Из 78 symbols из списка пользователя, **57 symbols теперь доступны** (73%)! Оставшиеся 21 symbol находятся в файлах которые не критичны для базовой работы Tor или требуют дополнительных исправлений.
+
+**Важно про Zlib:**
+Если symbols `_deflate`, `_inflate` и др. всё еще undefined, нужно добавить `-lz` в `OTHER_LDFLAGS` в TorApp `Project.swift`.
+
+### 📋 Измененные файлы
+- `tor-ios-fixed/orconfig.h` - добавлено HAVE_SSL_GET_CLIENT_CIPHERS, HAVE_RLIM_T
+- `tor-ios-fixed/src/lib/version/micro-revision.i` - создан файл-заглушка
+- `scripts/direct_build.sh` - увеличен timeout до 120 секунд, добавлен `-I.../src/trunnel`
+- `scripts/fix_conflicts.sh` - автоматизация всех исправлений
+- `output/Tor.xcframework/` - обновлены бинарники с config.o, tortls_openssl.o, git_revision.o
+- `output/tor-direct/lib/libtor.a` - увеличен до 5.1 MB с новыми объектными файлами
+
+---
+
 ## v1.0.15 (2025-10-27) 🔧
 
 ### 🐛 Критическое исправление: Timeout и includes для больших файлов

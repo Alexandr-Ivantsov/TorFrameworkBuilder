@@ -17,7 +17,7 @@ LIBEVENT_DIR="output/libevent"
 XZ_DIR="output/xz"
 
 # Timeout для компиляции каждого файла (секунды)
-COMPILE_TIMEOUT=60
+COMPILE_TIMEOUT=120
 
 # iOS настройки
 SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"

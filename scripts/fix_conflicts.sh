@@ -277,6 +277,42 @@ else
     echo "    ℹ️  stdbool.h уже включен в token_bucket.h"
 fi
 
+# 19. Добавить OpenSSL 3.x compatibility defines
+echo "  📝 Добавление OpenSSL 3.x compatibility..."
+if ! grep -q "HAVE_SSL_GET_CLIENT_RANDOM" orconfig.h; then
+    sed -i '' '/^#define ENABLE_OPENSSL 1$/a\
+\
+/* OpenSSL 3.x has these functions built-in */\
+#define HAVE_SSL_GET_CLIENT_RANDOM 1\
+#define HAVE_SSL_GET_SERVER_RANDOM 1\
+#define HAVE_SSL_SESSION_GET_MASTER_KEY 1\
+#define HAVE_SSL_GET_CLIENT_CIPHERS 1
+' orconfig.h
+    echo "    ✅ OpenSSL 3.x compatibility defines добавлены"
+else
+    echo "    ℹ️  OpenSSL 3.x defines уже добавлены"
+fi
+
+# 20. Добавить HAVE_RLIM_T для restrict.h (избежать typedef redefinition)
+echo "  📝 Добавление HAVE_RLIM_T..."
+if ! grep -q "HAVE_RLIM_T" orconfig.h; then
+    sed -i '' '/^#define HAVE_GETRLIMIT 1$/a\
+#define HAVE_RLIM_T 1
+' orconfig.h
+    echo "    ✅ HAVE_RLIM_T добавлен"
+else
+    echo "    ℹ️  HAVE_RLIM_T уже определен"
+fi
+
+# 21. Создать micro-revision.i для git_revision.c
+echo "  📝 Создание micro-revision.i..."
+if [ ! -f "src/lib/version/micro-revision.i" ]; then
+    echo '"git-unknown"' > src/lib/version/micro-revision.i
+    echo "    ✅ micro-revision.i создан"
+else
+    echo "    ℹ️  micro-revision.i уже существует"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
