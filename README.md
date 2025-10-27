@@ -2,7 +2,9 @@
 
 Полнофункциональный Tor daemon для iOS приложений (arm64, iOS 16.0+)
 
-**Размер**: 28 MB | **Версия Tor**: 0.4.8.19 | **Включено**: OpenSSL 3.4.0, libevent 2.1.12, xz 5.6.3
+**Размер**: 42 MB (28 MB device + 14 MB simulator) | **Версия Tor**: 0.4.8.19 | **Включено**: OpenSSL 3.4.0, libevent 2.1.12, xz 5.6.3
+
+**✅ Поддерживается iOS Simulator!** (arm64 для Apple Silicon)
 
 ---
 
@@ -19,7 +21,7 @@ let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
             url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
-            requirement: .upToNextMajor(from: "1.0.0")
+            requirement: .upToNextMajor(from: "1.0.3")
         )
     ])
 )
@@ -47,7 +49,7 @@ tuist generate
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.0")
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.3")
 ],
 targets: [
     .target(dependencies: ["TorFrameworkBuilder"])
@@ -60,6 +62,47 @@ targets: [
 ```
 
 Это известная особенность Tuist - внешние зависимости нужно декларировать в `Dependencies.swift`.
+
+---
+
+## 🧪 iOS Simulator Support
+
+**Теперь полностью поддерживается iOS Simulator!** 🎉
+
+### XCFramework содержит обе платформы:
+
+```
+Tor.xcframework/
+├── ios-arm64/              ← Реальные устройства (28 MB)
+│   └── Tor.framework/
+└── ios-arm64-simulator/    ← iOS Simulator (14 MB)
+    └── Tor.framework/
+```
+
+### Сборка для симулятора
+
+Если вы клонировали репозиторий и хотите пересобрать с поддержкой симулятора:
+
+```bash
+# 1. Собрать зависимости для симулятора (~30 минут)
+bash scripts/build_all_simulator.sh
+
+# 2. Собрать Tor для симулятора (~5 минут)
+bash scripts/build_tor_simulator.sh
+
+# 3. Создать универсальный XCFramework (~1 минута)
+bash scripts/create_xcframework_universal.sh
+```
+
+**Итого**: ~40 минут
+
+Подробнее: [BUILD_SIMULATOR.md](BUILD_SIMULATOR.md)
+
+### ⚠️ App Store
+
+- При архивировании для App Store Xcode **автоматически исключает** симулятор
+- Финальный IPA содержит **только** ios-arm64 (28 MB)
+- **Размер без изменений!** Simulator не влияет на размер публикуемого приложения
 
 ---
 
@@ -300,7 +343,8 @@ TorWrapper.shared().start { success, _ in
 - **libevent 2.1.12** (event loop)
 - **xz/lzma 5.6.3** (сжатие)
 
-**Итого**: 28 MB, всё статически слинковано
+**Итого (device)**: 28 MB, всё статически слинковано  
+**Итого (simulator)**: 14 MB
 
 ---
 
@@ -315,16 +359,21 @@ tar -xzf tor-0.5.x.x.tar.gz
 bash fix_conflicts.sh
 
 # Обновить direct_build.sh (изменить TOR_SRC)
-# Пересобрать
+# Пересобрать для устройства
 rm -rf build/tor-direct output/tor-direct
 bash direct_build.sh > build.log 2>&1 &
 
-# Подождать ~5 минут, затем:
-bash create_framework_final.sh
+# Пересобрать для симулятора
+bash scripts/build_tor_simulator.sh
+
+# Создать универсальный XCFramework
+bash scripts/create_xcframework_universal.sh
 
 # Коммит
 git add output/Tor.xcframework
 git commit -m "Update Tor to 0.5.x.x"
+git tag 1.0.4
+git push --tags
 git push
 ```
 
@@ -332,12 +381,26 @@ git push
 
 ## 🛡️ Требования
 
-- iOS 16.0+
-- Xcode 14.0+
-- Tuist 3.0+
+- **iOS**: 16.0+
+- **Xcode**: 14.0+
+- **Tuist**: 3.0+
+- **Архитектуры**: arm64 (device), arm64 (simulator)
+
+---
+
+## 📚 Документация
+
+- [USAGE_GUIDE.md](USAGE_GUIDE.md) - Подробный гайд по интеграции в TorApp
+- [BUILD_SIMULATOR.md](BUILD_SIMULATOR.md) - Инструкция по сборке для симулятора
+- [RELEASE_NOTES.md](RELEASE_NOTES.md) - Release notes v1.0.3
 
 ---
 
 ## 📄 Лицензия
 
 BSD License (совместимо с Tor Project)
+
+- **Tor**: BSD-3-Clause
+- **OpenSSL**: Apache 2.0
+- **libevent**: BSD-3-Clause
+- **xz**: Public Domain

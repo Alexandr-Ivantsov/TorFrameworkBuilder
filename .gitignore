@@ -1,22 +1,18 @@
 # Build artifacts
 build/
-*.o
-*.a
-*.dylib
+sources/
 
-# Temporary files
+# Tor source
+tor-0.4.8.19/
+tor-ios-fixed/
+
+# Logs
 *.log
-.DS_Store
-*.tar.gz
-*.zip
-*.sha256sum
-*.asc
 
-# Xcode
+# Xcode user settings
 xcuserdata/
 *.xcworkspace/xcuserdata/
 DerivedData/
-*.xcodeproj
 
 # Swift Package Manager
 .swiftpm/
@@ -27,15 +23,15 @@ DerivedData/
 Derived/
 graph.json
 
-# Keep these in repo for distribution
+# Temporary framework directories (simulator build artifacts)
+output/device/
+output/simulator/
+output/openssl-simulator/
+output/libevent-simulator/
+output/xz-simulator/
+output/tor-simulator/
+
+# Include outputs
 !output/Tor.xcframework/
 !wrapper/
-
-# Sources (downloaded, can be re-downloaded)
-# Исключаем для минимизации размера репозитория
-sources/
-tor-0.4.8.19/
-tor-ios-fixed/
-
-# Keep build scripts for future updates
 !scripts/
