@@ -1,7 +1,7 @@
 import ProjectDescription
 
 let workspace = Workspace(
-    name: "TorFramework",
+    name: "TorFrameworkBuilder",
     projects: [
         "."
     ]

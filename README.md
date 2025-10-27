@@ -1,4 +1,4 @@
-# 🧅 TorFramework для iOS
+# 🧅 TorFrameworkBuilder для iOS
 
 Полнофункциональный Tor daemon для iOS приложений (arm64, iOS 16.0+)
 
@@ -8,18 +8,9 @@
 
 ## 🚀 Установка через Tuist
 
-### 1. Создайте приватный репозиторий
+### Вариант A: Через Tuist/Dependencies.swift (рекомендуется)
 
-```bash
-# В TorFramework директории
-git init
-git add .
-git commit -m "🎉 Tor Framework для iOS"
-git remote add origin https://github.com/YOUR_USERNAME/TorFramework.git
-git push -u origin main
-```
-
-### 2. В TorApp создайте `Tuist/Dependencies.swift`
+#### 1. В TorApp создайте `Tuist/Dependencies.swift`:
 
 ```swift
 import ProjectDescription
@@ -27,28 +18,48 @@ import ProjectDescription
 let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
-            url: "https://github.com/YOUR_USERNAME/TorFramework.git",
-            requirement: .branch("main")
+            url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
+            requirement: .upToNextMajor(from: "1.0.0")
         )
     ])
 )
 ```
 
-### 3. Обновите `Project.swift` в TorApp
+#### 2. В `Project.swift`:
 
 ```swift
 dependencies: [
-    .external(name: "TorFramework")
+    .external(name: "TorFrameworkBuilder")
 ]
 ```
 
-### 4. Установите
+#### 3. Установите:
 
 ```bash
 cd ~/admin/TorApp
 tuist fetch
 tuist generate
 ```
+
+### Вариант B: Через Package.swift (если уже используете)
+
+Если вы добавили в `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.0")
+],
+targets: [
+    .target(dependencies: ["TorFrameworkBuilder"])
+]
+```
+
+**Также создайте** `Tuist/Dependencies.swift` (см. Вариант A), иначе будет ошибка:
+```
+`TorFrameworkBuilder` is not a valid configured external dependency
+```
+
+Это известная особенность Tuist - внешние зависимости нужно декларировать в `Dependencies.swift`.
 
 ---
 
@@ -90,6 +101,9 @@ NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
 ### Swift (через bridging header)
 
 ```swift
+// Убедитесь что у вас есть Bridging Header с:
+// #import <Tor/TorWrapper.h>
+
 // Запуск
 TorWrapper.shared().start { success, error in
     if success {

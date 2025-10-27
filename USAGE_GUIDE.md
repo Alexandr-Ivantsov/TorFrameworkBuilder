@@ -1,10 +1,46 @@
-# 📱 План использования TorFramework в TorApp
+# 📱 План использования TorFrameworkBuilder в TorApp
 
 > **Этот гайд предполагает, что вы уже:**
-> - ✅ Запушили TorFramework в приватный репозиторий
-> - ✅ Добавили в `Tuist/Dependencies.swift` и `Project.swift`
-> - ✅ Выполнили `tuist install --update`
-> - ✅ Выполнили `tuist generate`
+> - ✅ Запушили TorFrameworkBuilder в приватный репозиторий
+> - ✅ Добавили в `Package.swift` и `Project.swift` TorApp
+> - ✅ Выполнили `tuist install --update` (fetch завершился успешно)
+> - ✅ Готовы к `tuist generate`
+
+---
+
+## ⚠️ ВАЖНО: Исправление ошибки Tuist
+
+Если получаете ошибку:
+```
+`TorFrameworkBuilder` is not a valid configured external dependency
+```
+
+Это известная проблема Tuist с вложенными зависимостями.
+
+### Решение:
+
+В TorApp нужно добавить `Tuist/Dependencies.swift`:
+
+```swift
+import ProjectDescription
+
+let dependencies = Dependencies(
+    swiftPackageManager: SwiftPackageManagerDependencies([
+        .remote(
+            url: "https://github.com/Alexandr-Ivantsov/TorFrameworkBuilder.git",
+            requirement: .upToNextMajor(from: "1.0.1")
+        )
+    ])
+)
+```
+
+Затем:
+```bash
+tuist fetch  # Вместо tuist install
+tuist generate
+```
+
+---
 
 ---
 
@@ -17,8 +53,8 @@
 //  TorApp-Bridging-Header.h
 //
 
-#import <TorFramework/TorWrapper.h>
-#import <TorFramework/Tor.h>
+#import <Tor/TorWrapper.h>
+#import <Tor/Tor.h>
 ```
 
 ### Настройте в Project.swift:
@@ -69,8 +105,12 @@ infoPlist: .extendingDefault(with: [
 
 ### Создайте файл: `TorApp/Sources/Services/TorManager.swift`
 
+> **Важно**: TorWrapper доступен через Bridging Header
+
 ```swift
 import Foundation
+
+// TorWrapper доступен благодаря Bridging Header
 
 @MainActor
 final class TorManager: ObservableObject {

@@ -6,20 +6,20 @@ import PackageDescription
     
     let packageSettings = PackageSettings(
         productTypes: [
-            "TorFramework": .framework
+            "TorFrameworkBuilder": .framework
         ]
     )
 #endif
 
 let package = Package(
-    name: "TorFramework",
+    name: "TorFrameworkBuilder",
     platforms: [
         .iOS(.v16)
     ],
     products: [
         .library(
-            name: "TorFramework",
-            targets: ["TorFramework"]
+            name: "TorFrameworkBuilder",
+            targets: ["TorFrameworkBuilder"]
         )
     ],
     dependencies: [
@@ -28,7 +28,7 @@ let package = Package(
     targets: [
         // Binary target с готовым XCFramework
         .binaryTarget(
-            name: "TorFramework",
+            name: "TorFrameworkBuilder",
             path: "output/Tor.xcframework"
         )
     ]

@@ -1,14 +1,14 @@
 import ProjectDescription
 
 let project = Project(
-    name: "TorFramework",
+    name: "TorFrameworkBuilder",
     organizationName: "Tor Project",
     targets: [
         .target(
-            name: "TorFramework",
+            name: "TorFrameworkBuilder",
             destinations: .iOS,
             product: .framework,
-            bundleId: "org.torproject.TorFramework",
+            bundleId: "org.torproject.TorFrameworkBuilder",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .extendingDefault(
                 with: [
@@ -45,16 +45,16 @@ let project = Project(
             )
         ),
         .target(
-            name: "TorFrameworkTests",
+            name: "TorFrameworkBuilderTests",
             destinations: .iOS,
             product: .unitTests,
-            bundleId: "org.torproject.TorFrameworkTests",
+            bundleId: "org.torproject.TorFrameworkBuilderTests",
             deploymentTargets: .iOS("16.0"),
             infoPlist: .default,
-            sources: ["Tests/TorFrameworkTests/**"],
+            sources: ["Tests/TorFrameworkBuilderTests/**"],
             resources: [],
             dependencies: [
-                .target(name: "TorFramework")
+                .target(name: "TorFrameworkBuilder")
             ],
             settings: .settings(
                 base: [
@@ -66,10 +66,10 @@ let project = Project(
     ],
     schemes: [
         .scheme(
-            name: "TorFramework",
+            name: "TorFrameworkBuilder",
             shared: true,
-            buildAction: .buildAction(targets: ["TorFramework"]),
-            testAction: .targets(["TorFrameworkTests"]),
+            buildAction: .buildAction(targets: ["TorFrameworkBuilder"]),
+            testAction: .targets(["TorFrameworkBuilderTests"]),
             runAction: .runAction(configuration: "Debug"),
             archiveAction: .archiveAction(configuration: "Release")
         )

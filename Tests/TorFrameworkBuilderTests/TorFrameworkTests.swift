@@ -1,7 +1,7 @@
 import XCTest
-@testable import TorFramework
+@testable import TorFrameworkBuilder
 
-final class TorFrameworkTests: XCTestCase {
+final class TorFrameworkBuilderTests: XCTestCase {
     
     func testTorWrapperExists() {
         // Проверка что wrapper доступен
