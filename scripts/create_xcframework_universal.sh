@@ -56,6 +56,7 @@ DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
     -c wrapper/TorWrapper.m \
     -o output/device-obj/TorWrapper.o \
     -fobjc-arc \
+    -fvisibility=default \
     -arch arm64 \
     -isysroot "${DEVICE_SDK_PATH}" \
     -mios-version-min=16.0 \
@@ -63,16 +64,28 @@ DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
     -I"${LIBEVENT_DIR_DEVICE}/include" \
     -Iwrapper
 
-# Объединение библиотек для устройства (включая TorWrapper)
+# Создание динамической библиотеки для устройства (БЕЗ -all_load чтобы избежать дубликатов)
 # NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
-libtool -static -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
+echo "🔗 Создание динамической библиотеки для устройства..."
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
+    -dynamiclib \
+    -arch arm64 \
+    -isysroot "${DEVICE_SDK_PATH}" \
+    -mios-version-min=16.0 \
+    -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
+    -fvisibility=default \
+    -Wl,-ObjC \
+    -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
+    output/device-obj/TorWrapper.o \
     "$TOR_LIB_DEVICE" \
     "${OPENSSL_DIR_DEVICE}/lib/libssl.a" \
     "${OPENSSL_DIR_DEVICE}/lib/libcrypto.a" \
     "${LIBEVENT_DIR_DEVICE}/lib/libevent.a" \
-    "${LIBEVENT_DIR_DEVICE}/lib/libevent_core.a" \
     "${XZ_DIR_DEVICE}/lib/liblzma.a" \
-    output/device-obj/TorWrapper.o
+    -framework Foundation \
+    -framework Security \
+    -lc++ \
+    -lz
 
 echo "✅ Device framework: $(du -h ${DEVICE_FW}/${FRAMEWORK_NAME} | cut -f1)"
 
@@ -90,6 +103,7 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
     -c wrapper/TorWrapper.m \
     -o output/simulator-obj/TorWrapper.o \
     -fobjc-arc \
+    -fvisibility=default \
     -arch arm64 \
     -isysroot "${SIMULATOR_SDK_PATH}" \
     -mios-simulator-version-min=16.0 \
@@ -97,16 +111,28 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
     -I"${LIBEVENT_DIR_SIMULATOR}/include" \
     -Iwrapper
 
-# Объединение библиотек для симулятора (включая TorWrapper)
+# Создание динамической библиотеки для симулятора (БЕЗ -all_load чтобы избежать дубликатов)
 # NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
-libtool -static -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
+echo "🔗 Создание динамической библиотеки для симулятора..."
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
+    -dynamiclib \
+    -arch arm64 \
+    -isysroot "${SIMULATOR_SDK_PATH}" \
+    -mios-simulator-version-min=16.0 \
+    -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
+    -fvisibility=default \
+    -Wl,-ObjC \
+    -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
+    output/simulator-obj/TorWrapper.o \
     "$TOR_LIB_SIMULATOR" \
     "${OPENSSL_DIR_SIMULATOR}/lib/libssl.a" \
     "${OPENSSL_DIR_SIMULATOR}/lib/libcrypto.a" \
     "${LIBEVENT_DIR_SIMULATOR}/lib/libevent.a" \
-    "${LIBEVENT_DIR_SIMULATOR}/lib/libevent_core.a" \
     "${XZ_DIR_SIMULATOR}/lib/liblzma.a" \
-    output/simulator-obj/TorWrapper.o
+    -framework Foundation \
+    -framework Security \
+    -lc++ \
+    -lz
 
 echo "✅ Simulator framework: $(du -h ${SIMULATOR_FW}/${FRAMEWORK_NAME} | cut -f1)"
 
@@ -180,4 +206,13 @@ lipo -info "$XCFRAMEWORK_DIR/ios-arm64/${FRAMEWORK_NAME}.framework/${FRAMEWORK_N
 echo "Simulator:"
 lipo -info "$XCFRAMEWORK_DIR/ios-arm64-simulator/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}"
 echo ""
+
+echo "🔍 Проверка экспорта методов TorWrapper:"
+echo "Device framework:"
+nm -gU "$XCFRAMEWORK_DIR/ios-arm64/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" | grep "TorWrapper" | grep " T " | head -5 || echo "⚠️  Методы TorWrapper не найдены как глобальные символы"
+echo ""
+echo "Simulator framework:"
+nm -gU "$XCFRAMEWORK_DIR/ios-arm64-simulator/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" | grep "TorWrapper" | grep " T " | head -5 || echo "⚠️  Методы TorWrapper не найдены как глобальные символы"
+echo ""
+
 echo "✅ Готово к использованию в Simulator и на устройствах!"

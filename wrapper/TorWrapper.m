@@ -31,6 +31,8 @@ extern void tor_cleanup(void);
 
 @end
 
+// Экспортируем все методы класса как внешние символы
+__attribute__((visibility("default")))
 @implementation TorWrapper
 
 #pragma mark - Singleton
