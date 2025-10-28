@@ -325,3 +325,10 @@ nm framework.dylib | grep "methodName"
 
 **TorFrameworkBuilder v1.0.30 - Verified: No recursion, no crash!** 🔧✅🧅
 
+
+
+
+
+
+
+

@@ -14,5 +14,5 @@ FOUNDATION_EXPORT double TorVersionNumber;
 FOUNDATION_EXPORT const unsigned char TorVersionString[];
 
 // In this header, you should import all the public headers of your framework
-#import <Tor/TorWrapper.h>
+#import "TorWrapper.h"
 

@@ -340,3 +340,15 @@ $ nm -gU Tor.xcframework/.../Tor.framework/Tor | wc -l
 
 **TorFrameworkBuilder v1.0.24 теперь правильный динамический framework!** 🎉🧅
 
+
+
+
+
+
+
+
+
+
+
+
+

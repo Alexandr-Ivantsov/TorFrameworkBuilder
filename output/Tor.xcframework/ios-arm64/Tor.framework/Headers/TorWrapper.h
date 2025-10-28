@@ -7,6 +7,11 @@
 
 #import <Foundation/Foundation.h>
 
+// Экспорт символов для видимости в статической библиотеке
+#ifndef TOR_EXPORT
+    #define TOR_EXPORT __attribute__((visibility("default")))
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 /// Статусы Tor daemon
@@ -25,6 +30,7 @@ typedef void (^TorStatusCallback)(TorStatus status, NSString * _Nullable message
 typedef void (^TorLogCallback)(NSString *message);
 
 /// Wrapper для Tor daemon
+TOR_EXPORT
 @interface TorWrapper : NSObject
 
 /// Singleton instance

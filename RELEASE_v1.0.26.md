@@ -273,3 +273,13 @@ wrapper.setStatusCallback { status, message in
 
 **TorFrameworkBuilder v1.0.26 - Correct ObjC runtime understanding!** 🎉🧅
 
+
+
+
+
+
+
+
+
+
+

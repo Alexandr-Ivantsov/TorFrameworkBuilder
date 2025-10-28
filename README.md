@@ -8,9 +8,9 @@
 
 **⚠️ Требуется libz (zlib):** Добавьте `-lz` в `OTHER_LDFLAGS` вашего проекта для функций сжатия.
 
-**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.33 - ARC Managed!)
+**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.34 - iOS Patched!)
 
-**🎉 FINALLY FIXED:** Убран `[callback copy]` - ARC управляет lifetime автоматически! Работает со Swift closures без крашей!
+**🎉 CRITICAL FIX:** Применен iOS патч к `crypto_rand_fast.c` - Tor 0.4.8.19 запускается на iOS! Больше никаких assertion failures!
 
 **⚠️ ВАЖНО:** Добавьте `-framework Tor -lz -Wl,-ObjC` в `OTHER_LDFLAGS` вашего проекта!
 
@@ -31,7 +31,7 @@ let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
             url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
-            requirement: .upToNextMajor(from: "1.0.33")
+            requirement: .upToNextMajor(from: "1.0.34")
         )
     ])
 )
@@ -64,7 +64,7 @@ tuist generate
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.33")
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.34")
 ],
 targets: [
     .target(dependencies: ["TorFrameworkBuilder"])

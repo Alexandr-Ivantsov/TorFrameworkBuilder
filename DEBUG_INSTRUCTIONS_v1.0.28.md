@@ -262,3 +262,12 @@ if !respondsToSetStatusCallback {
 
 **TorFrameworkBuilder v1.0.28 - Debug build with extensive logging!** 🔍🔧
 
+
+
+
+
+
+
+
+
+

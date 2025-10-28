@@ -241,3 +241,12 @@ Tor.framework/Headers/TorWrapper.h      // ← Плоская!
 
 **TorFrameworkBuilder v1.0.27 - Critical fixes for method accessibility!** 🔧✅🧅
 
+
+
+
+
+
+
+
+
+

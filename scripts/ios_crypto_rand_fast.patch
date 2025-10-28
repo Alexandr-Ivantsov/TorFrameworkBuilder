@@ -1,0 +1,27 @@
+--- a/src/lib/crypt_ops/crypto_rand_fast.c
++++ b/src/lib/crypt_ops/crypto_rand_fast.c
+@@ -178,10 +178,22 @@ crypto_fast_rng_new_from_seed(const uint8_t *seed)
+ #elif defined(_WIN32)
+   /* Windows can't fork(), so there's no need to noinherit. */
+ #else
++#if defined(__APPLE__) && (TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR)
++  /* iOS and iOS Simulator don't support non-inheritable memory regions
++   * for random number generation. This is a known platform limitation.
++   * Use fallback to allocated memory instead of asserting. */
++  if (inherit == INHERIT_RES_KEEP) {
++    log_warn(LD_CRYPTO, "iOS: Cannot create non-inheritable memory region. "
++                        "Using allocated memory fallback. This is normal on iOS.");
++    inherit = INHERIT_RES_ALLOCATED;
++  }
++#endif
+   /* We decided above that noinherit would always do _something_. Assert here
+    * that we were correct. */
+   tor_assertf(inherit != INHERIT_RES_KEEP,
+               "We failed to create a non-inheritable memory region, even "
+               "though we believed such a failure to be impossible! This is "
+               "probably a bug in Tor support for your platform; please report "
+               "it.");
++  (void)inherit; /* Suppress unused variable warning if checks are disabled */
+ #endif /* defined(CHECK_PID) || ... */
+   return result;
+
