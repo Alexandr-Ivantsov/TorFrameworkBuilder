@@ -23,8 +23,7 @@ extern void tor_cleanup(void);
 @property (nonatomic, strong) NSFileHandle *controlFileHandle;
 @property (nonatomic, strong) dispatch_queue_t torQueue;
 @property (nonatomic, strong) dispatch_queue_t callbackQueue;  // Thread-safe queue for callbacks
-@property (nonatomic, copy) TorStatusCallback statusCallback;
-@property (nonatomic, copy) TorLogCallback logCallback;
+// statusCallback и logCallback: НЕТ @property! Только ivars + методы (old-school ObjC)
 @property (nonatomic, strong) NSString *torrcPath;
 @property (nonatomic, assign) pthread_t torThread;
 @property (nonatomic, assign) BOOL directoriesSetup;
@@ -34,14 +33,13 @@ extern void tor_cleanup(void);
 // Экспортируем все методы класса как внешние символы
 __attribute__((visibility("default")))
 @implementation TorWrapper {
-    // Явные ivars для callbacks (т.к. используем @dynamic)
+    // Явные ivars для callbacks (old-school ObjC - без @property!)
     TorStatusCallback _statusCallback;
     TorLogCallback _logCallback;
 }
 
-// Указываем компилятору что мы САМИ реализуем accessors для callbacks
-// Это предотвращает автоматическую генерацию setter/getter и устраняет symbol conflict
-@dynamic statusCallback, logCallback;
+// НЕТ @dynamic - он не нужен если нет @property!
+// Только ivars + методы = никаких автогенераций = никаких symbol conflicts!
 
 #pragma mark - Singleton
 
