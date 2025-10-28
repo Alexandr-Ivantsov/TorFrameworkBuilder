@@ -22,6 +22,7 @@ extern void tor_cleanup(void);
 
 @property (nonatomic, strong) NSFileHandle *controlFileHandle;
 @property (nonatomic, strong) dispatch_queue_t torQueue;
+@property (nonatomic, strong) dispatch_queue_t callbackQueue;  // Thread-safe queue for callbacks
 @property (nonatomic, copy) TorStatusCallback statusCallback;
 @property (nonatomic, copy) TorLogCallback logCallback;
 @property (nonatomic, strong) NSString *torrcPath;
@@ -60,7 +61,8 @@ extern void tor_cleanup(void);
         NSLog(@"[TorWrapper] ✅ Step 3: ports configured (SOCKS: %ld, Control: %ld)", (long)_socksPort, (long)_controlPort);
         
         _torQueue = dispatch_queue_create("org.torproject.TorWrapper", DISPATCH_QUEUE_SERIAL);
-        NSLog(@"[TorWrapper] ✅ Step 4: dispatch queue created");
+        _callbackQueue = dispatch_queue_create("org.torproject.TorWrapper.callbacks", DISPATCH_QUEUE_SERIAL);
+        NSLog(@"[TorWrapper] ✅ Step 4: dispatch queues created (torQueue + callbackQueue)");
         
         // Используем Application Support по умолчанию
         NSString *appSupport = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
@@ -307,17 +309,40 @@ void *torThreadMain(void *context) {
 #pragma mark - Status & Monitoring
 
 - (void)setStatusCallback:(TorStatusCallback)callback {
-    self.statusCallback = callback;
+    NSLog(@"[TorWrapper] Setting status callback (thread-safe)");
+    dispatch_async(self.callbackQueue, ^{
+        self.statusCallback = callback;
+        NSLog(@"[TorWrapper] Status callback set successfully");
+    });
 }
 
 - (void)setLogCallback:(TorLogCallback)callback {
-    self.logCallback = callback;
+    NSLog(@"[TorWrapper] Setting log callback (thread-safe)");
+    dispatch_async(self.callbackQueue, ^{
+        self.logCallback = callback;
+        NSLog(@"[TorWrapper] Log callback set successfully");
+    });
 }
 
 - (void)notifyStatus:(TorStatus)status message:(NSString *)message {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.statusCallback) {
-            self.statusCallback(status, message);
+    NSLog(@"[TorWrapper] notifyStatus called: %ld - %@", (long)status, message);
+    
+    // Читаем callback на отдельной очереди (thread-safe)
+    dispatch_async(self.callbackQueue, ^{
+        TorStatusCallback callback = self.statusCallback;  // Копируем перед вызовом
+        
+        if (callback) {
+            NSLog(@"[TorWrapper] Dispatching status callback to main queue");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                @try {
+                    callback(status, message);
+                    NSLog(@"[TorWrapper] Status callback executed successfully");
+                } @catch (NSException *exception) {
+                    NSLog(@"[TorWrapper] ❌ Exception in statusCallback: %@", exception);
+                }
+            });
+        } else {
+            NSLog(@"[TorWrapper] ⚠️ Status callback is nil, skipping");
         }
     });
 }
@@ -325,9 +350,18 @@ void *torThreadMain(void *context) {
 - (void)logMessage:(NSString *)message {
     NSLog(@"[Tor] %@", message);
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.logCallback) {
-            self.logCallback(message);
+    // Читаем callback на отдельной очереди (thread-safe)
+    dispatch_async(self.callbackQueue, ^{
+        TorLogCallback callback = self.logCallback;  // Копируем перед вызовом
+        
+        if (callback) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                @try {
+                    callback(message);
+                } @catch (NSException *exception) {
+                    NSLog(@"[TorWrapper] ❌ Exception in logCallback: %@", exception);
+                }
+            });
         }
     });
 }
