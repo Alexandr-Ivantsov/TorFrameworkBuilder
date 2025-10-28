@@ -340,6 +340,150 @@ else
     echo "    ℹ️  micro-revision.i уже существует"
 fi
 
+# 22. Исправить dos_config.c - добавить stdbool.h
+echo "  📝 Исправление dos_config.c..."
+if ! grep -q "#include <stdbool.h>" src/core/or/dos_config.c; then
+    sed -i '' '1i\
+#include <stdbool.h>\
+
+' src/core/or/dos_config.c
+    echo "    ✅ #include <stdbool.h> добавлен в dos_config.c"
+else
+    echo "    ℹ️  stdbool.h уже включен в dos_config.c"
+fi
+
+# 23. Исправить alertsock.c - отключить Linux-only функции
+echo "  📝 Исправление alertsock.c для iOS..."
+cat > src/lib/net/alertsock_ios.patch << 'EOFALERT'
+--- a/src/lib/net/alertsock.c
++++ b/src/lib/net/alertsock.c
+@@ -200,7 +200,7 @@ alert_sockets_create(alert_sockets_t *socks_out, uint32_t flags)
+ 
+   /* Try eventfd, if it's supported */
+ #ifdef HAVE_EVENTFD
+-    socks[0] = eventfd(0,0);
++    /* socks[0] = eventfd(0,0); */ /* iOS: eventfd not supported */
+ #endif
+   if (socks[0] < 0 && (flags & ASOCKS_NOEVENTFD2)) {
+     /* Retry if pipe2 is broken */
+@@ -224,7 +224,7 @@ alert_sockets_create(alert_sockets_t *socks_out, uint32_t flags)
+   /* We haven't found anything that worked yet.  Try pipe2(), if it exists. */
+   if (socks[0] < 0 && socks[1] < 0 &&
+       !(flags & ASOCKS_NOPIPE2) &&
+-      pipe2(socks, O_NONBLOCK|O_CLOEXEC) == 0) {
++      0) { /* iOS: pipe2 not supported, skip */
+     socks_out->read_fd = socks[0];
+     socks_out->write_fd = socks[1];
+     socks_out->alert_fn = pipe_alert;
+EOFALERT
+
+# Применить патч (если не применен)
+if grep -q "socks\[0\] = eventfd" src/lib/net/alertsock.c; then
+    sed -i '' 's/socks\[0\] = eventfd(0,0);/\/\* socks[0] = eventfd(0,0); \*\/ \/\* iOS: eventfd not supported \*\//' src/lib/net/alertsock.c
+    sed -i '' 's/pipe2(socks, O_NONBLOCK|O_CLOEXEC) == 0/0 \/\* iOS: pipe2 not supported, skip \*\//' src/lib/net/alertsock.c
+    # Заменить pipe_alert/pipe_drain на sock_alert/sock_drain
+    sed -i '' 's/pipe_alert/sock_alert/g' src/lib/net/alertsock.c
+    sed -i '' 's/pipe_drain/sock_drain/g' src/lib/net/alertsock.c
+    echo "    ✅ alertsock.c исправлен для iOS (используется socketpair fallback)"
+else
+    echo "    ℹ️  alertsock.c уже исправлен"
+fi
+
+# 24. Создать stub для setuid.c (iOS не поддерживает смену uid/gid)
+echo "  📝 Создание iOS-совместимого setuid_stub.c..."
+cat > src/lib/process/setuid_ios_stub.c << 'EOFSETUID'
+/* iOS stub для setuid.c - iOS sandbox не позволяет смену uid/gid */
+#ifdef __APPLE__
+#include <stdio.h>
+#include <errno.h>
+
+#include "lib/process/setuid.h"
+#include "lib/log/log.h"
+
+void
+log_credential_status(void)
+{
+  log_info(LD_GENERAL, "iOS: Running in app sandbox, uid/gid management not available");
+}
+
+int
+switch_id(const char *user, unsigned flags)
+{
+  (void)user;
+  (void)flags;
+  log_warn(LD_GENERAL, "iOS: switch_id() not supported in iOS sandbox");
+  return -1;
+}
+
+#ifdef HAVE_PWD_H
+const struct passwd *
+tor_getpwnam(const char *username)
+{
+  (void)username;
+  errno = ENOSYS;
+  return NULL;
+}
+
+const struct passwd *
+tor_getpwuid(uid_t uid)
+{
+  (void)uid;
+  errno = ENOSYS;
+  return NULL;
+}
+#endif
+
+#endif /* __APPLE__ */
+EOFSETUID
+
+# Переименовать оригинальный setuid.c
+if [ ! -f "src/lib/process/setuid_linux.c.bak" ]; then
+    mv src/lib/process/setuid.c src/lib/process/setuid_linux.c.bak
+    echo "    ✅ setuid.c переименован в setuid_linux.c.bak"
+fi
+
+# Создать симлинк на stub
+if [ ! -L "src/lib/process/setuid.c" ]; then
+    ln -s setuid_ios_stub.c src/lib/process/setuid.c
+    echo "    ✅ setuid.c теперь указывает на iOS stub"
+else
+    echo "    ℹ️  setuid.c уже указывает на stub"
+fi
+
+# 25. Создать реализацию для curved25519_scalarmult_basepoint_donna
+echo "  📝 Создание реализации curved25519_scalarmult_basepoint_donna..."
+cat > src/ext/ed25519/donna/curve25519_donna_impl.c << 'EOFCURVE'
+/* Реализация curved25519_scalarmult_basepoint_donna для iOS */
+/* Эта функция декларирована но не определена в Tor исходниках */
+
+#include "ext/ed25519/donna/ed25519_donna_tor.h"
+
+/* Basepoint for curve25519 */
+static const unsigned char curve25519_basepoint[32] = {9};
+
+/* Wrapper к curve25519 scalar multiplication с basepoint */
+void
+curved25519_scalarmult_basepoint_donna(curved25519_key pk,
+                                       const curved25519_key e)
+{
+  /* Используем стандартную реализацию curve25519 */
+  /* Это медленнее чем ed25519-optimized версия, но работает */
+  
+  /* Определяем внешнюю функцию curve25519 */
+  extern int curve25519_impl(unsigned char *output,
+                             const unsigned char *secret,
+                             const unsigned char *basepoint);
+  
+  curve25519_impl(pk, e, curve25519_basepoint);
+}
+EOFCURVE
+
+if [ ! -f "src/ext/ed25519/donna/curve25519_donna_impl.c" ]; then
+    echo "    ✅ curve25519_donna_impl.c создан"
+else
+    echo "    ℹ️  curve25519_donna_impl.c уже существует"
+fi
+
 cd ..
 
 echo "✅ Исправления применены в $TOR_FIXED/"
