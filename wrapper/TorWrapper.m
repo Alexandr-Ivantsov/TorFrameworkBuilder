@@ -311,11 +311,23 @@ void *torThreadMain(void *context) {
 #pragma mark - Status & Monitoring
 
 - (void)setStatusCallback:(TorStatusCallback)callback {
-    NSLog(@"[TorWrapper] Setting status callback (thread-safe)");
+    NSLog(@"[TorWrapper] 🔵 setStatusCallback called");
+    NSLog(@"[TorWrapper] 🔵 self = %p", self);
+    NSLog(@"[TorWrapper] 🔵 callbackQueue = %p", self.callbackQueue);
+    
+    if (!self.callbackQueue) {
+        NSLog(@"[TorWrapper] ❌ ERROR: callbackQueue is NULL! Recreating...");
+        self.callbackQueue = dispatch_queue_create("org.torproject.TorWrapper.callbacks", DISPATCH_QUEUE_SERIAL);
+        NSLog(@"[TorWrapper] ✅ callbackQueue recreated: %p", self.callbackQueue);
+    }
+    
+    NSLog(@"[TorWrapper] 🔵 About to call dispatch_async...");
     dispatch_async(self.callbackQueue, ^{
+        NSLog(@"[TorWrapper] 🔵 Inside dispatch_async block");
         self.statusCallback = callback;
-        NSLog(@"[TorWrapper] Status callback set successfully");
+        NSLog(@"[TorWrapper] ✅ Status callback set successfully");
     });
+    NSLog(@"[TorWrapper] 🔵 dispatch_async returned");
 }
 
 - (void)setLogCallback:(TorLogCallback)callback {
