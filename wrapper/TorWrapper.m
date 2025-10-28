@@ -26,6 +26,7 @@ extern void tor_cleanup(void);
 @property (nonatomic, copy) TorLogCallback logCallback;
 @property (nonatomic, strong) NSString *torrcPath;
 @property (nonatomic, assign) pthread_t torThread;
+@property (nonatomic, assign) BOOL directoriesSetup;
 
 @end
 
@@ -37,7 +38,9 @@ extern void tor_cleanup(void);
     static TorWrapper *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        NSLog(@"[TorWrapper] Creating shared instance...");
         sharedInstance = [[self alloc] initPrivate];
+        NSLog(@"[TorWrapper] Shared instance created successfully!");
     });
     return sharedInstance;
 }
@@ -45,17 +48,29 @@ extern void tor_cleanup(void);
 - (instancetype)initPrivate {
     self = [super init];
     if (self) {
+        NSLog(@"[TorWrapper] ✅ Step 1: super init done");
+        
         _status = TorStatusStopped;
+        NSLog(@"[TorWrapper] ✅ Step 2: status set to TorStatusStopped");
+        
         _socksPort = 9050;
         _controlPort = 9051;
         _running = NO;
+        _directoriesSetup = NO;
+        NSLog(@"[TorWrapper] ✅ Step 3: ports configured (SOCKS: %ld, Control: %ld)", (long)_socksPort, (long)_controlPort);
+        
         _torQueue = dispatch_queue_create("org.torproject.TorWrapper", DISPATCH_QUEUE_SERIAL);
+        NSLog(@"[TorWrapper] ✅ Step 4: dispatch queue created");
         
         // Используем Application Support по умолчанию
         NSString *appSupport = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
-        _dataDirectory = [appSupport stringByAppendingPathComponent:@"Tor"];
+        NSLog(@"[TorWrapper] ✅ Step 5: appSupport found: %@", appSupport);
         
-        [self setupDirectories];
+        _dataDirectory = [appSupport stringByAppendingPathComponent:@"Tor"];
+        NSLog(@"[TorWrapper] ✅ Step 6: dataDirectory set: %@", _dataDirectory);
+        
+        // НЕ ВЫЗЫВАЕМ setupDirectories здесь - отложим до первого start()
+        NSLog(@"[TorWrapper] ✅ Initialization complete (directories will be created on first start)");
     }
     return self;
 }
@@ -74,30 +89,47 @@ extern void tor_cleanup(void);
     self.controlPort = controlPort;
     self.dataDirectory = dataDir;
     
-    [self setupDirectories];
+    // Помечаем что директории нужно пересоздать при следующем запуске
+    self.directoriesSetup = NO;
+    NSLog(@"[TorWrapper] Configuration updated, directories will be recreated on next start");
 }
 
 - (void)setupDirectories {
+    NSLog(@"[TorWrapper] ⏳ setupDirectories: Started");
+    
     NSFileManager *fm = [NSFileManager defaultManager];
     NSError *error = nil;
     
+    NSLog(@"[TorWrapper] ⏳ setupDirectories: Checking if directory exists at: %@", self.dataDirectory);
     // Создаём директорию для данных
     if (![fm fileExistsAtPath:self.dataDirectory]) {
+        NSLog(@"[TorWrapper] ⏳ setupDirectories: Creating directory...");
         [fm createDirectoryAtPath:self.dataDirectory
       withIntermediateDirectories:YES
                        attributes:nil
                             error:&error];
         if (error) {
-            NSLog(@"[Tor] Ошибка создания директории: %@", error);
+            NSLog(@"[Tor] ❌ Ошибка создания директории: %@", error);
+        } else {
+            NSLog(@"[TorWrapper] ✅ Directory created successfully");
         }
+    } else {
+        NSLog(@"[TorWrapper] ✅ Directory already exists");
     }
     
+    NSLog(@"[TorWrapper] ⏳ setupDirectories: About to create torrc file...");
     // Создаём torrc файл
     [self createTorrcFile];
+    
+    self.directoriesSetup = YES;
+    NSLog(@"[TorWrapper] ✅ setupDirectories: Complete");
 }
 
 - (void)createTorrcFile {
+    NSLog(@"[TorWrapper] ⏳ createTorrcFile: Started");
+    
     self.torrcPath = [self.dataDirectory stringByAppendingPathComponent:@"torrc"];
+    NSLog(@"[TorWrapper] ⏳ createTorrcFile: torrcPath = %@", self.torrcPath);
     
     NSString *torrcContent = [NSString stringWithFormat:
         @"# Tor Configuration\n"
@@ -113,6 +145,7 @@ extern void tor_cleanup(void);
         self.dataDirectory
     ];
     
+    NSLog(@"[TorWrapper] ⏳ createTorrcFile: About to write file...");
     NSError *error = nil;
     [torrcContent writeToFile:self.torrcPath
                    atomically:YES
@@ -120,8 +153,12 @@ extern void tor_cleanup(void);
                         error:&error];
     
     if (error) {
-        NSLog(@"[Tor] Ошибка создания torrc: %@", error);
+        NSLog(@"[Tor] ❌ Ошибка создания torrc: %@", error);
+    } else {
+        NSLog(@"[TorWrapper] ✅ torrc file created successfully");
     }
+    
+    NSLog(@"[TorWrapper] ✅ createTorrcFile: Complete");
 }
 
 #pragma mark - Lifecycle
@@ -140,6 +177,15 @@ extern void tor_cleanup(void);
     [self notifyStatus:TorStatusStarting message:@"Запуск Tor..."];
     
     dispatch_async(self.torQueue, ^{
+        // Создаём директории на фоновом потоке (если ещё не создали)
+        if (!self.directoriesSetup) {
+            NSLog(@"[TorWrapper] Setting up directories on background thread...");
+            [self setupDirectories];
+            NSLog(@"[TorWrapper] Directories setup complete");
+        } else {
+            NSLog(@"[TorWrapper] Directories already setup, skipping");
+        }
+        
         // Запуск Tor в отдельном потоке
         pthread_attr_t attr;
         pthread_attr_init(&attr);
