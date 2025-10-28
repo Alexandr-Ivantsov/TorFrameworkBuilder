@@ -8,7 +8,9 @@
 
 **⚠️ Требуется libz (zlib):** Добавьте `-lz` в `OTHER_LDFLAGS` вашего проекта для функций сжатия.
 
-**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.26 - ObjC runtime ready!)
+**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.27 - Header import fixed!)
+
+**🔧 Critical Fix:** Umbrella header теперь правильно импортирует TorWrapper.h - методы доступны!
 
 **🔍 Диагностика:** См. `DIAGNOSTIC_PROMPT_FOR_TORAPP.md` для проверки интеграции
 
@@ -27,7 +29,7 @@ let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
             url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
-            requirement: .upToNextMajor(from: "1.0.26")
+            requirement: .upToNextMajor(from: "1.0.27")
         )
     ])
 )
@@ -60,7 +62,7 @@ tuist generate
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.26")
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.27")
 ],
 targets: [
     .target(dependencies: ["TorFrameworkBuilder"])

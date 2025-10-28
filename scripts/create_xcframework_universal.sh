@@ -64,14 +64,8 @@ DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
     -I"${LIBEVENT_DIR_DEVICE}/include" \
     -Iwrapper
 
-# Создание динамической библиотеки для устройства (с экспортом всех символов)
-# NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
-echo "🔗 Создание динамической библиотеки для устройства..."
-
-# Создаём export list для всех символов
-cat > output/device-obj/exports.txt << 'EOF'
-*
-EOF
+# Создание динамической библиотеки для устройства
+echo "🔗 Создание Tor.framework для устройства..."
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
     -dynamiclib \
@@ -79,9 +73,7 @@ EOF
     -isysroot "${DEVICE_SDK_PATH}" \
     -mios-version-min=16.0 \
     -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
-    -fvisibility=default \
     -Wl,-ObjC \
-    -Wl,-exported_symbols_list,output/device-obj/exports.txt \
     -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
     output/device-obj/TorWrapper.o \
     "$TOR_LIB_DEVICE" \
@@ -94,13 +86,16 @@ EOF
     -lc++ \
     -lz
 
-echo "🔍 Проверка экспорта методов TorWrapper..."
-if nm -gU "${DEVICE_FW}/${FRAMEWORK_NAME}" | grep -q "TorWrapper.*T "; then
-    echo "✅ Методы TorWrapper экспортированы как глобальные символы"
-    nm -gU "${DEVICE_FW}/${FRAMEWORK_NAME}" | grep "TorWrapper" | head -5
+echo ""
+echo "🔍 КРИТИЧЕСКАЯ ПРОВЕРКА: OBJC_CLASS экспортирован?"
+if nm -gU "${DEVICE_FW}/${FRAMEWORK_NAME}" | grep -q "OBJC_CLASS.*TorWrapper"; then
+    echo "✅✅✅ SUCCESS! OBJC_CLASS экспортирован - методы доступны через ObjC runtime!"
+    nm -gU "${DEVICE_FW}/${FRAMEWORK_NAME}" | grep "OBJC.*TorWrapper"
+    echo ""
+    echo "ℹ️  Методы ObjC всегда локальные ('t') - это НОРМАЛЬНО для ObjC runtime!"
 else
-    echo "⚠️  Только класс экспортирован, методы локальные (это OK для ObjC runtime)"
-    nm -gU "${DEVICE_FW}/${FRAMEWORK_NAME}" | grep "TorWrapper"
+    echo "❌❌❌ FAILED! OBJC_CLASS не экспортирован!"
+    exit 1
 fi
 
 echo "✅ Device framework: $(du -h ${DEVICE_FW}/${FRAMEWORK_NAME} | cut -f1)"
@@ -127,14 +122,8 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
     -I"${LIBEVENT_DIR_SIMULATOR}/include" \
     -Iwrapper
 
-# Создание динамической библиотеки для симулятора (с экспортом всех символов)
-# NOTE: libz (zlib) оставляется как external dependency - TorApp должен линковать с libz.tbd
-echo "🔗 Создание динамической библиотеки для симулятора..."
-
-# Создаём export list для всех символов
-cat > output/simulator-obj/exports.txt << 'EOF'
-*
-EOF
+# Создание динамической библиотеки для симулятора
+echo "🔗 Создание Tor.framework для симулятора..."
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
     -dynamiclib \
@@ -142,9 +131,7 @@ EOF
     -isysroot "${SIMULATOR_SDK_PATH}" \
     -mios-simulator-version-min=16.0 \
     -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
-    -fvisibility=default \
     -Wl,-ObjC \
-    -Wl,-exported_symbols_list,output/simulator-obj/exports.txt \
     -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
     output/simulator-obj/TorWrapper.o \
     "$TOR_LIB_SIMULATOR" \
@@ -157,13 +144,16 @@ EOF
     -lc++ \
     -lz
 
-echo "🔍 Проверка экспорта методов TorWrapper..."
-if nm -gU "${SIMULATOR_FW}/${FRAMEWORK_NAME}" | grep -q "TorWrapper.*T "; then
-    echo "✅ Методы TorWrapper экспортированы как глобальные символы"
-    nm -gU "${SIMULATOR_FW}/${FRAMEWORK_NAME}" | grep "TorWrapper" | head -5
+echo ""
+echo "🔍 КРИТИЧЕСКАЯ ПРОВЕРКА: OBJC_CLASS экспортирован?"
+if nm -gU "${SIMULATOR_FW}/${FRAMEWORK_NAME}" | grep -q "OBJC_CLASS.*TorWrapper"; then
+    echo "✅✅✅ SUCCESS! OBJC_CLASS экспортирован - методы доступны через ObjC runtime!"
+    nm -gU "${SIMULATOR_FW}/${FRAMEWORK_NAME}" | grep "OBJC.*TorWrapper"
+    echo ""
+    echo "ℹ️  Методы ObjC всегда локальные ('t') - это НОРМАЛЬНО для ObjC runtime!"
 else
-    echo "⚠️  Только класс экспортирован, методы локальные (это OK для ObjC runtime)"
-    nm -gU "${SIMULATOR_FW}/${FRAMEWORK_NAME}" | grep "TorWrapper"
+    echo "❌❌❌ FAILED! OBJC_CLASS не экспортирован!"
+    exit 1
 fi
 
 echo "✅ Simulator framework: $(du -h ${SIMULATOR_FW}/${FRAMEWORK_NAME} | cut -f1)"
