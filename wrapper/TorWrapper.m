@@ -311,29 +311,17 @@ void *torThreadMain(void *context) {
 #pragma mark - Status & Monitoring
 
 - (void)setStatusCallback:(TorStatusCallback)callback {
-    NSLog(@"[TorWrapper] 🔵 setStatusCallback called");
-    NSLog(@"[TorWrapper] 🔵 self = %p", self);
-    NSLog(@"[TorWrapper] 🔵 callbackQueue = %p", self.callbackQueue);
-    
-    if (!self.callbackQueue) {
-        NSLog(@"[TorWrapper] ❌ ERROR: callbackQueue is NULL! Recreating...");
-        self.callbackQueue = dispatch_queue_create("org.torproject.TorWrapper.callbacks", DISPATCH_QUEUE_SERIAL);
-        NSLog(@"[TorWrapper] ✅ callbackQueue recreated: %p", self.callbackQueue);
-    }
-    
-    NSLog(@"[TorWrapper] 🔵 About to call dispatch_async...");
+    NSLog(@"[TorWrapper] Setting status callback (thread-safe)");
     dispatch_async(self.callbackQueue, ^{
-        NSLog(@"[TorWrapper] 🔵 Inside dispatch_async block");
-        self.statusCallback = callback;
-        NSLog(@"[TorWrapper] ✅ Status callback set successfully");
+        _statusCallback = [callback copy];  // Прямой доступ к ivar, без рекурсии!
+        NSLog(@"[TorWrapper] Status callback set successfully");
     });
-    NSLog(@"[TorWrapper] 🔵 dispatch_async returned");
 }
 
 - (void)setLogCallback:(TorLogCallback)callback {
     NSLog(@"[TorWrapper] Setting log callback (thread-safe)");
     dispatch_async(self.callbackQueue, ^{
-        self.logCallback = callback;
+        _logCallback = [callback copy];  // Прямой доступ к ivar, без рекурсии!
         NSLog(@"[TorWrapper] Log callback set successfully");
     });
 }
@@ -343,7 +331,7 @@ void *torThreadMain(void *context) {
     
     // Читаем callback на отдельной очереди (thread-safe)
     dispatch_async(self.callbackQueue, ^{
-        TorStatusCallback callback = self.statusCallback;  // Копируем перед вызовом
+        TorStatusCallback callback = _statusCallback;  // Прямой доступ к ivar
         
         if (callback) {
             NSLog(@"[TorWrapper] Dispatching status callback to main queue");
@@ -366,7 +354,7 @@ void *torThreadMain(void *context) {
     
     // Читаем callback на отдельной очереди (thread-safe)
     dispatch_async(self.callbackQueue, ^{
-        TorLogCallback callback = self.logCallback;  // Копируем перед вызовом
+        TorLogCallback callback = _logCallback;  // Прямой доступ к ivar
         
         if (callback) {
             dispatch_async(dispatch_get_main_queue(), ^{
