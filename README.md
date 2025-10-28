@@ -8,7 +8,7 @@
 
 **⚠️ Требуется libz (zlib):** Добавьте `-lz` в `OTHER_LDFLAGS` вашего проекта для функций сжатия.
 
-**✅ Покрытие символов:** 88% основных функций Tor (69 из 78 критичных symbols)
+**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ критичные symbols добавлены! (v1.0.18)
 
 ---
 
@@ -25,7 +25,7 @@ let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
             url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
-            requirement: .upToNextMajor(from: "1.0.3")
+            requirement: .upToNextMajor(from: "1.0.18")
         )
     ])
 )
@@ -58,7 +58,7 @@ tuist generate
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.3")
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.18")
 ],
 targets: [
     .target(dependencies: ["TorFrameworkBuilder"])
