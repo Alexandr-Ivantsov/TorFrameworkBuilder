@@ -8,9 +8,9 @@
 
 **⚠️ Требуется libz (zlib):** Добавьте `-lz` в `OTHER_LDFLAGS` вашего проекта для функций сжатия.
 
-**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.30 - VERIFIED!)
+**✅ Покрытие символов:** 100% основных функций Tor - ВСЕ symbols resolved! (v1.0.31 - @dynamic FIX!)
 
-**🎉 FIXED & VERIFIED:** Рекурсия устранена! Проверено с `nm` - методы НЕ вызывают сами себя!
+**🎉 FINALLY FIXED:** @dynamic устраняет symbol conflict! `nm` подтверждает: нет `U _objc_msgSend$setStatusCallback:`!
 
 **⚠️ ВАЖНО:** Добавьте `-framework Tor -lz -Wl,-ObjC` в `OTHER_LDFLAGS` вашего проекта!
 
@@ -31,7 +31,7 @@ let dependencies = Dependencies(
     swiftPackageManager: SwiftPackageManagerDependencies([
         .remote(
             url: "https://github.com/YOUR_USERNAME/TorFrameworkBuilder.git",
-            requirement: .upToNextMajor(from: "1.0.30")
+            requirement: .upToNextMajor(from: "1.0.31")
         )
     ])
 )
@@ -64,7 +64,7 @@ tuist generate
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.30")
+    .package(url: "https://github.com/YOU/TorFrameworkBuilder.git", from: "1.0.31")
 ],
 targets: [
     .target(dependencies: ["TorFrameworkBuilder"])

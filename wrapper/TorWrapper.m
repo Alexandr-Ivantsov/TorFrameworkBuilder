@@ -33,7 +33,15 @@ extern void tor_cleanup(void);
 
 // Экспортируем все методы класса как внешние символы
 __attribute__((visibility("default")))
-@implementation TorWrapper
+@implementation TorWrapper {
+    // Явные ivars для callbacks (т.к. используем @dynamic)
+    TorStatusCallback _statusCallback;
+    TorLogCallback _logCallback;
+}
+
+// Указываем компилятору что мы САМИ реализуем accessors для callbacks
+// Это предотвращает автоматическую генерацию setter/getter и устраняет symbol conflict
+@dynamic statusCallback, logCallback;
 
 #pragma mark - Singleton
 
