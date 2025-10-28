@@ -1,0 +1,24 @@
+--- a/src/lib/crypt_ops/crypto_rand_fast.c
++++ b/src/lib/crypt_ops/crypto_rand_fast.c
+@@ -178,10 +178,20 @@ crypto_fast_rng_new_from_seed(const uint8_t *seed)
+ #elif defined(_WIN32)
+   /* Windows can't fork(), so there's no need to noinherit. */
+ #else
++  /* Platforms that don't support non-inheritable memory (iOS, some Unix)
++   * return INHERIT_RES_KEEP. Fallback to allocated memory in this case.
++   * This is a known limitation on iOS and some other platforms. */
++  if (inherit == INHERIT_RES_KEEP) {
++    log_warn(LD_CRYPTO, "Platform does not support non-inheritable memory regions. "
++                        "Using allocated memory fallback. This is a known limitation "
++                        "on iOS and some other platforms.");
++    inherit = INHERIT_RES_ALLOCATED;
++  }
++  
+   /* We decided above that noinherit would always do _something_. Assert here
+    * that we were correct. */
+   tor_assertf(inherit != INHERIT_RES_KEEP,
+               "We failed to create a non-inheritable memory region, even "
+               "though we believed such a failure to be impossible! This is "
+               "probably a bug in Tor support for your platform; please report "
+               "it.");
+
