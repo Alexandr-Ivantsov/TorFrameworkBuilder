@@ -311,61 +311,63 @@ void *torThreadMain(void *context) {
 #pragma mark - Status & Monitoring
 
 - (void)setStatusCallback:(TorStatusCallback)callback {
-    NSLog(@"[TorWrapper] Setting status callback (thread-safe)");
-    dispatch_async(self.callbackQueue, ^{
-        _statusCallback = [callback copy];  // Прямой доступ к ivar, без рекурсии!
-        NSLog(@"[TorWrapper] Status callback set successfully");
-    });
+    NSLog(@"[TorWrapper] Setting status callback");
+    @synchronized(self) {
+        _statusCallback = [callback copy];  // Прямой доступ к ivar, БЕЗ self.!
+    }
+    NSLog(@"[TorWrapper] Status callback set successfully");
 }
 
 - (void)setLogCallback:(TorLogCallback)callback {
-    NSLog(@"[TorWrapper] Setting log callback (thread-safe)");
-    dispatch_async(self.callbackQueue, ^{
-        _logCallback = [callback copy];  // Прямой доступ к ivar, без рекурсии!
-        NSLog(@"[TorWrapper] Log callback set successfully");
-    });
+    NSLog(@"[TorWrapper] Setting log callback");
+    @synchronized(self) {
+        _logCallback = [callback copy];  // Прямой доступ к ivar, БЕЗ self.!
+    }
+    NSLog(@"[TorWrapper] Log callback set successfully");
 }
 
 - (void)notifyStatus:(TorStatus)status message:(NSString *)message {
     NSLog(@"[TorWrapper] notifyStatus called: %ld - %@", (long)status, message);
     
-    // Читаем callback на отдельной очереди (thread-safe)
-    dispatch_async(self.callbackQueue, ^{
-        TorStatusCallback callback = _statusCallback;  // Прямой доступ к ivar
-        
-        if (callback) {
-            NSLog(@"[TorWrapper] Dispatching status callback to main queue");
-            dispatch_async(dispatch_get_main_queue(), ^{
-                @try {
-                    callback(status, message);
-                    NSLog(@"[TorWrapper] Status callback executed successfully");
-                } @catch (NSException *exception) {
-                    NSLog(@"[TorWrapper] ❌ Exception in statusCallback: %@", exception);
-                }
-            });
-        } else {
-            NSLog(@"[TorWrapper] ⚠️ Status callback is nil, skipping");
-        }
-    });
+    // Читаем callback thread-safe
+    TorStatusCallback callback;
+    @synchronized(self) {
+        callback = _statusCallback;  // Прямой доступ к ivar, БЕЗ self.!
+    }
+    
+    if (callback) {
+        NSLog(@"[TorWrapper] Dispatching status callback to main queue");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            @try {
+                callback(status, message);
+                NSLog(@"[TorWrapper] Status callback executed successfully");
+            } @catch (NSException *exception) {
+                NSLog(@"[TorWrapper] ❌ Exception in statusCallback: %@", exception);
+            }
+        });
+    } else {
+        NSLog(@"[TorWrapper] ⚠️ Status callback is nil, skipping");
+    }
 }
 
 - (void)logMessage:(NSString *)message {
     NSLog(@"[Tor] %@", message);
     
-    // Читаем callback на отдельной очереди (thread-safe)
-    dispatch_async(self.callbackQueue, ^{
-        TorLogCallback callback = _logCallback;  // Прямой доступ к ivar
-        
-        if (callback) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                @try {
-                    callback(message);
-                } @catch (NSException *exception) {
-                    NSLog(@"[TorWrapper] ❌ Exception in logCallback: %@", exception);
-                }
-            });
-        }
-    });
+    // Читаем callback thread-safe
+    TorLogCallback callback;
+    @synchronized(self) {
+        callback = _logCallback;  // Прямой доступ к ivar, БЕЗ self.!
+    }
+    
+    if (callback) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            @try {
+                callback(message);
+            } @catch (NSException *exception) {
+                NSLog(@"[TorWrapper] ❌ Exception in logCallback: %@", exception);
+            }
+        });
+    }
 }
 
 - (void)checkConnectionWithCompletion:(void (^)(BOOL))completion {
