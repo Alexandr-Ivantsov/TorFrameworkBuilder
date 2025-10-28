@@ -319,7 +319,7 @@ void *torThreadMain(void *context) {
 - (void)setStatusCallback:(TorStatusCallback)callback {
     NSLog(@"[TorWrapper] Setting status callback");
     @synchronized(self) {
-        _statusCallback = [callback copy];  // Прямой доступ к ivar, БЕЗ self.!
+        _statusCallback = callback;  // ARC управляет lifetime автоматически!
     }
     NSLog(@"[TorWrapper] Status callback set successfully");
 }
@@ -327,7 +327,7 @@ void *torThreadMain(void *context) {
 - (void)setLogCallback:(TorLogCallback)callback {
     NSLog(@"[TorWrapper] Setting log callback");
     @synchronized(self) {
-        _logCallback = [callback copy];  // Прямой доступ к ivar, БЕЗ self.!
+        _logCallback = callback;  // ARC управляет lifetime автоматически!
     }
     NSLog(@"[TorWrapper] Log callback set successfully");
 }
