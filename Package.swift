@@ -112,10 +112,11 @@ let package = Package(
                 
                 // Exclude main.c (has main() function)
                 "tor-ios-fixed/src/app/main/main.c",
-                // Exclude timeouts bench/lua files
+                // Exclude timeouts bench/lua files (Lua not available on iOS)
                 "tor-ios-fixed/src/ext/timeouts/bench.c",
                 "tor-ios-fixed/src/ext/timeouts/bench.plt.d",
                 "tor-ios-fixed/src/ext/timeouts/timeout.lua",
+                "tor-ios-fixed/src/ext/timeouts/lua",  // Exclude entire lua directory
                 // Exclude README/Makefile patterns
                 "tor-ios-fixed/Makefile",
                 "tor-ios-fixed/configure",
@@ -147,6 +148,7 @@ let package = Package(
                 .headerSearchPath("tor-ios-fixed/src/ext/keccak-tiny"),
                 .headerSearchPath("tor-ios-fixed/src/ext/equix/include"),
                 .headerSearchPath("tor-ios-fixed/src/ext/equix/hashx/include"),
+                .headerSearchPath("tor-ios-fixed/src/ext/equix/hashx/src"),  // For hashx_endian.h
                 .headerSearchPath("tor-ios-fixed/src/trunnel"),
                 
                 // Vendored dependencies
