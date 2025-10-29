@@ -1,0 +1,5 @@
+framework module Tor {
+    umbrella header "Tor.h"
+    export *
+    module * { export * }
+}
