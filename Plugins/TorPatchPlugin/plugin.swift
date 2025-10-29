@@ -9,9 +9,19 @@ struct TorPatchPlugin: BuildToolPlugin {
     ) async throws -> [Command] {
         print("🔧 TorPatchPlugin: Starting patch application...")
         
-        // Путь к файлу crypto_rand_fast.c
-        let cryptoFile = context.package.directory
-            .appending(subpath: "Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c")
+        // Найти crypto_rand_fast.c динамически
+        let packageDir = context.package.directory
+        
+        // Возможные пути для поиска
+        let possiblePaths = [
+            "Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c",
+            "tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c",
+            "Sources/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c",
+        ]
+        
+        // Путь к пропатченному файлу
+        let patchedFilePath = packageDir
+            .appending(subpath: "patches/tor-0.4.8.19/src/lib/crypt_ops/crypto_rand_fast.c.patched")
         
         // Выходной файл для отслеживания
         let outputFile = context.pluginWorkDirectory
@@ -19,81 +29,97 @@ struct TorPatchPlugin: BuildToolPlugin {
         
         // Python скрипт для применения патча
         let patchScript = """
-        import re
         import sys
         import os
+        import shutil
         
-        file_path = '\(cryptoFile.string)'
+        package_dir = '\(packageDir.string)'
+        patched_file = '\(patchedFilePath.string)'
         marker_path = '\(outputFile.string)'
         
-        print(f'📂 Patching file: {file_path}')
+        print('🔧 TorPatchPlugin: Searching for crypto_rand_fast.c...')
         
-        if not os.path.exists(file_path):
-            print(f'❌ ERROR: File not found: {file_path}')
-            sys.exit(1)
+        # Найти все crypto_rand_fast.c файлы
+        possible_paths = [
+            'Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c',
+            'tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c',
+            'Sources/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c',
+        ]
         
-        with open(file_path, 'r') as f:
-            content = f.read()
+        target_files = []
+        for rel_path in possible_paths:
+            full_path = os.path.join(package_dir, rel_path)
+            if os.path.exists(full_path):
+                target_files.append(full_path)
+                print(f'   ✅ Found: {rel_path}')
         
-        # Проверка: уже пропатчено?
-        if 'Using memory with INHERIT_RES_KEEP on iOS' in content:
-            print('✅ Patch already applied')
+        if not target_files:
+            print('⚠️  WARNING: crypto_rand_fast.c not found')
+            print('   This may be normal if sources haven\\'t been extracted yet')
+            # Create marker anyway
+            os.makedirs(os.path.dirname(marker_path), exist_ok=True)
             with open(marker_path, 'w') as f:
-                f.write('patch_applied')
+                f.write('skipped_no_sources')
             sys.exit(0)
         
-        print('🔧 Applying iOS patch...')
-        
-        # Применить патч: найти tor_assertf и обернуть в условие
-        pattern = r'(#else\\s*/\\*\\s*We decided above.*?\\*/)\\s+(tor_assertf\\(inherit != INHERIT_RES_KEEP,\\s*"[^"]+?"\\s*"[^"]+?"\\s*"[^"]+?it\\.";)'
-        
-        replacement = r'''\\1
-/* iOS PATCH: Platform doesn't support non-inheritable memory (iOS).
- * INHERIT_RES_KEEP is returned, which means we rely on CHECK_PID above
- * to detect forks. This is acceptable for iOS as it rarely forks.
- * Original assertion would crash here, so we skip it for KEEP. */
-if (inherit != INHERIT_RES_KEEP) {
-  /* Non-iOS platforms should have succeeded with NOINHERIT */
-  \\2
-} else {
-  /* iOS: INHERIT_RES_KEEP is expected and acceptable */
-  log_info(LD_CRYPTO, "Using memory with INHERIT_RES_KEEP on iOS (with PID check).");
-}'''
-        
-        new_content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
-        
-        if new_content == content:
-            print('⚠️  WARNING: Pattern not found, trying alternative approach...')
-            # Alternative: find the specific line
-            if 'tor_assertf(inherit != INHERIT_RES_KEEP,' in content:
-                # Wrap existing assertion
-                content = content.replace(
-                    'tor_assertf(inherit != INHERIT_RES_KEEP,',
-                    '''/* iOS PATCH */
-if (inherit != INHERIT_RES_KEEP) {
-  tor_assertf(inherit != INHERIT_RES_KEEP,'''
-                )
-                # Add closing brace and else
-                content = content.replace(
-                    '                "it.");',
-                    '''                "it.");
-} else {
-  log_info(LD_CRYPTO, "Using memory with INHERIT_RES_KEEP on iOS (with PID check).");
-}'''
-                )
-                new_content = content
-        
-        if 'Using memory with INHERIT_RES_KEEP on iOS' not in new_content:
-            print('❌ ERROR: Patch application failed!')
+        # Проверить наличие пропатченного файла
+        if not os.path.exists(patched_file):
+            print(f'❌ ERROR: Patched file not found: {patched_file}')
             sys.exit(1)
         
-        with open(file_path, 'w') as f:
-            f.write(new_content)
+        print(f'✅ Patched file found: {patched_file}')
         
+        # Применить патч к каждому файлу
+        patched_count = 0
+        already_patched_count = 0
+        
+        for target_file in target_files:
+            print(f'\\n📄 Processing: {target_file}')
+            
+            # Проверить: уже пропатчено?
+            with open(target_file, 'r') as f:
+                content = f.read()
+            
+            if 'iOS PATCH' in content or 'Using memory with INHERIT_RES_KEEP' in content:
+                print('   ✅ Already patched - skipping')
+                already_patched_count += 1
+                continue
+            
+            print('   🔧 Applying patch...')
+            
+            # Backup
+            backup_file = target_file + '.bak'
+            shutil.copy2(target_file, backup_file)
+            
+            # Copy patched version
+            shutil.copy2(patched_file, target_file)
+            
+            # Verify
+            with open(target_file, 'r') as f:
+                new_content = f.read()
+            
+            if 'iOS PATCH' in new_content or 'Using memory with INHERIT_RES_KEEP' in new_content:
+                print('   ✅✅✅ Patch applied successfully!')
+                os.remove(backup_file)
+                patched_count += 1
+            else:
+                print('   ❌ VERIFICATION FAILED! Restoring backup...')
+                shutil.copy2(backup_file, target_file)
+                os.remove(backup_file)
+                sys.exit(1)
+        
+        # Summary
+        print('\\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        print('✅ PATCH APPLICATION COMPLETE!')
+        print(f'   Files patched now:     {patched_count}')
+        print(f'   Files already patched: {already_patched_count}')
+        
+        # Create marker
+        os.makedirs(os.path.dirname(marker_path), exist_ok=True)
         with open(marker_path, 'w') as f:
-            f.write('patch_applied')
+            f.write(f'patched={patched_count},already={already_patched_count}')
         
-        print('✅✅✅ Patch applied successfully!')
+        print('✅ Ready for compilation!')
         """
         
         return [

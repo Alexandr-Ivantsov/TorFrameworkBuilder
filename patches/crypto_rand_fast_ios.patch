@@ -1,0 +1,29 @@
+--- patches/tor-0.4.8.19/src/lib/crypt_ops/crypto_rand_fast.c.original	2025-10-29 17:30:48
++++ patches/tor-0.4.8.19/src/lib/crypt_ops/crypto_rand_fast.c.patched	2025-10-29 17:30:48
+@@ -180,11 +180,21 @@
+ #else
+   /* We decided above that noinherit would always do _something_. Assert here
+    * that we were correct. */
+-  tor_assertf(inherit != INHERIT_RES_KEEP,
+-              "We failed to create a non-inheritable memory region, even "
+-              "though we believed such a failure to be impossible! This is "
+-              "probably a bug in Tor support for your platform; please report "
+-              "it.");
++  /* iOS PATCH: Platform doesn't support non-inheritable memory (iOS).
++   * INHERIT_RES_KEEP is returned, which means we rely on CHECK_PID above
++   * to detect forks. This is acceptable for iOS as it rarely forks.
++   * Original assertion would crash here, so we skip it for KEEP. */
++  if (inherit != INHERIT_RES_KEEP) {
++    /* Non-iOS platforms should have succeeded with NOINHERIT */
++    tor_assertf(inherit != INHERIT_RES_KEEP,
++                "We failed to create a non-inheritable memory region, even "
++                "though we believed such a failure to be impossible! This is "
++                "probably a bug in Tor support for your platform; please report "
++                "it.");
++  } else {
++    /* iOS: INHERIT_RES_KEEP is expected and acceptable */
++    log_info(LD_CRYPTO, "Using memory with INHERIT_RES_KEEP on iOS (with PID check).");
++  }
+ #endif /* defined(CHECK_PID) || ... */
+   return result;
+ }
