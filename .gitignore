@@ -1,11 +1,9 @@
 # Build artifacts
 build/
-sources-old/
 
 # Tor source (but allow Sources/Tor/tor-ios-fixed/ for SPM)
 tor-0.4.8.19/
 tor-ios-fixed/
-!Sources/Tor/tor-ios-fixed/
 
 # Logs
 *.log
