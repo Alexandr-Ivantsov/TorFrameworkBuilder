@@ -487,6 +487,19 @@ echo "  📝 Применение универсального патча к cry
 
 CRYPTO_FILE="src/lib/crypt_ops/crypto_rand_fast.c"
 
+# КРИТИЧЕСКАЯ ПРОВЕРКА: файл существует?
+if [ ! -f "$CRYPTO_FILE" ]; then
+    echo "      ❌ CRITICAL ERROR: $CRYPTO_FILE not found!"
+    echo "      📂 Current directory: $(pwd)"
+    echo "      📂 Files in src/lib/crypt_ops/:"
+    ls -la src/lib/crypt_ops/ | head -10
+    exit 1
+fi
+
+echo "      📂 Working with: $CRYPTO_FILE"
+echo "      📏 File size: $(wc -c < "$CRYPTO_FILE") bytes"
+echo "      📄 Line 187 BEFORE patch: $(sed -n '187p' "$CRYPTO_FILE" 2>/dev/null || echo 'N/A')"
+
 if ! grep -q "iOS PATCH: Platform doesn't support non-inheritable memory" "$CRYPTO_FILE"; then
     # Применяем патч через Python
     # Находим tor_assertf(inherit != INHERIT_RES_KEEP в функции crypto_fast_rng_new_from_seed
@@ -534,14 +547,21 @@ with open('src/lib/crypt_ops/crypto_rand_fast.c', 'w') as f:
 print("        ✅ crypto_rand_fast.c patched successfully!")
 PYTHON_PATCH_EOF
 
-        # Проверка что патч применился
+        # КРИТИЧЕСКАЯ ПРОВЕРКА что патч применился
+        echo "      🔍 CRITICAL VERIFICATION: Checking if patch was applied..."
+        echo "      📄 Line 187 AFTER patch: $(sed -n '187p' "$CRYPTO_FILE" 2>/dev/null || echo 'N/A')"
+        
         if grep -q "iOS PATCH: Platform doesn't support non-inheritable memory" "$CRYPTO_FILE"; then
-            echo "      ✅ Patch verified in crypto_rand_fast.c!"
+            echo "      ✅✅✅ Patch VERIFIED in crypto_rand_fast.c!"
             # Показываем патченный код
-            echo "      📄 Patched code:"
-            grep -B 2 -A 10 "iOS PATCH" "$CRYPTO_FILE" | head -15
+            echo "      📄 Patched code (lines 183-197):"
+            sed -n '183,197p' "$CRYPTO_FILE"
+            echo "      "
+            echo "      ✅ SUCCESS: Patch is in source code!"
         else
-            echo "      ❌ Patch verification FAILED! crypto_rand_fast.c not patched!"
+            echo "      ❌❌❌ CRITICAL: Patch verification FAILED!"
+            echo "      📄 Actual content around line 187:"
+            sed -n '180,200p' "$CRYPTO_FILE"
             exit 1
         fi
     else
