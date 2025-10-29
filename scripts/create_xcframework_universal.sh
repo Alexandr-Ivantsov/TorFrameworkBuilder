@@ -12,11 +12,11 @@ OPENSSL_DIR_DEVICE="output/openssl"
 LIBEVENT_DIR_DEVICE="output/libevent"
 XZ_DIR_DEVICE="output/xz"
 
-# Пути к библиотекам для симулятора
-TOR_LIB_SIMULATOR="output/tor-simulator/lib/libtor.a"
-OPENSSL_DIR_SIMULATOR="output/openssl-simulator"
-LIBEVENT_DIR_SIMULATOR="output/libevent-simulator"
-XZ_DIR_SIMULATOR="output/xz-simulator"
+# Пути к библиотекам для симулятора (используем device libraries!)
+TOR_LIB_SIMULATOR="output/tor-direct/lib/libtor.a"
+OPENSSL_DIR_SIMULATOR="output/openssl"
+LIBEVENT_DIR_SIMULATOR="output/libevent"
+XZ_DIR_SIMULATOR="output/xz"
 
 DEVICE_FW="output/device/${FRAMEWORK_NAME}.framework"
 SIMULATOR_FW="output/simulator/${FRAMEWORK_NAME}.framework"
@@ -122,23 +122,16 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
 # Создание динамической библиотеки для симулятора
 echo "🔗 Создание Tor.framework для симулятора..."
 
-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
-    -dynamiclib \
-    -target arm64-apple-ios16.0-simulator \
-    -isysroot "${SIMULATOR_SDK_PATH}" \
-    -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
-    -Wl,-ObjC \
-    -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \
-    output/simulator-obj/TorWrapper.o \
-    "$TOR_LIB_SIMULATOR" \
-    "${OPENSSL_DIR_SIMULATOR}/lib/libssl.a" \
-    "${OPENSSL_DIR_SIMULATOR}/lib/libcrypto.a" \
-    "${LIBEVENT_DIR_SIMULATOR}/lib/libevent.a" \
-    "${XZ_DIR_SIMULATOR}/lib/liblzma.a" \
-    -framework Foundation \
-    -framework Security \
-    -lc++ \
-    -lz
+# FINAL WORKAROUND: Копируем device framework целиком как simulator,
+# затем меняем platform через vtool (работает на готовом dylib!)
+echo "📦 Копирование device framework как simulator..."
+cp "${DEVICE_FW}/${FRAMEWORK_NAME}" "${SIMULATOR_FW}/${FRAMEWORK_NAME}"
+
+echo "🔧 Изменение platform на iOS Simulator (7) через vtool..."
+vtool -set-build-version 7 16.0 16.0 -replace -output "${SIMULATOR_FW}/${FRAMEWORK_NAME}.tmp" "${SIMULATOR_FW}/${FRAMEWORK_NAME}" && \
+    mv "${SIMULATOR_FW}/${FRAMEWORK_NAME}.tmp" "${SIMULATOR_FW}/${FRAMEWORK_NAME}" && \
+    chmod +x "${SIMULATOR_FW}/${FRAMEWORK_NAME}" && \
+    echo "✅ Platform изменён на 7 (iOS Simulator)!" || echo "❌ vtool не сработал, используем device binary как есть"
 
 echo ""
 echo "🔍 КРИТИЧЕСКАЯ ПРОВЕРКА: OBJC_CLASS экспортирован?"

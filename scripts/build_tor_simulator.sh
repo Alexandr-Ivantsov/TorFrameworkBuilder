@@ -5,9 +5,9 @@ set -e
 TOR_SRC="tor-ios-fixed"
 BUILD_DIR="$(pwd)/build/tor-simulator"
 OUTPUT_DIR="$(pwd)/output/tor-simulator"
-OPENSSL_DIR="$(pwd)/output/openssl-simulator"
-LIBEVENT_DIR="$(pwd)/output/libevent-simulator"
-XZ_DIR="$(pwd)/output/xz-simulator"
+OPENSSL_DIR="$(pwd)/output/openssl"
+LIBEVENT_DIR="$(pwd)/output/libevent"
+XZ_DIR="$(pwd)/output/xz"
 
 echo "🧅 Сборка Tor для iOS Simulator..."
 
@@ -51,19 +51,26 @@ CC="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 AR="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar"
 
 CFLAGS="-target ${ARCH}-apple-ios${MIN_IOS_VERSION}-simulator -isysroot ${SDK_PATH}"
+CFLAGS="$CFLAGS -I${TOR_SRC}"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/src"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/trunnel"
-CFLAGS="$CFLAGS -I${TOR_SRC}"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/core"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/core/or"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/feature"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/lib"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/app"
 CFLAGS="$CFLAGS -I${OPENSSL_DIR}/include"
 CFLAGS="$CFLAGS -I${LIBEVENT_DIR}/include"
 CFLAGS="$CFLAGS -I${XZ_DIR}/include"
 CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
 CFLAGS="$CFLAGS -O2"
 CFLAGS="$CFLAGS -Wno-error"
+CFLAGS="$CFLAGS -Wno-unused-function"
+CFLAGS="$CFLAGS -Wno-unused-variable"
 CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=0"
 CFLAGS="$CFLAGS -fvisibility=default"
 
@@ -116,7 +123,11 @@ for dir in "${COMPILE_DIRS[@]}"; do
         
         mkdir -p "$obj_dir"
         
-        $CC $CFLAGS -c "$src_file" -o "$obj_file" 2>/dev/null && echo "  ✓ $(basename $src_file)" || true
+        if $CC $CFLAGS -c "$src_file" -o "$obj_file" 2>&1 | grep -v "warning:"; then
+            echo "  ✓ $(basename $src_file)"
+        else
+            echo "  ✗ $(basename $src_file) FAILED"
+        fi
     done
 done
 
