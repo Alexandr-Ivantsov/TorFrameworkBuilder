@@ -1,18 +1,23 @@
-//
-//  Tor.h
-//  Tor Framework
-//
-//  Umbrella header для Tor Framework
-//
+#ifndef TOR_H
+#define TOR_H
 
-#import <Foundation/Foundation.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-//! Project version number for Tor.
-FOUNDATION_EXPORT double TorVersionNumber;
+// Main Tor entry point
+int tor_main(int argc, char *argv[]);
 
-//! Project version string for Tor.
-FOUNDATION_EXPORT const unsigned char TorVersionString[];
+// Tor control functions  
+int tor_run_main(void *options);
+void tor_cleanup(void);
 
-// In this header, you should import all the public headers of your framework
-#import "TorWrapper.h"
+// Version info
+const char *get_version(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* TOR_H */
 

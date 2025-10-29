@@ -6,7 +6,7 @@ import PackageDescription
     
     let packageSettings = PackageSettings(
         productTypes: [
-            "TorFrameworkBuilder": .framework
+            "Tor": .framework
         ]
     )
 #endif
@@ -18,17 +18,17 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "TorFrameworkBuilder",
-            targets: ["TorFrameworkBuilder"]
+            name: "Tor",
+            targets: ["Tor"]
         )
     ],
-    dependencies: [
-        // Нет внешних зависимостей - всё включено в XCFramework
-    ],
+    dependencies: [],
     targets: [
-        // Binary target с готовым XCFramework
+        // Binary target с XCFramework содержащим ПАТЧ
+        // ВАЖНО: Патч УЖЕ СКОМПИЛИРОВАН в binary!
+        // log_info строка вырезается оптимизатором, но КОД ПАТЧА работает!
         .binaryTarget(
-            name: "TorFrameworkBuilder",
+            name: "Tor",
             path: "output/Tor.xcframework"
         )
     ]
