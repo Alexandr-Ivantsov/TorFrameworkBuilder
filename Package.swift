@@ -102,6 +102,14 @@ let package = Package(
                 "tor-ios-fixed/src/lib/tls/tortls_st.inc",
                 "tor-ios-fixed/src/lib/tls/x509.inc",
                 "tor-ios-fixed/src/lib/tls/x509_nss.inc",
+                
+                // Exclude NSS files (NSS not available on iOS - use OpenSSL instead)
+                "tor-ios-fixed/src/lib/tls/x509_nss.c",
+                "tor-ios-fixed/src/lib/tls/tortls_nss.c",
+                "tor-ios-fixed/src/lib/tls/nss_countbytes.c",
+                "tor-ios-fixed/src/lib/tls/nss_countbytes.h",
+                "tor-ios-fixed/src/lib/crypt_ops/crypto_digest_nss.c",
+                
                 // Exclude main.c (has main() function)
                 "tor-ios-fixed/src/app/main/main.c",
                 // Exclude timeouts bench/lua files
