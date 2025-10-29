@@ -57,9 +57,8 @@ DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
     -o output/device-obj/TorWrapper.o \
     -fobjc-arc \
     -fvisibility=default \
-    -arch arm64 \
+    -target arm64-apple-ios16.0 \
     -isysroot "${DEVICE_SDK_PATH}" \
-    -mios-version-min=16.0 \
     -I"${OPENSSL_DIR_DEVICE}/include" \
     -I"${LIBEVENT_DIR_DEVICE}/include" \
     -Iwrapper
@@ -69,9 +68,8 @@ echo "🔗 Создание Tor.framework для устройства..."
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
     -dynamiclib \
-    -arch arm64 \
+    -target arm64-apple-ios16.0 \
     -isysroot "${DEVICE_SDK_PATH}" \
-    -mios-version-min=16.0 \
     -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
     -Wl,-ObjC \
     -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
@@ -115,9 +113,8 @@ SIMULATOR_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneS
     -o output/simulator-obj/TorWrapper.o \
     -fobjc-arc \
     -fvisibility=default \
-    -arch arm64 \
+    -target arm64-apple-ios16.0-simulator \
     -isysroot "${SIMULATOR_SDK_PATH}" \
-    -mios-simulator-version-min=16.0 \
     -I"${OPENSSL_DIR_SIMULATOR}/include" \
     -I"${LIBEVENT_DIR_SIMULATOR}/include" \
     -Iwrapper
@@ -127,9 +124,8 @@ echo "🔗 Создание Tor.framework для симулятора..."
 
 /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang \
     -dynamiclib \
-    -arch arm64 \
+    -target arm64-apple-ios16.0-simulator \
     -isysroot "${SIMULATOR_SDK_PATH}" \
-    -mios-simulator-version-min=16.0 \
     -install_name "@rpath/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}" \
     -Wl,-ObjC \
     -o "${SIMULATOR_FW}/${FRAMEWORK_NAME}" \

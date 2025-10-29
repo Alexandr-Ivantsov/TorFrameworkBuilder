@@ -50,7 +50,7 @@ echo "📋 Компиляция Tor для Simulator..."
 CC="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 AR="${DEVELOPER}/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar"
 
-CFLAGS="-arch ${ARCH} -isysroot ${SDK_PATH} -mios-simulator-version-min=${MIN_IOS_VERSION}"
+CFLAGS="-target ${ARCH}-apple-ios${MIN_IOS_VERSION}-simulator -isysroot ${SDK_PATH}"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/trunnel"
