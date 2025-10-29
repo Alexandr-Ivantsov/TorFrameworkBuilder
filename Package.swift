@@ -18,8 +18,8 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Tor",
-            targets: ["Tor"]
+            name: "TorFrameworkBuilder",  // ← Имя продукта для SPM
+            targets: ["TorFrameworkBuilder"]
         )
     ],
     dependencies: [],
@@ -28,7 +28,7 @@ let package = Package(
         // ВАЖНО: Патч УЖЕ СКОМПИЛИРОВАН в binary!
         // log_info строка вырезается оптимизатором, но КОД ПАТЧА работает!
         .binaryTarget(
-            name: "Tor",
+            name: "TorFrameworkBuilder",
             path: "output/Tor.xcframework"
         )
     ]
