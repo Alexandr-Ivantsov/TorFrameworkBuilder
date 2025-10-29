@@ -1,0 +1,20 @@
+--- a/src/lib/net/alertsock.c
++++ b/src/lib/net/alertsock.c
+@@ -200,7 +200,7 @@ alert_sockets_create(alert_sockets_t *socks_out, uint32_t flags)
+ 
+   /* Try eventfd, if it's supported */
+ #ifdef HAVE_EVENTFD
+-    socks[0] = eventfd(0,0);
++    /* socks[0] = eventfd(0,0); */ /* iOS: eventfd not supported */
+ #endif
+   if (socks[0] < 0 && (flags & ASOCKS_NOEVENTFD2)) {
+     /* Retry if pipe2 is broken */
+@@ -224,7 +224,7 @@ alert_sockets_create(alert_sockets_t *socks_out, uint32_t flags)
+   /* We haven't found anything that worked yet.  Try pipe2(), if it exists. */
+   if (socks[0] < 0 && socks[1] < 0 &&
+       !(flags & ASOCKS_NOPIPE2) &&
+-      pipe2(socks, O_NONBLOCK|O_CLOEXEC) == 0) {
++      0) { /* iOS: pipe2 not supported, skip */
+     socks_out->read_fd = socks[0];
+     socks_out->write_fd = socks[1];
+     socks_out->alert_fn = pipe_alert;
