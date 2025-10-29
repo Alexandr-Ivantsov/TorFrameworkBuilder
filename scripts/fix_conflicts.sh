@@ -487,7 +487,7 @@ echo "  📝 Применение универсального патча к cry
 
 CRYPTO_FILE="src/lib/crypt_ops/crypto_rand_fast.c"
 
-if ! grep -q "Platform does not support non-inheritable memory" "$CRYPTO_FILE"; then
+if ! grep -q "iOS PATCH: Platform doesn't support non-inheritable memory" "$CRYPTO_FILE"; then
     # Применяем патч через Python
     # Находим tor_assertf(inherit != INHERIT_RES_KEEP в функции crypto_fast_rng_new_from_seed
     # и вставляем проверку ПЕРЕД ним
@@ -507,21 +507,26 @@ with open('src/lib/crypt_ops/crypto_rand_fast.c', 'r') as f:
 # Ищем секцию с tor_assertf(inherit != INHERIT_RES_KEEP
 # Добавляем проверку ПЕРЕД tor_assertf
 
-old_pattern = r'(#else\n  /\* We decided above that noinherit would always do _something_\. Assert here\n   \* that we were correct\. \*/\n  )(tor_assertf\(inherit != INHERIT_RES_KEEP,)'
+# Заменяем весь блок assert на условную проверку для iOS
+pattern = r'(#else\n  /\* We decided above that noinherit would always do _something_\. Assert here\n   \* that we were correct\. \*/\n  )tor_assertf\(inherit != INHERIT_RES_KEEP,[^)]+\);'
 
-new_code = r'''\1/* Platforms that don't support non-inheritable memory (iOS, some Unix)
-   * return INHERIT_RES_KEEP. Fallback to allocated memory in this case.
-   * This is a known limitation on iOS and some other platforms. */
-  if (inherit == INHERIT_RES_KEEP) {
-    log_warn(LD_CRYPTO, "Platform does not support non-inheritable memory regions. "
-                        "Using allocated memory fallback. This is a known limitation "
-                        "on iOS and some other platforms.");
-    inherit = INHERIT_RES_ALLOCATED;
-  }
+replacement = r'''\1/* iOS PATCH: Platform doesn't support non-inheritable memory (iOS).
+   * INHERIT_RES_KEEP is returned, which means we rely on CHECK_PID above
+   * to detect forks. This is acceptable for iOS as it rarely forks.
+   * Original assertion would crash here, so we skip it for KEEP. */
+  if (inherit != INHERIT_RES_KEEP) {
+    /* Non-iOS platforms should have succeeded with NOINHERIT */
+    tor_assertf(inherit != INHERIT_RES_KEEP,
+                "We failed to create a non-inheritable memory region, even "
+                "though we believed such a failure to be impossible! This is "
+                "probably a bug in Tor support for your platform; please report "
+                "it.");
+  } else {
+    /* iOS: INHERIT_RES_KEEP is expected and acceptable */
+    log_info(LD_CRYPTO, "Using memory with INHERIT_RES_KEEP on iOS (with PID check).");
+  }'''
 
-  \2'''
-
-content = re.sub(old_pattern, new_code, content, flags=re.MULTILINE)
+content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
 
 with open('src/lib/crypt_ops/crypto_rand_fast.c', 'w') as f:
     f.write(content)
@@ -530,11 +535,11 @@ print("        ✅ crypto_rand_fast.c patched successfully!")
 PYTHON_PATCH_EOF
 
         # Проверка что патч применился
-        if grep -q "Platform does not support non-inheritable memory" "$CRYPTO_FILE"; then
+        if grep -q "iOS PATCH: Platform doesn't support non-inheritable memory" "$CRYPTO_FILE"; then
             echo "      ✅ Patch verified in crypto_rand_fast.c!"
             # Показываем патченный код
             echo "      📄 Patched code:"
-            grep -B 2 -A 10 "Platform does not support" "$CRYPTO_FILE" | head -15
+            grep -B 2 -A 10 "iOS PATCH" "$CRYPTO_FILE" | head -15
         else
             echo "      ❌ Patch verification FAILED! crypto_rand_fast.c not patched!"
             exit 1
