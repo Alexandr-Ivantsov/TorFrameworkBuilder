@@ -1,7 +1,7 @@
 # Build artifacts
 build/
 
-# Tor source (but allow Sources/Tor/tor-ios-fixed/ for SPM)
+# Tor source
 tor-0.4.8.19/
 tor-ios-fixed/
 
