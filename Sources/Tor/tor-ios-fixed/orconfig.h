@@ -117,6 +117,10 @@
 #define HAVE_SYS_PRCTL_H 0
 #define HAVE_SYS_RANDOM_H 1
 #define HAVE_SYS_RESOURCE_H 1
+#define HAVE_SYS_FCNTL_H 1
+#define HAVE_FCNTL_H 1
+#define HAVE_NETDB_H 1
+#define HAVE_RLIM_T 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_SOCKET_H 1
 #define HAVE_SYS_STAT_H 1
