@@ -756,5 +756,6 @@ write_str_to_file_if_not_equal(const char *fname, const char *str)
 }
 
 #if !defined(HAVE_GETDELIM) || defined(TOR_UNIT_TESTS)
-#include "ext/getdelim.c"
+/* iOS has native getdelim() - this include is not needed */
+/* #include "ext/getdelim.c" */
 #endif
