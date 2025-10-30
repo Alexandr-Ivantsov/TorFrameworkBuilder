@@ -160,6 +160,8 @@ let package = Package(
                 .define("TOR_UNIT_TESTS", to: "0"),
                 // Platform constants
                 .define("CHAR_BIT", to: "8"),
+                // Enable PoW module (equix support for hidden service DoS protection)
+                .define("HAVE_MODULE_POW", to: "1"),
                 // Force local includes to take precedence (shim for openssl/asn1_mac.h)
                 .unsafeFlags(["-I", "Sources/Tor/include"]),
                 // OpenSSL 1.1+/3.x APIs are available in our vendored OpenSSL
