@@ -117,6 +117,8 @@ let package = Package(
                 "tor-ios-fixed/src/ext/timeouts/bench.plt.d",
                 "tor-ios-fixed/src/ext/timeouts/timeout.lua",
                 "tor-ios-fixed/src/ext/timeouts/lua",  // Exclude entire lua directory
+                // Exclude ed25519 test sources (not for production build)
+                "tor-ios-fixed/src/ext/ed25519/donna/test-internals.c",
                 // Exclude README/Makefile patterns
                 "tor-ios-fixed/Makefile",
                 "tor-ios-fixed/configure",
