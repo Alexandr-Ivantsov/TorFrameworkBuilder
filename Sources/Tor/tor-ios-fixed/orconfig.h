@@ -49,6 +49,8 @@
  * ======================================== */
 
 #define HAVE_STRUCT_TIMEVAL 1
+#define HAVE_STRUCT_TIMEVAL_TV_SEC 1
+#define HAVE_STRUCT_TIMEVAL_TV_USEC 1
 #define HAVE_STRUCT_IN6_ADDR 1
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_SA_FAMILY_T 1
