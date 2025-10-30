@@ -107,6 +107,7 @@
 #define HAVE_STATVFS 1
 #define HAVE_STRLCAT 1
 #define HAVE_STRLCPY 1
+#define HAVE_GETLINE 1
 #define HAVE_STRPTIME 1
 #define HAVE_STRTOK_R 1
 #define HAVE_STRTOULL 1
@@ -146,6 +147,7 @@
 #define HAVE_USLEEP 1
 #define HAVE_UTIME_H 1
 #define HAVE_VASPRINTF 1
+#define HAVE_GETDELIM 1
 
 /* ========================================
  * FEATURE FLAGS
