@@ -31,6 +31,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limits.h>
+#define HAVE_LIMITS_H 1
 #include <sys/types.h>
 #include <inttypes.h>
 
