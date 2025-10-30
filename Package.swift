@@ -139,6 +139,9 @@ let package = Package(
                 "tor-ios-fixed/src/feature/relay/relay_config.c",
                 "tor-ios-fixed/src/feature/relay/onion_queue.c",
                 "tor-ios-fixed/src/feature/relay/circuitbuild_relay.c",
+                "tor-ios-fixed/src/feature/relay/relay_sys.c",
+                "tor-ios-fixed/src/feature/relay/ext_orport.c",
+                "tor-ios-fixed/src/feature/relay/dns.c",
                 // Exclude mulodi emulation (not needed on iOS/clang)
                 "tor-ios-fixed/src/ext/mulodi/mulodi4.c",
                 "tor-ios-fixed/src/ext/mulodi",
