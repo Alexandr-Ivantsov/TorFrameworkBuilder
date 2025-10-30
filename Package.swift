@@ -154,7 +154,8 @@ let package = Package(
                 // Platform
                 .define("__APPLE_USE_RFC_3542", to: "1"),
                 
-                // Header search paths - Tor internal
+                // Header search paths - Tor internal (ensure local include overrides vendored)
+                .headerSearchPath("include"),
                 .headerSearchPath("tor-ios-fixed"),
                 .headerSearchPath("tor-ios-fixed/src"),
                 .headerSearchPath("tor-ios-fixed/src/core"),
