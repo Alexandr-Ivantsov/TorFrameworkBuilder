@@ -26,6 +26,7 @@
 		0CE216768E9C6BED1A367164 /* numcpus.c in Sources */ = {isa = PBXBuildFile; fileRef = BAFC916365CD18BA49047CD5 /* numcpus.c */; };
 		0EA9A19C6450BE0199015172 /* compat_pthreads.c in Sources */ = {isa = PBXBuildFile; fileRef = B673CB0E2BEB31C5BEECE62B /* compat_pthreads.c */; };
 		0F00302F8E26B38A1E0AFDCD /* fe_isnonzero.c in Sources */ = {isa = PBXBuildFile; fileRef = FD5EEC36B3FA3A9BFA316337 /* fe_isnonzero.c */; };
+		0FB3584FDB0C110E9A783769 /* CXZ.framework in Dependencies */ = {isa = PBXBuildFile; fileRef = CE246463BC1C2479A30F3722 /* CXZ.framework */; };
 		0FE76A99D2FC9FD17ADA15FB /* userdb.c in Sources */ = {isa = PBXBuildFile; fileRef = F3CDB1472C6FBB5281BB75C8 /* userdb.c */; };
 		10408E3A6B4FA8F08DB02B4E /* hashx.c in Sources */ = {isa = PBXBuildFile; fileRef = AE22076DA83CBB17EB50CE40 /* hashx.c */; };
 		105A5E8C60D56B4C807D2C40 /* malloc.c in Sources */ = {isa = PBXBuildFile; fileRef = C012DE99F76FE56AFBBD68CF /* malloc.c */; };
@@ -49,6 +50,7 @@
 		18D394D2058FE68FE7E9C77E /* conflux_pool.c in Sources */ = {isa = PBXBuildFile; fileRef = 85C448040A88518EC6924F69 /* conflux_pool.c */; };
 		1A9EA67CF3654C39E697FA8E /* hs_pow.c in Sources */ = {isa = PBXBuildFile; fileRef = E3BD7F3DD8370F7B4FD2D530 /* hs_pow.c */; };
 		1BB2F966B5590EC6F5350AEC /* onion_tap.c in Sources */ = {isa = PBXBuildFile; fileRef = 21DF69F219629648D79BEB24 /* onion_tap.c */; };
+		1CB2C98BB3BAFBA9973A0EAA /* evrpc.h in Headers */ = {isa = PBXBuildFile; fileRef = B12E2D1BD0013FE680476C9D /* evrpc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1CE2549373F8AD4F781D7A3E /* process_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 3CABCBDAE8C9A00F04BF560E /* process_sys.c */; };
 		1E724B9D9EF8E279C4D2999F /* socketpair.c in Sources */ = {isa = PBXBuildFile; fileRef = 8680BEE3F09A5EF4CAB5EC0C /* socketpair.c */; };
 		1E86F19431F27514A42E9256 /* setuid.c in Sources */ = {isa = PBXBuildFile; fileRef = 6F621E617FAF3DE30E871011 /* setuid.c */; };
@@ -81,6 +83,7 @@
 		2B37ACE12839B59A370852FD /* dir.c in Sources */ = {isa = PBXBuildFile; fileRef = 410EF3EF12D554496C648F56 /* dir.c */; };
 		2BAB0949B7A69BD8B34F5517 /* hs_intropoint.c in Sources */ = {isa = PBXBuildFile; fileRef = 28FB9708D081637C1CE401B8 /* hs_intropoint.c */; };
 		2C02A80DF44158ACFBA39A5D /* onion_fast.c in Sources */ = {isa = PBXBuildFile; fileRef = A642D80311A9FBFFBE2DE2B7 /* onion_fast.c */; };
+		2C802D0D4F8E1B988C1326F6 /* dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = 5BB334D49641D23E70EB6AAD /* dummy.c */; };
 		2CDA36DF6B67C6AA396355AA /* pem.c in Sources */ = {isa = PBXBuildFile; fileRef = B5B457D6031AE457827CC49D /* pem.c */; };
 		2DAD4C25ED26378CAE08844B /* connstats.c in Sources */ = {isa = PBXBuildFile; fileRef = EA7E9861E921123D4C1B9414 /* connstats.c */; };
 		2E7E8267A4C72996173C8323 /* ntmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 455F1F863F036768375E0104 /* ntmain.c */; };
@@ -152,6 +155,7 @@
 		577AA967DA9239F79C425619 /* torerr.c in Sources */ = {isa = PBXBuildFile; fileRef = 19D2E67A2A699E7D6E6838F0 /* torerr.c */; };
 		57C13AEFC266D706BA77E741 /* btrack_circuit.c in Sources */ = {isa = PBXBuildFile; fileRef = BF682647356DBF122B85E84B /* btrack_circuit.c */; };
 		5838632DF6AF69A57B8E6082 /* periodic.c in Sources */ = {isa = PBXBuildFile; fileRef = E9781061F859177E2A86C6D2 /* periodic.c */; };
+		5861D249DD922C697466E022 /* dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = DA9A0140158EFA831AF0FA1D /* dummy.c */; };
 		5A28A2CA5C85E3EFAF1294C4 /* crypto_rand.c in Sources */ = {isa = PBXBuildFile; fileRef = 5C951B318B2FAED658A1BAB6 /* crypto_rand.c */; };
 		5B0916BA2372F5284E58C38E /* tortls_openssl.c in Sources */ = {isa = PBXBuildFile; fileRef = 4C426A82869D33FFAB1A1967 /* tortls_openssl.c */; };
 		5B27F803CA735E227BA311A6 /* metrics_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = C32F443591026CB8F429BC65 /* metrics_sys.c */; };
@@ -177,6 +181,7 @@
 		669A8804D42752B44537FF44 /* ge_precomp_0.c in Sources */ = {isa = PBXBuildFile; fileRef = 8691859066CB94DDB570A472 /* ge_precomp_0.c */; };
 		671B7398DED9A8017B3006AA /* qstring.c in Sources */ = {isa = PBXBuildFile; fileRef = ACCBD41B2BEE83E682D0086E /* qstring.c */; };
 		673CD2D5D8029FB91EF9E864 /* conflux_params.c in Sources */ = {isa = PBXBuildFile; fileRef = 142FCEAAED50CD1F6A01B93A /* conflux_params.c */; };
+		6766A5F319B06BD40FE5A36B /* COpenSSL.framework in Dependencies */ = {isa = PBXBuildFile; fileRef = 89F0380121182EEC2BA0C5F8 /* COpenSSL.framework */; };
 		683C1755AB49FD26C907E35D /* crypto_ope.c in Sources */ = {isa = PBXBuildFile; fileRef = F9CA16822C5D19C34705829F /* crypto_ope.c */; };
 		685A7B36E9E20DEFB0FD2791 /* hs_cache.c in Sources */ = {isa = PBXBuildFile; fileRef = 501151F70868F03DF58172C9 /* hs_cache.c */; };
 		686FAB3526A0A38190D4B463 /* crypto_pwbox.c in Sources */ = {isa = PBXBuildFile; fileRef = F54B6A2042012DF7C08C7A8B /* crypto_pwbox.c */; };
@@ -201,6 +206,7 @@
 		79402643551C9B908FD88AC6 /* curve25519-donna.c in Sources */ = {isa = PBXBuildFile; fileRef = 7C5F5AE6C7359D93C0B48878 /* curve25519-donna.c */; };
 		79CED2B362297585B3C4FB5A /* scheduler.c in Sources */ = {isa = PBXBuildFile; fileRef = 9FE6AC89886BF7246619D4D0 /* scheduler.c */; };
 		7A45A2301A852AB654FADFD3 /* relay_stub.c in Sources */ = {isa = PBXBuildFile; fileRef = 6474C2478A3484A53B971E7C /* relay_stub.c */; };
+		7DADC890FB135BCC8622E53A /* evdns.h in Headers */ = {isa = PBXBuildFile; fileRef = F7814E07830030713CC60C57 /* evdns.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7E6C2DAD71CB1E9CF1E9C5AF /* x509.c in Sources */ = {isa = PBXBuildFile; fileRef = D53C2F4EF22DFC20D667D261 /* x509.c */; };
 		7FD40B3244E47D96040C6D3A /* printf.c in Sources */ = {isa = PBXBuildFile; fileRef = 01096B412CFAE903655B489B /* printf.c */; };
 		80590B386EE614F9D1502DE8 /* congestion_control_flow.c in Sources */ = {isa = PBXBuildFile; fileRef = 7FA852908E8D0C8271C86A7E /* congestion_control_flow.c */; };
@@ -225,6 +231,7 @@
 		8959D1A8E7302EFBAFB56560 /* sigcommon.c in Sources */ = {isa = PBXBuildFile; fileRef = 43907F03BF0C3451C9741398 /* sigcommon.c */; };
 		8A06EBB823F31242F5C434A3 /* equix.c in Sources */ = {isa = PBXBuildFile; fileRef = 28C15D3585E68CB46A372753 /* equix.c */; };
 		8A0827F4A19B3D92ABF06179 /* authcert.c in Sources */ = {isa = PBXBuildFile; fileRef = A66C4E79E628C58267BA70D4 /* authcert.c */; };
+		8AC3AF0E0CA9EB4058972DC5 /* CLibevent.framework in Dependencies */ = {isa = PBXBuildFile; fileRef = 8A670B3CEFC65A6EC1FC63D2 /* CLibevent.framework */; };
 		8B30DA20BAF2A2770DA94D04 /* quiet_level.c in Sources */ = {isa = PBXBuildFile; fileRef = 4492C7EAAD6D9EF845288748 /* quiet_level.c */; };
 		8BC1CA797878E7F2BA6FADC4 /* compiler_x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E08BBEABA923A3A7F565AC /* compiler_x86.c */; };
 		8E9D434F48CBA18775FEDEC9 /* pubsub_publish.c in Sources */ = {isa = PBXBuildFile; fileRef = 39791176F982D4548E807F56 /* pubsub_publish.c */; };
@@ -233,6 +240,7 @@
 		8F10B2D18BF861845BA3015B /* util_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 363D4DB7351B3A74016A5B12 /* util_string.c */; };
 		8F1BA09B01B0AF5E594E0692 /* memarea.c in Sources */ = {isa = PBXBuildFile; fileRef = CC8BAB6F04D501C4576338E9 /* memarea.c */; };
 		8F30743AC9DB8E0B2E41392F /* dispatch_cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = FB10321A6789B06DC14C640B /* dispatch_cfg.c */; };
+		8F9CF2126FA73B9527BB03DC /* dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = 31E2F0EEA9ADEAE2A6C24C15 /* dummy.c */; };
 		91D2C179BB8175482A63E399 /* scanf.c in Sources */ = {isa = PBXBuildFile; fileRef = 7CA2B88C367706E0AA826181 /* scanf.c */; };
 		924E7FE396ECEE8CC732796C /* risky_options.c in Sources */ = {isa = PBXBuildFile; fileRef = DD4F2947CCB831C4F490D7C6 /* risky_options.c */; };
 		928829A8A57E2CA2897AEFF0 /* smartlist_core.c in Sources */ = {isa = PBXBuildFile; fileRef = A852902C8524C02A3285C7B4 /* smartlist_core.c */; };
@@ -264,6 +272,7 @@
 		A2CC4765514C771AC75264F9 /* geoip_stats.c in Sources */ = {isa = PBXBuildFile; fileRef = 6F15415924148F856A621383 /* geoip_stats.c */; };
 		A3214A388C3853B4B658C75B /* proto_socks.c in Sources */ = {isa = PBXBuildFile; fileRef = C9A74E0AD8FECB40157B3C97 /* proto_socks.c */; };
 		A3D1F175055F505C979FD6AC /* crypto_rand_fast.c in Sources */ = {isa = PBXBuildFile; fileRef = A60E60F6D67964DAFF3C3079 /* crypto_rand_fast.c */; };
+		A55D161C0E3D7EE6B1742DAB /* event.h in Headers */ = {isa = PBXBuildFile; fileRef = D8A8B2D88098ADD1BC2CCB31 /* event.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A58AA66465D17F8F3EC3A4C7 /* metrics_common.c in Sources */ = {isa = PBXBuildFile; fileRef = FA184B9A47F29EE15AC94A1B /* metrics_common.c */; };
 		A700FF864F991CF1E54BF0A8 /* circpad_negotiation.c in Sources */ = {isa = PBXBuildFile; fileRef = 74198F30E2CBBA78E4ACC47B /* circpad_negotiation.c */; };
 		A922823044D3409533DC4AF6 /* sendme_cell.c in Sources */ = {isa = PBXBuildFile; fileRef = 1BFC7302D4A6793699367A3E /* sendme_cell.c */; };
@@ -328,6 +337,7 @@
 		CB72B367834A6A97E1069627 /* hs_config.c in Sources */ = {isa = PBXBuildFile; fileRef = 27E7D379B1200DEA049ABB5D /* hs_config.c */; };
 		CB96A25E9ECB53157FAFDCFD /* fe_copy.c in Sources */ = {isa = PBXBuildFile; fileRef = 0F5EC81ACB5359333C769330 /* fe_copy.c */; };
 		CBD30CFD2D3A6637FAA70844 /* network_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = DF368BF597C68CDB20A542F1 /* network_sys.c */; };
+		CD576698F2CB08C15FCFAB75 /* evutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 3685E9D7D2790021703C2FCB /* evutil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CE082ABEEA6B20F017C19B9F /* netinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 2108D6F4D0949FF298EC325F /* netinfo.c */; };
 		CE419F0DF6836192D3351C44 /* files.c in Sources */ = {isa = PBXBuildFile; fileRef = FD3D5B53B766484E19DF3CC4 /* files.c */; };
 		CEF0CB03A0134C9D730D9742 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = CCE6564178A172E596A3462C /* socket.c */; };
@@ -391,6 +401,7 @@
 		F5FDF35C40D5E538CBFC7DCF /* fe_mul.c in Sources */ = {isa = PBXBuildFile; fileRef = FCDD5FF490BAEB6A37615804 /* fe_mul.c */; };
 		F62D2A3D6E4056B90D81DB6C /* crypto_curve25519.c in Sources */ = {isa = PBXBuildFile; fileRef = FD2C6FE5DCA62DD7ECA877F5 /* crypto_curve25519.c */; };
 		F6F98A3B7CF57343F8A5E617 /* relay_find_addr.c in Sources */ = {isa = PBXBuildFile; fileRef = 652CC3B78323EDC146267643 /* relay_find_addr.c */; };
+		F873796DE3B1A429DB50B2EC /* evhttp.h in Headers */ = {isa = PBXBuildFile; fileRef = C30A11D148040563B5C431FD /* evhttp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F8BEFCBF7F182EEB36CE01EA /* resolve_addr.c in Sources */ = {isa = PBXBuildFile; fileRef = 793644A6C3C5F6FB537062F2 /* resolve_addr.c */; };
 		F8D67CFE0FC1D9CC3AACFFC3 /* cell_introduce1.c in Sources */ = {isa = PBXBuildFile; fileRef = B84068FD8361B6063F2839FC /* cell_introduce1.c */; };
 		F91ED9A482BEBD4062FB6583 /* scheduler_vanilla.c in Sources */ = {isa = PBXBuildFile; fileRef = B19E32E526198E60F8A3C74A /* scheduler_vanilla.c */; };
@@ -408,7 +419,73 @@
 		FFAC2680E979C8B81BA0B858 /* cstring.c in Sources */ = {isa = PBXBuildFile; fileRef = 8E4E93652C0A598576D61042 /* cstring.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		00E7CA3D7695447968051D74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 697208D1F53B904A6861CDAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 947ADE5982F785203DDE97BA;
+			remoteInfo = COpenSSL;
+		};
+		6988BB44B223765286F74CD6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 697208D1F53B904A6861CDAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B72A86F68F19E84C5DADF86A;
+			remoteInfo = CXZ;
+		};
+		8CAD52E58E4636213ABD02AC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 697208D1F53B904A6861CDAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D1DF3C322FC0C494B152A7CB;
+			remoteInfo = CLibevent;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
+		4417AF01D3AF1E781A56B13C /* Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstSubfolderSpec = 16;
+			files = (
+				8AC3AF0E0CA9EB4058972DC5 /* CLibevent.framework in Dependencies */,
+				6766A5F319B06BD40FE5A36B /* COpenSSL.framework in Dependencies */,
+				0FB3584FDB0C110E9A783769 /* CXZ.framework in Dependencies */,
+			);
+			name = Dependencies;
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		76C67F2401837290DF9D7325 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDFE240D12B43DCE85CF6B75 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CCE63282C46D87E1E6CE4866 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAB3743420DEF97889AD884B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -490,6 +567,7 @@
 		2DB2EAFB2AD4AE273AD6731D /* typedvar.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = typedvar.c; sourceTree = "<group>"; };
 		2DF57E1C1587B23E5881D27C /* ge_scalarmult_base.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_scalarmult_base.c; sourceTree = "<group>"; };
 		3172FE4DAB3137061E3A8A40 /* ge_double_scalarmult.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_double_scalarmult.c; sourceTree = "<group>"; };
+		31E2F0EEA9ADEAE2A6C24C15 /* dummy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dummy.c; sourceTree = "<group>"; };
 		32A520D9D001C20DA3B54D13 /* btrack_orconn_maps.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = btrack_orconn_maps.c; sourceTree = "<group>"; };
 		332E1DBA8379CB48F9D8E224 /* smartlist_split.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = smartlist_split.c; sourceTree = "<group>"; };
 		33B42C12254E7EE3C11B7E75 /* dirclient.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dirclient.c; sourceTree = "<group>"; };
@@ -500,6 +578,7 @@
 		34E33248937849FB3CF89D0A /* connection_or.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = connection_or.c; sourceTree = "<group>"; };
 		363D4DB7351B3A74016A5B12 /* util_string.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = util_string.c; sourceTree = "<group>"; };
 		3677B1AD825139B40F3773E0 /* ge_p3_dbl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_p3_dbl.c; sourceTree = "<group>"; };
+		3685E9D7D2790021703C2FCB /* evutil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evutil.h; sourceTree = "<group>"; };
 		368EC9B549BCE8C1F1F315B6 /* fmt_routerstatus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fmt_routerstatus.c; sourceTree = "<group>"; };
 		374318C3EC103074EFD4A793 /* control.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = control.c; sourceTree = "<group>"; };
 		3916913A27906C6F127B64F1 /* addressmap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = addressmap.c; sourceTree = "<group>"; };
@@ -552,6 +631,7 @@
 		57D6E502136C463FD13CC307 /* buffers.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = buffers.c; sourceTree = "<group>"; };
 		59F29B2DBAB38FA3966A297C /* crypto_init.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_init.c; sourceTree = "<group>"; };
 		5AE8AFC7647CCE2463DD502E /* proto_ext_or.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = proto_ext_or.c; sourceTree = "<group>"; };
+		5BB334D49641D23E70EB6AAD /* dummy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dummy.c; sourceTree = "<group>"; };
 		5C951B318B2FAED658A1BAB6 /* crypto_rand.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_rand.c; sourceTree = "<group>"; };
 		5CA86BEA1CA1A72D9A8B2E92 /* cpuworker.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cpuworker.c; sourceTree = "<group>"; };
 		5CF46CC9B21882AF35554B22 /* nickname.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nickname.c; sourceTree = "<group>"; };
@@ -570,6 +650,7 @@
 		62F37EDB42A70FC99175B711 /* waitpid.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = waitpid.c; sourceTree = "<group>"; };
 		63A9E6DE10AF1BFB6A4BCFEA /* fe_tobytes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fe_tobytes.c; sourceTree = "<group>"; };
 		6474C2478A3484A53B971E7C /* relay_stub.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = relay_stub.c; sourceTree = "<group>"; };
+		64EA1110016FEAF42098651F /* COpenSSL-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "COpenSSL-Info.plist"; sourceTree = "<group>"; };
 		652CC3B78323EDC146267643 /* relay_find_addr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = relay_find_addr.c; sourceTree = "<group>"; };
 		65CA822F89ACEDCC6AE5BD73 /* crypto_dh_openssl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_dh_openssl.c; sourceTree = "<group>"; };
 		666E8B7BB92B346EC0789663 /* loadkey.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = loadkey.c; sourceTree = "<group>"; };
@@ -602,6 +683,7 @@
 		760BB1FBD9A08A0AAD5B784F /* circuitpadding_machines.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = circuitpadding_machines.c; sourceTree = "<group>"; };
 		77DF337A8F6D857E375CFEEE /* log.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = log.c; sourceTree = "<group>"; };
 		78C86169EC237381AD25995E /* dos.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dos.c; sourceTree = "<group>"; };
+		78EB9116D961DDE096803255 /* CXZ-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CXZ-Info.plist"; sourceTree = "<group>"; };
 		7902E1EB9AB4DA3B6855DD3B /* compat_time.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat_time.c; sourceTree = "<group>"; };
 		7934F60322755AB346E81014 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
 		793644A6C3C5F6FB537062F2 /* resolve_addr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = resolve_addr.c; sourceTree = "<group>"; };
@@ -629,10 +711,13 @@
 		8857292269F36C83D282F469 /* dirclient_modes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dirclient_modes.c; sourceTree = "<group>"; };
 		887080AA672EB8AEC91C5860 /* pubsub_check.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pubsub_check.c; sourceTree = "<group>"; };
 		88E08BBEABA923A3A7F565AC /* compiler_x86.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compiler_x86.c; sourceTree = "<group>"; };
+		896C119CFB78E292AA3D5B29 /* CLibevent-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "CLibevent-Info.plist"; sourceTree = "<group>"; };
 		898FB74EC98DA3A0401E3125 /* directory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = directory.c; sourceTree = "<group>"; };
 		89CA9463BD518E6FB3BAC099 /* ge_p3_to_p2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_p3_to_p2.c; sourceTree = "<group>"; };
+		89F0380121182EEC2BA0C5F8 /* COpenSSL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = COpenSSL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A04C2EF5CE0431BC1DD0726 /* policy_parse.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = policy_parse.c; sourceTree = "<group>"; };
 		8A5C7E9736A7AC85F2068DED /* compat_ctype.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compat_ctype.c; sourceTree = "<group>"; };
+		8A670B3CEFC65A6EC1FC63D2 /* CLibevent.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CLibevent.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AA16F13BD103EDFF0D76256 /* order.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = order.c; sourceTree = "<group>"; };
 		8BBB0E7A8E1CB633D16A4861 /* prometheus.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = prometheus.c; sourceTree = "<group>"; };
 		8C65F7306C510DBE08BD7BFA /* ge_p1p1_to_p2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_p1p1_to_p2.c; sourceTree = "<group>"; };
@@ -696,6 +781,7 @@
 		AE5F2D9C5B8DE46144D9D806 /* scheduler_kist.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = scheduler_kist.c; sourceTree = "<group>"; };
 		B069D82FAA638C898CD7F16F /* hs_service.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hs_service.c; sourceTree = "<group>"; };
 		B0DCD969546C0B8EAE6F9C5F /* compress_zlib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compress_zlib.c; sourceTree = "<group>"; };
+		B12E2D1BD0013FE680476C9D /* evrpc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evrpc.h; sourceTree = "<group>"; };
 		B14800323BE8C8C4E74189DE /* connection_edge.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = connection_edge.c; sourceTree = "<group>"; };
 		B16433A4215B23B6D58ECE0B /* ed25519_tor.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ed25519_tor.c; sourceTree = "<group>"; };
 		B19E32E526198E60F8A3C74A /* scheduler_vanilla.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = scheduler_vanilla.c; sourceTree = "<group>"; };
@@ -730,6 +816,7 @@
 		C08A0D20EE15B867951F6D6D /* btrack.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = btrack.c; sourceTree = "<group>"; };
 		C11B0C647060429B9DDB29C0 /* fe_neg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fe_neg.c; sourceTree = "<group>"; };
 		C12A93A259CE0478160D70D2 /* env.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = env.c; sourceTree = "<group>"; };
+		C30A11D148040563B5C431FD /* evhttp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evhttp.h; sourceTree = "<group>"; };
 		C32F443591026CB8F429BC65 /* metrics_sys.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = metrics_sys.c; sourceTree = "<group>"; };
 		C417DE1EFE309E137CD573CA /* proto_haproxy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = proto_haproxy.c; sourceTree = "<group>"; };
 		C7375C6929D3F3E3976D484B /* meminfo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = meminfo.c; sourceTree = "<group>"; };
@@ -745,6 +832,7 @@
 		CCE6564178A172E596A3462C /* socket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = socket.c; sourceTree = "<group>"; };
 		CD8278B73E669C343D1E8F82 /* circuituse.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = circuituse.c; sourceTree = "<group>"; };
 		CD85E18701EF10B85A3B9E15 /* routerparse.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = routerparse.c; sourceTree = "<group>"; };
+		CE246463BC1C2479A30F3722 /* CXZ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CXZ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE47969CD8A3FC144C83E854 /* transports.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = transports.c; sourceTree = "<group>"; };
 		CE76ED1E546D9B6CEF786EB7 /* hs_metrics.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hs_metrics.c; sourceTree = "<group>"; };
 		CE91C9B1CF735FBB4E929D47 /* routerset.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = routerset.c; sourceTree = "<group>"; };
@@ -764,8 +852,10 @@
 		D71A56F1560AB76FB31C1A93 /* compiler_a64.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = compiler_a64.c; sourceTree = "<group>"; };
 		D7459826B54EF016D1E49696 /* addsub.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = addsub.c; sourceTree = "<group>"; };
 		D75FC0F2F92C0C6AA14CA0E6 /* fe_invert.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fe_invert.c; sourceTree = "<group>"; };
+		D8A8B2D88098ADD1BC2CCB31 /* event.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = event.h; sourceTree = "<group>"; };
 		D91BFD74871D870485B26DF7 /* crypto_dh.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_dh.c; sourceTree = "<group>"; };
 		D96775B5726BF9AC2247BBCD /* reasons.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = reasons.c; sourceTree = "<group>"; };
+		DA9A0140158EFA831AF0FA1D /* dummy.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dummy.c; sourceTree = "<group>"; };
 		DAB5A85C08D3E02CAEE37E48 /* metrics.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = metrics.c; sourceTree = "<group>"; };
 		DD4F2947CCB831C4F490D7C6 /* risky_options.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = risky_options.c; sourceTree = "<group>"; };
 		DD76F58B330F0E3BA59D7C86 /* hs_descriptor.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hs_descriptor.c; sourceTree = "<group>"; };
@@ -807,6 +897,7 @@
 		F3EB98E609BDF47E4144534E /* ge_msub.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ge_msub.c; sourceTree = "<group>"; };
 		F42352E954D6C690212AAA14 /* hs_dos.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = hs_dos.c; sourceTree = "<group>"; };
 		F54B6A2042012DF7C08C7A8B /* crypto_pwbox.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_pwbox.c; sourceTree = "<group>"; };
+		F7814E07830030713CC60C57 /* evdns.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = evdns.h; sourceTree = "<group>"; };
 		F79F7C7E8F039D3B5A3B36A4 /* fp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fp.c; sourceTree = "<group>"; };
 		F8FF9931D09696797978260D /* control_cmd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = control_cmd.c; sourceTree = "<group>"; };
 		F9CA16822C5D19C34705829F /* crypto_ope.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crypto_ope.c; sourceTree = "<group>"; };
@@ -832,6 +923,27 @@
 			files = (
 				E6651857E27AC11C4CF8ADBE /* libresolv.tbd in Frameworks */,
 				27E8BDDAAD16578E88BA4993 /* libz.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E152B82D1BE2DEC62FA307F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAF47355997AA5F64DB01AE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA647CF70C5C8A1A3DFEFBA1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1304,6 +1416,14 @@
 			path = version;
 			sourceTree = "<group>";
 		};
+		89739F26E8C9978BB2F58D48 /* openssl */ = {
+			isa = PBXGroup;
+			children = (
+				31E2F0EEA9ADEAE2A6C24C15 /* dummy.c */,
+			);
+			path = openssl;
+			sourceTree = "<group>";
+		};
 		8A3BA167F8CB2F6D1D217653 /* wallclock */ = {
 			isa = PBXGroup;
 			children = (
@@ -1317,6 +1437,9 @@
 		915B40ADF77B59C729D614A6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				8A670B3CEFC65A6EC1FC63D2 /* CLibevent.framework */,
+				89F0380121182EEC2BA0C5F8 /* COpenSSL.framework */,
+				CE246463BC1C2479A30F3722 /* CXZ.framework */,
 				445A55A1AB6A8B34C5517C12 /* Tor.framework */,
 			);
 			name = Products;
@@ -1325,6 +1448,9 @@
 		9D762F347289D7E9C4AC8A5E /* InfoPlists */ = {
 			isa = PBXGroup;
 			children = (
+				896C119CFB78E292AA3D5B29 /* CLibevent-Info.plist */,
+				64EA1110016FEAF42098651F /* COpenSSL-Info.plist */,
+				78EB9116D961DDE096803255 /* CXZ-Info.plist */,
 				821DC0F05900FF20019AF8BB /* Tor-Info.plist */,
 			);
 			path = InfoPlists;
@@ -1682,6 +1808,15 @@
 			path = config;
 			sourceTree = "<group>";
 		};
+		CF7A47C6A537838178A01B3F /* libevent */ = {
+			isa = PBXGroup;
+			children = (
+				FB48BFCD16D1A9E75C761C26 /* include */,
+				DA9A0140158EFA831AF0FA1D /* dummy.c */,
+			);
+			path = libevent;
+			sourceTree = "<group>";
+		};
 		D17DD021775B63E5DC254C38 /* meminfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -1743,6 +1878,14 @@
 			path = or;
 			sourceTree = "<group>";
 		};
+		DAEB0DA870D77574FFFE8A07 /* xz */ = {
+			isa = PBXGroup;
+			children = (
+				5BB334D49641D23E70EB6AAD /* dummy.c */,
+			);
+			path = xz;
+			sourceTree = "<group>";
+		};
 		DB204A22983083782BDC5670 /* proto */ = {
 			isa = PBXGroup;
 			children = (
@@ -1754,6 +1897,16 @@
 				C9A74E0AD8FECB40157B3C97 /* proto_socks.c */,
 			);
 			path = proto;
+			sourceTree = "<group>";
+		};
+		DBA59A302DD479A69AE69CD1 /* output */ = {
+			isa = PBXGroup;
+			children = (
+				CF7A47C6A537838178A01B3F /* libevent */,
+				89739F26E8C9978BB2F58D48 /* openssl */,
+				DAEB0DA870D77574FFFE8A07 /* xz */,
+			);
+			path = output;
 			sourceTree = "<group>";
 		};
 		DC3E26869E1F73125C154103 /* dispatch */ = {
@@ -1908,16 +2061,51 @@
 			path = dircache;
 			sourceTree = "<group>";
 		};
+		FB48BFCD16D1A9E75C761C26 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				F7814E07830030713CC60C57 /* evdns.h */,
+				D8A8B2D88098ADD1BC2CCB31 /* event.h */,
+				C30A11D148040563B5C431FD /* evhttp.h */,
+				B12E2D1BD0013FE680476C9D /* evrpc.h */,
+				3685E9D7D2790021703C2FCB /* evutil.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
 		FDF44036DC72315E8FD59E21 /* Project */ = {
 			isa = PBXGroup;
 			children = (
 				491D210C57969D40DA59EB1B /* Derived */,
+				DBA59A302DD479A69AE69CD1 /* output */,
 				39F3281E3AA51BD331F0FEBF /* Sources */,
 			);
 			name = Project;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0A346632D50D9B5A852C5F20 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		94CA34F6FF20B9827DA1DE6A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7DADC890FB135BCC8622E53A /* evdns.h in Headers */,
+				A55D161C0E3D7EE6B1742DAB /* event.h in Headers */,
+				F873796DE3B1A429DB50B2EC /* evhttp.h in Headers */,
+				1CB2C98BB3BAFBA9973A0EAA /* evrpc.h in Headers */,
+				CD576698F2CB08C15FCFAB75 /* evutil.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		3D9660776CE8D601CD908F4D /* Tor */ = {
@@ -1928,16 +2116,82 @@
 				138F7A68A72E2AD52F504076 /* Resources */,
 				4583B251C6D8BFB8196604E4 /* Frameworks */,
 				EAB3743420DEF97889AD884B /* Embed Frameworks */,
+				4417AF01D3AF1E781A56B13C /* Dependencies */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				36DF9ADC87FAF7E60C8B009A /* PBXTargetDependency */,
+				2205C7FF81106F856C6930DA /* PBXTargetDependency */,
+				3FC4CF590715F4D7EC17AA2A /* PBXTargetDependency */,
 			);
 			name = Tor;
 			packageProductDependencies = (
 			);
 			productName = Tor;
 			productReference = 445A55A1AB6A8B34C5517C12 /* Tor.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		947ADE5982F785203DDE97BA /* COpenSSL */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2B674CDE460EFD5EDF5B3156 /* Build configuration list for PBXNativeTarget "COpenSSL" */;
+			buildPhases = (
+				0A346632D50D9B5A852C5F20 /* Headers */,
+				DB59455FDA87B2A4B9D39ADD /* Sources */,
+				071A74642A6C75413D624157 /* Resources */,
+				4E152B82D1BE2DEC62FA307F /* Frameworks */,
+				76C67F2401837290DF9D7325 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = COpenSSL;
+			packageProductDependencies = (
+			);
+			productName = COpenSSL;
+			productReference = 89F0380121182EEC2BA0C5F8 /* COpenSSL.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		B72A86F68F19E84C5DADF86A /* CXZ */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 43AD6F3039F7262B7BAFE3B2 /* Build configuration list for PBXNativeTarget "CXZ" */;
+			buildPhases = (
+				2302769850EFA7C6E8938154 /* Sources */,
+				B9F4BE40F668323C61A61960 /* Resources */,
+				FA647CF70C5C8A1A3DFEFBA1 /* Frameworks */,
+				CCE63282C46D87E1E6CE4866 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CXZ;
+			packageProductDependencies = (
+			);
+			productName = CXZ;
+			productReference = CE246463BC1C2479A30F3722 /* CXZ.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		D1DF3C322FC0C494B152A7CB /* CLibevent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4CB739FFE6801FA1CBA67D2E /* Build configuration list for PBXNativeTarget "CLibevent" */;
+			buildPhases = (
+				94CA34F6FF20B9827DA1DE6A /* Headers */,
+				D19FF98B9BD9EB21F0184FAA /* Sources */,
+				73C47E4CDF3C15D63201F97C /* Resources */,
+				EAF47355997AA5F64DB01AE7 /* Frameworks */,
+				BDFE240D12B43DCE85CF6B75 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CLibevent;
+			packageProductDependencies = (
+			);
+			productName = CLibevent;
+			productReference = 8A670B3CEFC65A6EC1FC63D2 /* CLibevent.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -1964,13 +2218,37 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				D1DF3C322FC0C494B152A7CB /* CLibevent */,
+				947ADE5982F785203DDE97BA /* COpenSSL */,
+				B72A86F68F19E84C5DADF86A /* CXZ */,
 				3D9660776CE8D601CD908F4D /* Tor */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		071A74642A6C75413D624157 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		138F7A68A72E2AD52F504076 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		73C47E4CDF3C15D63201F97C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B9F4BE40F668323C61A61960 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1980,6 +2258,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2302769850EFA7C6E8938154 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2C802D0D4F8E1B988C1326F6 /* dummy.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3BA7C7E55C806785D7FC04AA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2384,7 +2670,44 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D19FF98B9BD9EB21F0184FAA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5861D249DD922C697466E022 /* dummy.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB59455FDA87B2A4B9D39ADD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F9CF2126FA73B9527BB03DC /* dummy.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2205C7FF81106F856C6930DA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = COpenSSL;
+			target = 947ADE5982F785203DDE97BA /* COpenSSL */;
+			targetProxy = 00E7CA3D7695447968051D74 /* PBXContainerItemProxy */;
+		};
+		36DF9ADC87FAF7E60C8B009A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CLibevent;
+			target = D1DF3C322FC0C494B152A7CB /* CLibevent */;
+			targetProxy = 8CAD52E58E4636213ABD02AC /* PBXContainerItemProxy */;
+		};
+		3FC4CF590715F4D7EC17AA2A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CXZ;
+			target = B72A86F68F19E84C5DADF86A /* CXZ */;
+			targetProxy = 6988BB44B223765286F74CD6 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		005F41595F1A1C04C3832DCB /* Debug */ = {
@@ -2463,6 +2786,112 @@
 			};
 			name = Debug;
 		};
+		03016DBB67A41204E035CB61 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/libevent/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/CLibevent-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=CLibevent",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/libevent/lib",
+					"-levent",
+					"-levent_core",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CLibevent;
+				PRODUCT_NAME = CLibevent;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		0BC16F52FFA28B1457837D88 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/libevent/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/CLibevent-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=CLibevent",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/libevent/lib",
+					"-levent",
+					"-levent_core",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CLibevent;
+				PRODUCT_NAME = CLibevent;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		224E0CD0D78BD63F76FC5457 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2536,6 +2965,165 @@
 			};
 			name = Release;
 		};
+		2282CA92DC5056F323B5BCC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/openssl/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/COpenSSL-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=COpenSSL",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/openssl/lib",
+					"-lssl",
+					"-lcrypto",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = COpenSSL;
+				PRODUCT_NAME = COpenSSL;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		4787008398BBD67A9B238D81 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/xz/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/CXZ-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=CXZ",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/xz/lib",
+					"-llzma",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CXZ;
+				PRODUCT_NAME = CXZ;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+					"$(inherited)",
+					DEBUG,
+				);
+				SWIFT_COMPILATION_MODE = singlefile;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		52C291768CB76A51A2AA9744 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/xz/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/CXZ-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=CXZ",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/xz/lib",
+					"-llzma",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = CXZ;
+				PRODUCT_NAME = CXZ;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		6B11E23803724F2BE71A893B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2586,6 +3174,9 @@
 					"$(SRCROOT)/Sources/Tor/../../output/openssl/include",
 					"$(SRCROOT)/Sources/Tor/../../output/libevent/include",
 					"$(SRCROOT)/Sources/Tor/../../output/xz/include",
+					"$(SRCROOT)/output/libevent/include",
+					"$(SRCROOT)/output/openssl/include",
+					"$(SRCROOT)/output/xz/include",
 				);
 				INFOPLIST_FILE = "Derived/InfoPlists/Tor-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2604,8 +3195,19 @@
 					"-fno-modules",
 					"-fno-objc-arc",
 					"-fmodule-name=Tor",
+					"-fmodule-map-file=$(SRCROOT)/Derived/CLibevent.modulemap",
+					"-fmodule-map-file=$(SRCROOT)/Derived/COpenSSL.modulemap",
+					"-fmodule-map-file=$(SRCROOT)/output/xz/include/module.modulemap",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/Derived/CLibevent.modulemap",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/Derived/COpenSSL.modulemap",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/output/xz/include/module.modulemap",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Tor;
 				PRODUCT_NAME = Tor;
 				SDKROOT = iphoneos;
@@ -2676,6 +3278,9 @@
 					"$(SRCROOT)/Sources/Tor/../../output/openssl/include",
 					"$(SRCROOT)/Sources/Tor/../../output/libevent/include",
 					"$(SRCROOT)/Sources/Tor/../../output/xz/include",
+					"$(SRCROOT)/output/libevent/include",
+					"$(SRCROOT)/output/openssl/include",
+					"$(SRCROOT)/output/xz/include",
 				);
 				INFOPLIST_FILE = "Derived/InfoPlists/Tor-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2694,10 +3299,72 @@
 					"-fno-modules",
 					"-fno-objc-arc",
 					"-fmodule-name=Tor",
+					"-fmodule-map-file=$(SRCROOT)/Derived/CLibevent.modulemap",
+					"-fmodule-map-file=$(SRCROOT)/Derived/COpenSSL.modulemap",
+					"-fmodule-map-file=$(SRCROOT)/output/xz/include/module.modulemap",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited)";
+				OTHER_SWIFT_FLAGS = (
+					"$(inherited)",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/Derived/CLibevent.modulemap",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/Derived/COpenSSL.modulemap",
+					"-Xcc",
+					"-fmodule-map-file=$(SRCROOT)/output/xz/include/module.modulemap",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = Tor;
 				PRODUCT_NAME = Tor;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F2FC8795370883783DEF7E09 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = NO;
+				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/output/openssl/include",
+				);
+				INFOPLIST_FILE = "Derived/InfoPlists/COpenSSL-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-fmodule-name=COpenSSL",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Loutput/openssl/lib",
+					"-lssl",
+					"-lcrypto",
+				);
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = COpenSSL;
+				PRODUCT_NAME = COpenSSL;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
@@ -2715,11 +3382,38 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2B674CDE460EFD5EDF5B3156 /* Build configuration list for PBXNativeTarget "COpenSSL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2282CA92DC5056F323B5BCC0 /* Debug */,
+				F2FC8795370883783DEF7E09 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2F2C8B9FF9C92A2E8DBAD483 /* Build configuration list for PBXNativeTarget "Tor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B11E23803724F2BE71A893B /* Debug */,
 				F1B00A4FF2FE2E0D75810D1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		43AD6F3039F7262B7BAFE3B2 /* Build configuration list for PBXNativeTarget "CXZ" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4787008398BBD67A9B238D81 /* Debug */,
+				52C291768CB76A51A2AA9744 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4CB739FFE6801FA1CBA67D2E /* Build configuration list for PBXNativeTarget "CLibevent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				03016DBB67A41204E035CB61 /* Debug */,
+				0BC16F52FFA28B1457837D88 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

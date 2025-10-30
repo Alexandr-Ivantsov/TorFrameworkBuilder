@@ -1,15 +1,8 @@
 // swift-tools-version: 5.9
 import PackageDescription
 
-#if TUIST
-    import struct ProjectDescription.PackageSettings
-    
-    let packageSettings = PackageSettings(
-        productTypes: [
-            "Tor": .staticLibrary  // Changed from .framework to prevent header pollution
-        ]
-    )
-#endif
+// Note: Tor MUST be compiled as static library to prevent header pollution
+// Vendored dependencies (COpenSSL, CLibevent, CXZ) have their headers isolated
 
 let package = Package(
     name: "TorFrameworkBuilder",
