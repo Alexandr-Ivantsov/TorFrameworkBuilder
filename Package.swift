@@ -129,6 +129,8 @@ let package = Package(
                 // Exclude server pluggable transport config (relay-only)
                 "tor-ios-fixed/src/feature/relay/transport_config.c",
                 "tor-ios-fixed/src/feature/relay/transport_config.h",
+                // Exclude routermode (relay-only)
+                "tor-ios-fixed/src/feature/relay/routermode.c",
             ],
             publicHeadersPath: "include",
             cSettings: [
