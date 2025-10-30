@@ -113,6 +113,7 @@ let package = Package(
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_rsa_nss.c",
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_nss_mgt.c",
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_dh_nss.c",
+                "tor-ios-fixed/src/lib/crypt_ops/aes_nss.c",
                 
                 // Exclude main.c (has main() function)
                 "tor-ios-fixed/src/app/main/main.c",
@@ -121,6 +122,7 @@ let package = Package(
                 "tor-ios-fixed/src/ext/timeouts/bench.plt.d",
                 "tor-ios-fixed/src/ext/timeouts/timeout.lua",
                 "tor-ios-fixed/src/ext/timeouts/lua",  // Exclude entire lua directory
+                "tor-ios-fixed/src/ext/timeouts/bench",  // Exclude benchmark directory
                 // Exclude ed25519 test sources (not for production build)
                 "tor-ios-fixed/src/ext/ed25519/donna/test-internals.c",
                 // Exclude README/Makefile patterns
@@ -155,6 +157,11 @@ let package = Package(
                 "tor-ios-fixed/src/lib/fs/mmap.c",
                 // Exclude terminal password input (not applicable on iOS)
                 "tor-ios-fixed/src/lib/term",
+                // Exclude Windows-specific implementations
+                "tor-ios-fixed/src/lib/lock/compat_mutex_winthreads.c",
+                "tor-ios-fixed/src/lib/thread/compat_winthreads.c",
+                // Exclude OpenBSD malloc (conflicts with iOS system functions)
+                "tor-ios-fixed/src/ext/OpenBSD_malloc_Linux.c",
             ],
             publicHeadersPath: "include",
             cSettings: [
@@ -168,6 +175,8 @@ let package = Package(
                 .define("CHAR_BIT", to: "8"),
                 // Enable PoW module (equix support for hidden service DoS protection)
                 .define("HAVE_MODULE_POW", to: "1"),
+                // Use ed25519-donna implementation for curve25519
+                .define("USE_CURVE25519_DONNA", to: "1"),
                 // Standard C library functions available on iOS
                 .define("HAVE_GETDELIM", to: "1"),
                 .define("HAVE_GETLINE", to: "1"),

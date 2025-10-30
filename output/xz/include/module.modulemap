@@ -1,0 +1,5 @@
+module CXZ [system] {
+    umbrella header "lzma.h"
+    export *
+}
+

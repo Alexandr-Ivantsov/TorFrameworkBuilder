@@ -160,6 +160,7 @@ sock_drain(int fd)
 
 /** Send a byte on socket <b>fd</b>t.  Return 0 on success or EAGAIN,
  * -1 on error. */
+#ifndef HAVE_PIPE
 static int
 sock_alert(tor_socket_t fd)
 {
@@ -184,6 +185,7 @@ sock_drain(tor_socket_t fd)
   /* A value of r = 0 means EOF on the fd so successfully drained. */
   return 0;
 }
+#endif /* !HAVE_PIPE */
 
 /** Allocate a new set of alert sockets, and set the appropriate function
  * pointers, in <b>socks_out</b>. */

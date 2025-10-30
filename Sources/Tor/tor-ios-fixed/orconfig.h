@@ -45,6 +45,7 @@
 #define TOR_PRIdSZ "zd"
 #define TOR_PRIuMAX PRIuMAX
 #define TOR_PRIdMAX PRIdMAX
+#define SSIZE_T_CEILING ((ssize_t)(SSIZE_MAX-16))
 
 /* ========================================
  * STRUCT AVAILABILITY
@@ -69,12 +70,12 @@
 #define HAVE_BACKTRACE_SYMBOLS_FD 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_DLADDR 1
-#define HAVE_EVENTFD 0  /* Not on macOS/iOS */
+#undef HAVE_EVENTFD  /* Not on macOS/iOS */
 #define HAVE_FLOCK 1
 #define HAVE_FTIME 1
 #define HAVE_GETADDRINFO 1
-#define HAVE_GETENTROPY 1
-#define HAVE_DECL_GETENTROPY 1
+#undef HAVE_GETENTROPY  /* Not available in iOS SDK */
+#undef HAVE_DECL_GETENTROPY
 #define HAVE_GETIFADDRS 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPASS 0  /* Deprecated */
@@ -99,7 +100,7 @@
 #define HAVE_PIPE 1
 #define HAVE_PIPE2 0
 #define HAVE_PRCTL 0  /* Linux-specific */
-#define HAVE_PTHREAD_CONDATTR_SETCLOCK 0  /* Not on iOS */
+#undef HAVE_PTHREAD_CONDATTR_SETCLOCK  /* Not on iOS */
 #define HAVE_PWRITE 1
 #define HAVE_READPASSPHRASE_H 0
 #define HAVE_RINT 1
@@ -113,7 +114,7 @@
 #define HAVE_STRTOK_R 1
 #define HAVE_STRTOULL 1
 #define HAVE_SYSCONF 1
-#define HAVE_SYS_EVENTFD_H 0
+#undef HAVE_SYS_EVENTFD_H
 #define HAVE_SYS_FILE_H 1
 #define HAVE_SYS_IOCTL_H 1
 #define HAVE_SYS_MMAN_H 1
@@ -188,6 +189,7 @@
  * ======================================== */
 
 #define COMPILER "clang"
+#define COMPILER_VENDOR "apple"
 #define COMPILER_VERSION __VERSION__
 #define APPROX_RELEASE_DATE "2024-10-01"
 

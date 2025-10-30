@@ -13,6 +13,9 @@
 #ifndef TOR_BUFFERS_H
 #define TOR_BUFFERS_H
 
+/* Avoid conflicts with macOS sys/buf.h which defines buf_t and buf_clear */
+#define buf_clear tor_buf_clear
+
 #include "lib/cc/compat_compiler.h"
 #include "lib/cc/torint.h"
 #include "lib/testsupport/testsupport.h"
