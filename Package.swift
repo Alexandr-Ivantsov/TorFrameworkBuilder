@@ -132,6 +132,13 @@ let package = Package(
                 // Exclude relay server features (not needed for iOS client)
                 "tor-ios-fixed/src/feature/relay/routermode.c",
                 "tor-ios-fixed/src/feature/relay/selftest.c",
+                "tor-ios-fixed/src/feature/relay/routerkeys.c",
+                "tor-ios-fixed/src/feature/relay/router.c",
+                "tor-ios-fixed/src/feature/relay/relay_periodic.c",
+                "tor-ios-fixed/src/feature/relay/relay_handshake.c",
+                "tor-ios-fixed/src/feature/relay/relay_config.c",
+                "tor-ios-fixed/src/feature/relay/onion_queue.c",
+                "tor-ios-fixed/src/feature/relay/circuitbuild_relay.c",
                 // Exclude mulodi emulation (not needed on iOS/clang)
                 "tor-ios-fixed/src/ext/mulodi/mulodi4.c",
                 "tor-ios-fixed/src/ext/mulodi",
