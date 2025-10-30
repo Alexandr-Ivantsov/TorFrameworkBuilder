@@ -110,6 +110,7 @@ let package = Package(
                 "tor-ios-fixed/src/lib/tls/nss_countbytes.c",
                 "tor-ios-fixed/src/lib/tls/nss_countbytes.h",
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_digest_nss.c",
+                "tor-ios-fixed/src/lib/crypt_ops/crypto_rsa_nss.c",
                 
                 // Exclude main.c (has main() function)
                 "tor-ios-fixed/src/app/main/main.c",
