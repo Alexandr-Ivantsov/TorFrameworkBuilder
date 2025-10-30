@@ -118,7 +118,7 @@
 #define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_PRCTL_H 0
-#define HAVE_SYS_RANDOM_H 1
+#undef HAVE_SYS_RANDOM_H  /* Not available on iOS SDK */
 #define HAVE_SYS_RESOURCE_H 1
 #define HAVE_SYS_FCNTL_H 1
 #define HAVE_FCNTL_H 1
