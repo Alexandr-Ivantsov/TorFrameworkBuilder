@@ -80,7 +80,7 @@
 #define HAVE_GETRLIMIT 1
 #define HAVE_GETTIMEOFDAY 1
 #define HAVE_GMTIME_R 1
-#define HAVE_GNU_LIBC_VERSION_H 0  /* Not on iOS */
+#undef HAVE_GNU_LIBC_VERSION_H  /* Not on iOS */
 #define HAVE_INET_ATON 1
 #define HAVE_INET_NTOP 1
 #define HAVE_INET_PTON 1
@@ -177,7 +177,7 @@
 #define HAVE_LIBSECCOMP 0
 
 /* systemd */
-#define HAVE_SYSTEMD 0
+#undef HAVE_SYSTEMD
 #define HAVE_SYS_CAPABILITY_H 0
 
 /* ========================================
