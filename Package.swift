@@ -134,6 +134,8 @@ let package = Package(
                 // Exclude mulodi emulation (not needed on iOS/clang)
                 "tor-ios-fixed/src/ext/mulodi/mulodi4.c",
                 "tor-ios-fixed/src/ext/mulodi",
+                // Exclude mmap (not supported/needed on iOS build path)
+                "tor-ios-fixed/src/lib/fs/mmap.c",
             ],
             publicHeadersPath: "include",
             cSettings: [
