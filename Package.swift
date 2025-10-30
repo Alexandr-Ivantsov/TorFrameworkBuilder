@@ -112,6 +112,7 @@ let package = Package(
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_digest_nss.c",
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_rsa_nss.c",
                 "tor-ios-fixed/src/lib/crypt_ops/crypto_nss_mgt.c",
+                "tor-ios-fixed/src/lib/crypt_ops/crypto_dh_nss.c",
                 
                 // Exclude main.c (has main() function)
                 "tor-ios-fixed/src/app/main/main.c",

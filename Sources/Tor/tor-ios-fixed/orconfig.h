@@ -74,6 +74,7 @@
 #define HAVE_FTIME 1
 #define HAVE_GETADDRINFO 1
 #define HAVE_GETENTROPY 1
+#define HAVE_DECL_GETENTROPY 1
 #define HAVE_GETIFADDRS 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPASS 0  /* Deprecated */
