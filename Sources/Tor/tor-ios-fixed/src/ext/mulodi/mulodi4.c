@@ -19,6 +19,10 @@
 #define di_int int64_t
 #define di_uint uint64_t
 #include "lib/cc/torint.h"
+#include <limits.h>
+#ifndef CHAR_BIT
+#define CHAR_BIT 8
+#endif
 
 di_int __mulodi4(di_int a, di_int b, int* overflow);
 #endif
