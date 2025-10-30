@@ -129,8 +129,9 @@ let package = Package(
                 // Exclude server pluggable transport config (relay-only)
                 "tor-ios-fixed/src/feature/relay/transport_config.c",
                 "tor-ios-fixed/src/feature/relay/transport_config.h",
-                // Exclude routermode (relay-only)
+                // Exclude relay server features (not needed for iOS client)
                 "tor-ios-fixed/src/feature/relay/routermode.c",
+                "tor-ios-fixed/src/feature/relay/selftest.c",
                 // Exclude mulodi emulation (not needed on iOS/clang)
                 "tor-ios-fixed/src/ext/mulodi/mulodi4.c",
                 "tor-ios-fixed/src/ext/mulodi",
