@@ -143,6 +143,8 @@ let package = Package(
                 .define("FLEXIBLE_ARRAY_MEMBER"),
                 .define("SIZE_T_CEILING", to: "SIZE_MAX"),
                 .define("TOR_UNIT_TESTS", to: "0"),
+                // Platform constants
+                .define("CHAR_BIT", to: "8"),
                 // Ensure VERSION is visible to version.c at compile time
                 .define("PACKAGE_VERSION", to: "\"0.4.8.19\""),
                 .define("VERSION", to: "\"0.4.8.19\""),
