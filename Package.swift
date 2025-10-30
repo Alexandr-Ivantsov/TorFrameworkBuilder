@@ -19,6 +19,7 @@ let package = Package(
     products: [
         .library(
             name: "TorFrameworkBuilder",
+            type: .static,
             targets: ["Tor"]
         )
     ],
@@ -163,7 +164,6 @@ let package = Package(
                 // Exclude OpenBSD malloc (conflicts with iOS system functions)
                 "tor-ios-fixed/src/ext/OpenBSD_malloc_Linux.c",
             ],
-            publicHeadersPath: "include",
             cSettings: [
                 // Feature defines
                 .define("HAVE_CONFIG_H", to: "1"),
