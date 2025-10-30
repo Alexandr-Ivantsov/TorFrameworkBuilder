@@ -123,6 +123,12 @@ let package = Package(
                 "tor-ios-fixed/Makefile",
                 "tor-ios-fixed/configure",
                 "tor-ios-fixed/configure.ac",
+
+                // Exclude dirauth (not needed for iOS client)
+                "tor-ios-fixed/src/feature/dirauth",
+                // Exclude server pluggable transport config (relay-only)
+                "tor-ios-fixed/src/feature/relay/transport_config.c",
+                "tor-ios-fixed/src/feature/relay/transport_config.h",
             ],
             publicHeadersPath: "include",
             cSettings: [
