@@ -185,6 +185,13 @@
 /* Build configuration */
 #define CONFIGURE_LINE "iOS SPM Build"
 #define TOR_BUILD_TAG "v0.4.8.19"
+/* Autoconf-style package/version macros expected by version.c */
+#define PACKAGE_NAME "tor"
+#define PACKAGE_TARNAME "tor"
+#define PACKAGE_VERSION "0.4.8.19"
+#define PACKAGE_STRING PACKAGE_NAME " " PACKAGE_VERSION
+#define PACKAGE_BUGREPORT "https://gitlab.torproject.org/tpo/core/tor/-/issues"
+#define VERSION PACKAGE_VERSION
 
 /* Disable modules we don't need */
 #define DISABLE_MODULE_DIRAUTH 1
