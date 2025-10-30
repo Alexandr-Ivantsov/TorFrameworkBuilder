@@ -136,6 +136,8 @@ let package = Package(
                 "tor-ios-fixed/src/ext/mulodi",
                 // Exclude mmap (not supported/needed on iOS build path)
                 "tor-ios-fixed/src/lib/fs/mmap.c",
+                // Exclude terminal password input (not applicable on iOS)
+                "tor-ios-fixed/src/lib/term",
             ],
             publicHeadersPath: "include",
             cSettings: [
