@@ -127,6 +127,8 @@ let package = Package(
 
                 // Exclude dirauth (not needed for iOS client)
                 "tor-ios-fixed/src/feature/dirauth",
+                // Exclude dircache server modules (directory serving, not for client)
+                "tor-ios-fixed/src/feature/dircache/dirserv.c",
                 // Exclude server pluggable transport config (relay-only)
                 "tor-ios-fixed/src/feature/relay/transport_config.c",
                 "tor-ios-fixed/src/feature/relay/transport_config.h",
