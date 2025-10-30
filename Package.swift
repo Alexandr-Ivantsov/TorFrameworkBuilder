@@ -91,6 +91,7 @@ let package = Package(
                 "tor-ios-fixed/src/ext/README",
                 "tor-ios-fixed/src/test",
                 "tor-ios-fixed/src/tools",
+                "tor-ios-fixed/scripts",
                 // Exclude .inc files (they are included, not compiled)
                 "tor-ios-fixed/src/core/or/channelpadding_negotiation.inc",
                 "tor-ios-fixed/src/core/or/dos_st.inc",
