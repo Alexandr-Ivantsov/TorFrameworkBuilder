@@ -39,6 +39,7 @@
  * ======================================== */
 
 #define TIME_MAX ((time_t)INT64_MAX)
+#define TIME_MIN ((time_t)INT64_MIN)
 #define TOR_PRIuSZ "zu"
 #define TOR_PRIdSZ "zd"
 #define TOR_PRIuMAX PRIuMAX
