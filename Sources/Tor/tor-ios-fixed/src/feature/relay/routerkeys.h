@@ -9,6 +9,13 @@
 #ifndef TOR_ROUTERKEYS_H
 #define TOR_ROUTERKEYS_H
 
+/* Prevent macro expansion interference with system headers */
+#ifdef __has_include
+#if __has_include(<stdio.h>)
+#include <stdio.h>
+#endif
+#endif
+
 #include "lib/crypt_ops/crypto_ed25519.h"
 
 #ifdef HAVE_MODULE_RELAY
