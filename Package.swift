@@ -131,6 +131,8 @@ let package = Package(
                 "tor-ios-fixed/src/feature/relay/transport_config.h",
                 // Exclude routermode (relay-only)
                 "tor-ios-fixed/src/feature/relay/routermode.c",
+                // Exclude mulodi emulation (not needed on iOS/clang)
+                "tor-ios-fixed/src/ext/mulodi/mulodi4.c",
             ],
             publicHeadersPath: "include",
             cSettings: [
