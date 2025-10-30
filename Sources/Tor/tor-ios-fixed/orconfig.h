@@ -55,6 +55,8 @@
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_SA_FAMILY_T 1
 #define HAVE_SOCKADDR_SA_LEN 1
+#define HAVE_NETINET_IN_H 1
+#define HAVE_NETINET6_IN_H 1
 
 /* ========================================
  * FUNCTION AVAILABILITY (iOS has most POSIX)
@@ -155,6 +157,7 @@
 /* Threading */
 #define HAVE_PTHREAD 1
 #define HAVE_PTHREAD_H 1
+#define HAVE_PTHREAD_CREATE 1
 
 /* Cap support */
 #define HAVE_LIBCAP 0  /* Linux-only */
