@@ -147,6 +147,8 @@ let package = Package(
                 .define("TOR_UNIT_TESTS", to: "0"),
                 // Platform constants
                 .define("CHAR_BIT", to: "8"),
+                // Force local includes to take precedence (shim for openssl/asn1_mac.h)
+                .unsafeFlags(["-I", "Sources/Tor/include"]),
                 // Ensure VERSION is visible to version.c at compile time
                 .define("PACKAGE_VERSION", to: "\"0.4.8.19\""),
                 .define("VERSION", to: "\"0.4.8.19\""),
