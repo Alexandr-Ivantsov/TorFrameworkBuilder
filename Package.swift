@@ -155,6 +155,7 @@ let package = Package(
                 .define("HAVE_SSL_GET_CLIENT_RANDOM", to: "1"),
                 .define("HAVE_SSL_GET_SERVER_RANDOM", to: "1"),
                 .define("HAVE_SSL_SESSION_GET_MASTER_KEY", to: "1"),
+                .define("HAVE_SSL_GET_CLIENT_CIPHERS", to: "1"),
                 // Ensure VERSION is visible to version.c at compile time
                 .define("PACKAGE_VERSION", to: "\"0.4.8.19\""),
                 .define("VERSION", to: "\"0.4.8.19\""),
