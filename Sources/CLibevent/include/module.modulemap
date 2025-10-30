@@ -1,0 +1,8 @@
+module CLibevent [system] {
+    umbrella "."
+    export *
+    module * { export * }
+    
+    link "event"
+}
+

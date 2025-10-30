@@ -6,7 +6,7 @@ import PackageDescription
     
     let packageSettings = PackageSettings(
         productTypes: [
-            "Tor": .framework
+            "Tor": .staticLibrary  // Changed from .framework to prevent header pollution
         ]
     )
 #endif
@@ -32,7 +32,7 @@ let package = Package(
         .target(
             name: "COpenSSL",
             path: "output/openssl",
-            publicHeadersPath: "include",
+            sources: ["dummy.c"],
             cSettings: [
                 .headerSearchPath("include"),
             ],
@@ -48,7 +48,7 @@ let package = Package(
         .target(
             name: "CLibevent",
             path: "output/libevent",
-            publicHeadersPath: "include",
+            sources: ["dummy.c"],
             cSettings: [
                 .headerSearchPath("include"),
             ],
@@ -64,7 +64,7 @@ let package = Package(
         .target(
             name: "CXZ",
             path: "output/xz",
-            publicHeadersPath: "include",
+            sources: ["dummy.c"],
             cSettings: [
                 .headerSearchPath("include"),
             ],
@@ -215,7 +215,11 @@ let package = Package(
                 .headerSearchPath("../../output/xz/include"),
                 
                 // Compiler flags
-                .unsafeFlags(["-w"]),  // Suppress warnings
+                .unsafeFlags([
+                    "-w",  // Suppress warnings
+                    "-fno-modules",  // Disable Clang modules to prevent macro leakage
+                    "-fno-objc-arc"  // Tor is pure C, no ARC needed
+                ]),
             ],
             linkerSettings: [
                 .linkedLibrary("z"),

@@ -1,0 +1,8 @@
+module CXZ [system] {
+    umbrella "."
+    export *
+    module * { export * }
+    
+    link "lzma"
+}
+

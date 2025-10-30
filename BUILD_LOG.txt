@@ -1,0 +1,32 @@
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/x509.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/bench.plt.d': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/x509_nss.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/channelpadding_negotiation.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/netstatus_sys.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/README': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/mainloop_sys.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/bench.c': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/Makefile': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/dos_st.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/timeout.lua': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/protover_rust.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/tortls_st.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/cpuworker_sys.inc': File not found.
+error: 'torframeworkbuilder': target 'Tor' has invalid header layout: umbrella header found at '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/include/Tor.h', but directories exist next to it: /Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/include/openssl; consider removing them
+error: ExitCode(rawValue: 1)
+[0/1] Planning build
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/x509.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/bench.plt.d': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/x509_nss.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/channelpadding_negotiation.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/netstatus_sys.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/README': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/mainloop_sys.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/bench.c': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/Makefile': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/dos_st.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/ext/timeouts/timeout.lua': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/or/protover_rust.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/lib/tls/tortls_st.inc': File not found.
+warning: 'torframeworkbuilder': Invalid Exclude '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/tor-ios-fixed/src/core/mainloop/cpuworker_sys.inc': File not found.
+error: 'torframeworkbuilder': target 'Tor' has invalid header layout: umbrella header found at '/Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/include/Tor.h', but directories exist next to it: /Users/aleksandrivancov/admin/TorFrameworkBuilder/Sources/Tor/include/openssl; consider removing them

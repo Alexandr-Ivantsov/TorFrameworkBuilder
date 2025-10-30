@@ -1,0 +1,9 @@
+module COpenSSL [system] {
+    umbrella "include/openssl"
+    export *
+    module * { export * }
+    
+    link "ssl"
+    link "crypto"
+}
+
