@@ -13,7 +13,7 @@ OUTPUT_DIR="$(pwd)/output"
 
 # Paths to libraries for device
 TOR_LIB_DEVICE="output/tor-direct/lib/libtor.a"
-TOR_STUB_OBJ_DEVICE="build/tor-direct/src/mobile/relay_client_stubs.o"
+TOR_STUB_OBJ_DEVICE="output/device-obj/relay_client_stubs.o"
 OPENSSL_DIR_DEVICE="output/openssl"
 LIBEVENT_DIR_DEVICE="output/libevent"
 XZ_DIR_DEVICE="output/xz"
@@ -41,12 +41,6 @@ if [ ! -f "$TOR_LIB_DEVICE" ]; then
     exit 1
 fi
 
-if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
-    echo "❌ relay_client_stubs.o not found: $TOR_STUB_OBJ_DEVICE"
-    echo "   Run: bash scripts/direct_build.sh"
-    exit 1
-fi
-
 if [ ! -f "$TOR_LIB_SIMULATOR" ]; then
     echo "❌ libtor.a for simulator not found: $TOR_LIB_SIMULATOR"
     echo "   Run: bash scripts/build_all_simulator.sh && bash scripts/build_tor_simulator.sh"
@@ -57,6 +51,16 @@ fi
 echo "🧹 Cleaning previous builds..."
 rm -rf output/device output/simulator "$XCFRAMEWORK_DIR"
 mkdir -p output/device-obj
+
+# Extract relay_client_stubs.o from libtor.a so stubs are always linked
+echo "🔧 Extracting relay_client_stubs.o from libtor.a"
+rm -f "$TOR_STUB_OBJ_DEVICE"
+(cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE" relay_client_stubs.o)
+
+if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
+    echo "❌ Failed to extract relay_client_stubs.o from $TOR_LIB_DEVICE"
+    exit 1
+fi
 
 # ===== DEVICE FRAMEWORK =====
 echo ""
