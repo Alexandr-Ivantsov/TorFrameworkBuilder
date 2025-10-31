@@ -17,6 +17,11 @@ TOR_STUB_OBJ_DEVICE="output/device-obj/relay_client_stubs.o"
 OPENSSL_DIR_DEVICE="output/openssl"
 LIBEVENT_DIR_DEVICE="output/libevent"
 XZ_DIR_DEVICE="output/xz"
+TOR_BUILD_STUB_OBJ="build/tor-direct/src/mobile/relay_client_stubs.o"
+ABS_TOR_LIB_DEVICE="$(pwd)/$TOR_LIB_DEVICE"
+
+DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
+CLANG="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 
 # Paths to libraries for simulator
 TOR_LIB_SIMULATOR="output/tor-simulator/lib/libtor.a"
@@ -53,11 +58,54 @@ rm -rf output/device output/simulator "$XCFRAMEWORK_DIR"
 mkdir -p output/device-obj
 
 # Extract relay_client_stubs.o from libtor.a so stubs are always linked
-echo "🔧 Extracting relay_client_stubs.o from libtor.a"
+echo "🔧 Ensuring relay_client_stubs.o presence"
 rm -f "$TOR_STUB_OBJ_DEVICE"
-if ! (cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE" relay_client_stubs.o); then
-    echo "   relay_client_stubs.o not indexed individually; extracting full archive"
-    (cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE")
+
+# Fast-path: reuse object produced during direct build if available
+if [ -f "$TOR_BUILD_STUB_OBJ" ]; then
+    echo "   Using relay_client_stubs.o from direct build output"
+    cp "$TOR_BUILD_STUB_OBJ" "$TOR_STUB_OBJ_DEVICE"
+fi
+
+# Fallback 1: extract from libtor.a using ar
+if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
+    echo "   Extracting relay_client_stubs.o from libtor.a"
+    if ! (cd output/device-obj && /usr/bin/ar -x "$ABS_TOR_LIB_DEVICE" relay_client_stubs.o); then
+        echo "   relay_client_stubs.o not indexed individually; extracting full archive"
+        (cd output/device-obj && /usr/bin/ar -x "$ABS_TOR_LIB_DEVICE")
+    fi
+fi
+
+# Fallback 2: compile stub from source if still missing
+if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
+    echo "   relay_client_stubs.o still missing; compiling from source"
+    if [ -d "Sources/Tor/tor-ios-fixed" ]; then
+        TOR_SRC_ROOT="Sources/Tor/tor-ios-fixed"
+    elif [ -d "tor-ios-fixed" ]; then
+        TOR_SRC_ROOT="tor-ios-fixed"
+    else
+        echo "❌ Could not locate Tor sources to compile relay_client_stubs.c"
+        exit 1
+    fi
+
+    $CLANG \
+        -x c \
+        -c "$TOR_SRC_ROOT/src/mobile/relay_client_stubs.c" \
+        -o "$TOR_STUB_OBJ_DEVICE" \
+        -arch arm64 \
+        -isysroot "$DEVICE_SDK_PATH" \
+        -mios-version-min=16.0 \
+        -I"$TOR_SRC_ROOT" \
+        -I"$TOR_SRC_ROOT/src" \
+        -I"$TOR_SRC_ROOT/src/ext" \
+        -I"$TOR_SRC_ROOT/src/trunnel" \
+        -I"$TOR_SRC_ROOT/src/core" \
+        -I"$TOR_SRC_ROOT/src/feature" \
+        -I"$TOR_SRC_ROOT/src/lib" \
+        -I"Sources/Tor/include" \
+        -DHAVE_CONFIG_H \
+        -DTOR_UNIT_TESTS=0 \
+        -fvisibility=default
 fi
 
 if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
@@ -73,8 +121,6 @@ mkdir -p "${DEVICE_FW}/Modules"
 
 # Compile TorWrapper.m for device
 echo "📝 Compiling TorWrapper.m for device..."
-DEVICE_SDK_PATH="/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk"
-CLANG="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
 
 $CLANG \
     -x objective-c \
