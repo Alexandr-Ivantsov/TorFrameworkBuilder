@@ -4,6 +4,10 @@ build/
 # Tor source
 tor-0.4.8.19/
 tor-ios-fixed/
+!Sources/Tor/tor-ios-fixed/
+!Sources/Tor/tor-ios-fixed/src/
+!Sources/Tor/tor-ios-fixed/src/mobile/
+!Sources/Tor/tor-ios-fixed/src/mobile/relay_client_stubs.c
 
 # Logs
 *.log
