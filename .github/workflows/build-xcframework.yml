@@ -54,28 +54,40 @@ jobs:
           bash scripts/verify_patch_before_build.sh
         working-directory: .
       
-      - name: Check dependencies
+      - name: Build dependencies (device + simulator)
         run: |
-          echo "🔍 Checking if dependencies are already built..."
+          echo "🔨 Building dependencies if needed..."
+          echo "   This step will check and build OpenSSL, Libevent, and XZ"
+          echo "   for both device and simulator if they don't exist"
           bash scripts/build_dependencies.sh
         working-directory: .
-        continue-on-error: true  # Continue if dependencies exist
       
-      - name: Build dependencies for device (if needed)
+      - name: Verify dependencies are built
         run: |
-          echo "🔨 Building device dependencies..."
-          bash scripts/build_openssl.sh || echo "OpenSSL already built"
-          bash scripts/build_libevent.sh || echo "Libevent already built"
-          bash scripts/build_xz.sh || echo "XZ already built"
+          echo "🔍 Verifying all dependencies are built..."
+          
+          # Check device dependencies
+          if [ ! -f "output/openssl/lib/libssl.a" ] || [ ! -f "output/libevent/lib/libevent.a" ] || [ ! -f "output/xz/lib/liblzma.a" ]; then
+            echo "❌ ERROR: Device dependencies not built!"
+            echo "   Expected:"
+            echo "   - output/openssl/lib/libssl.a"
+            echo "   - output/libevent/lib/libevent.a"
+            echo "   - output/xz/lib/liblzma.a"
+            exit 1
+          fi
+          
+          # Check simulator dependencies
+          if [ ! -f "output/openssl-simulator/lib/libssl.a" ] || [ ! -f "output/libevent-simulator/lib/libevent.a" ] || [ ! -f "output/xz-simulator/lib/liblzma.a" ]; then
+            echo "❌ ERROR: Simulator dependencies not built!"
+            echo "   Expected:"
+            echo "   - output/openssl-simulator/lib/libssl.a"
+            echo "   - output/libevent-simulator/lib/libevent.a"
+            echo "   - output/xz-simulator/lib/liblzma.a"
+            exit 1
+          fi
+          
+          echo "✅ All dependencies verified!"
         working-directory: .
-        continue-on-error: true
-      
-      - name: Build dependencies for simulator (if needed)
-        run: |
-          echo "🔨 Building simulator dependencies..."
-          bash scripts/build_all_simulator.sh || echo "Simulator dependencies already built"
-        working-directory: .
-        continue-on-error: true
       
       - name: Build Tor for device
         run: |
@@ -159,9 +171,14 @@ jobs:
             - Ready for use without dns_sd.h conflicts"
             
             # Use GITHUB_TOKEN with proper permissions
-            # For tags, push to the branch that contains the tag
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main || \
-            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:master
+            # Determine the default branch (check if main exists, otherwise use master)
+            if git ls-remote --heads origin main | grep -q main; then
+              DEFAULT_BRANCH="main"
+            else
+              DEFAULT_BRANCH="master"
+            fi
+            echo "📤 Pushing to branch: $DEFAULT_BRANCH"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:$DEFAULT_BRANCH
             echo "✅ XCFramework committed and pushed!"
           fi
         working-directory: .
