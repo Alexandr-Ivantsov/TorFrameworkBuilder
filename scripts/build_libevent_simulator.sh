@@ -60,6 +60,11 @@ export LDFLAGS="-arch ${ARCH} -isysroot ${SDK_PATH} -L${OPENSSL_DIR}/lib"
 cp -R "$SOURCE_DIR" "$BUILD_DIR/libevent-src"
 cd "$BUILD_DIR/libevent-src"
 
+# Ensure generated configure script is newer than configure.ac to avoid autoconf reruns
+if [ -f "configure" ]; then
+    touch configure
+fi
+
 # Конфигурация libevent
 echo "⚙️  Конфигурация libevent для Simulator..."
 ./configure \

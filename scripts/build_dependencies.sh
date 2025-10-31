@@ -9,6 +9,31 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
+echo "🧰 Ensuring build toolchain (autoconf/automake/libtool/pkg-config)..."
+
+NEEDED_TOOLS=(autoconf automake libtool pkg-config)
+MISSING_TOOLS=()
+
+for tool in "${NEEDED_TOOLS[@]}"; do
+    if ! command -v "$tool" >/dev/null 2>&1; then
+        MISSING_TOOLS+=("$tool")
+    fi
+done
+
+if [ ${#MISSING_TOOLS[@]} -gt 0 ]; then
+    echo "   Missing tools: ${MISSING_TOOLS[*]}"
+    if command -v brew >/dev/null 2>&1; then
+        echo "   Installing via Homebrew..."
+        export HOMEBREW_NO_AUTO_UPDATE=1
+        brew install "${MISSING_TOOLS[@]}"
+    else
+        echo "❌ Homebrew not found. Please install the following tools manually: ${MISSING_TOOLS[*]}"
+        exit 1
+    fi
+else
+    echo "✅ Build toolchain already present"
+fi
+
 echo "🔍 ========================================"
 echo "🔍 CHECKING DEPENDENCIES"
 echo "🔍 ========================================"
