@@ -9,7 +9,16 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
 # Настройки
-TOR_SRC="tor-ios-fixed"
+# Try Sources/Tor/tor-ios-fixed first (for CI/CD), fallback to tor-ios-fixed (for local dev)
+if [ -d "Sources/Tor/tor-ios-fixed" ]; then
+    TOR_SRC="Sources/Tor/tor-ios-fixed"
+elif [ -d "tor-ios-fixed" ]; then
+    TOR_SRC="tor-ios-fixed"
+else
+    echo "❌ ERROR: Tor sources not found!"
+    echo "   Expected: Sources/Tor/tor-ios-fixed/ or tor-ios-fixed/"
+    exit 1
+fi
 BUILD_DIR="build/tor-direct"
 OUTPUT_DIR="output/tor-direct"
 OPENSSL_DIR="output/openssl"
@@ -59,7 +68,8 @@ echo "🚀 Прямая компиляция Tor для iOS"
 echo "=================================="
 echo "Архитектура: $ARCH"
 echo "SDK: $SDK_PATH"
-echo "Файлов для компиляции: $(find $TOR_SRC/src -name "*.c" | wc -l)"
+echo "Tor sources: $TOR_SRC"
+echo "Файлов для компиляции: $(find $TOR_SRC/src -name "*.c" 2>/dev/null | wc -l | tr -d ' ')"
 echo ""
 
 # Функция компиляции с таймаутом

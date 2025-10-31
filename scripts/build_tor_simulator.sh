@@ -2,7 +2,16 @@
 set -e
 
 # Сборка Tor для iOS Simulator arm64
-TOR_SRC="tor-ios-fixed"
+# Try Sources/Tor/tor-ios-fixed first (for CI/CD), fallback to tor-ios-fixed (for local dev)
+if [ -d "Sources/Tor/tor-ios-fixed" ]; then
+    TOR_SRC="Sources/Tor/tor-ios-fixed"
+elif [ -d "tor-ios-fixed" ]; then
+    TOR_SRC="tor-ios-fixed"
+else
+    echo "❌ ERROR: Tor sources not found!"
+    echo "   Expected: Sources/Tor/tor-ios-fixed/ or tor-ios-fixed/"
+    exit 1
+fi
 BUILD_DIR="$(pwd)/build/tor-simulator"
 OUTPUT_DIR="$(pwd)/output/tor-simulator"
 OPENSSL_DIR="$(pwd)/output/openssl-simulator"
@@ -18,9 +27,10 @@ if [ ! -d "$OPENSSL_DIR" ] || [ ! -d "$LIBEVENT_DIR" ] || [ ! -d "$XZ_DIR" ]; th
     exit 1
 fi
 
-# Проверка исходников
-if [ ! -d "$TOR_SRC" ]; then
-    echo "❌ $TOR_SRC не найден. Сначала: bash scripts/fix_conflicts.sh"
+# Проверка исходников (уже проверено выше, но для ясности)
+if [ ! -d "$TOR_SRC/src" ]; then
+    echo "❌ $TOR_SRC/src не найден!"
+    echo "   Проверьте что исходники Tor находятся в правильном месте"
     exit 1
 fi
 

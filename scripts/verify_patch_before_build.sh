@@ -14,8 +14,17 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT"
 
-# Path to patched file
-PATCH_FILE="Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c"
+# Path to patched file (try both locations)
+if [ -f "Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c" ]; then
+    PATCH_FILE="Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c"
+elif [ -f "tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c" ]; then
+    PATCH_FILE="tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c"
+else
+    echo "❌ ERROR: crypto_rand_fast.c not found!"
+    echo "   Expected: Sources/Tor/tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c"
+    echo "   Or: tor-ios-fixed/src/lib/crypt_ops/crypto_rand_fast.c"
+    exit 1
+fi
 PATCH_MARKER="iOS PATCH"
 
 # Check if file exists
