@@ -90,6 +90,7 @@
 #define HAVE_LOCALTIME_R 1
 #define HAVE_LROUND 1
 #define HAVE_MACH_APPROXIMATE_TIME 1  /* iOS/macOS specific */
+#define HAVE_MMAP 1
 #define HAVE_MADVISE 1
 #define HAVE_MALLOC_GOOD_SIZE 1
 #define HAVE_MALLOC_USABLE_SIZE 0

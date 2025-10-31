@@ -75,6 +75,15 @@ $CLANG \
     -I"${LIBEVENT_DIR_DEVICE}/include" \
     -Iwrapper
 
+# Compile clear_cache shim to satisfy libhashx runtime dependency
+$CLANG \
+    -x c \
+    -c wrapper/clear_cache_shim.c \
+    -o output/device-obj/clear_cache_shim.o \
+    -arch arm64 \
+    -isysroot "${DEVICE_SDK_PATH}" \
+    -mios-version-min=16.0
+
 # Create dynamic library for device
 echo "🔗 Creating dynamic library for device..."
 $CLANG \
@@ -86,6 +95,7 @@ $CLANG \
     -Wl,-ObjC \
     -o "${DEVICE_FW}/${FRAMEWORK_NAME}" \
     output/device-obj/TorWrapper.o \
+    output/device-obj/clear_cache_shim.o \
     "$TOR_LIB_DEVICE" \
     "${OPENSSL_DIR_DEVICE}/lib/libssl.a" \
     "${OPENSSL_DIR_DEVICE}/lib/libcrypto.a" \

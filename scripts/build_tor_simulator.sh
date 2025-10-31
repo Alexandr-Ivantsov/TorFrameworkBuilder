@@ -93,7 +93,7 @@ CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=0"
 CFLAGS="$CFLAGS -fvisibility=default"
 
 # Файлы для пропуска
-SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c main.c x509_nss.c tortls_nss.c nss_countbytes.c crypto_digest_nss.c crypto_rsa_nss.c crypto_nss_mgt.c crypto_dh_nss.c aes_nss.c mmap.c OpenBSD_malloc_Linux.c mulodi4.c test-internals.c compat_mutex_winthreads.c compat_winthreads.c"
+SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c x509_nss.c tortls_nss.c nss_countbytes.c crypto_digest_nss.c crypto_rsa_nss.c crypto_nss_mgt.c crypto_dh_nss.c aes_nss.c OpenBSD_malloc_Linux.c mulodi4.c test-internals.c compat_mutex_winthreads.c compat_winthreads.c"
 SKIP_DIRS="bench test lua feature/dirauth feature/relay feature/dircache ext/mulodi ext/timeouts/bench ext/timeouts/lua lib/term"
 
 COMPILE_DIRS=(
@@ -103,6 +103,13 @@ COMPILE_DIRS=(
     "src/core"
     "src/feature"
     "src/app"
+    "src/mobile"
+)
+
+EXTRA_FILES=(
+    "src/feature/relay/relay_stub.c"
+    "src/feature/dirauth/dirauth_stub.c"
+    "src/feature/dircache/dircache_stub.c"
 )
 
 echo "📦 Компиляция модулей..."
@@ -149,6 +156,27 @@ for dir in "${COMPILE_DIRS[@]}"; do
     echo ""
 done
 
+echo ""
+echo "📦 Компиляция stub-файлов ядра..."
+for extra in "${EXTRA_FILES[@]}"; do
+    src_file="$TOR_SRC/$extra"
+    if [ ! -f "$src_file" ]; then
+        echo "  ⚠️  Stub not found: $extra"
+        continue
+    fi
+    obj_file="$BUILD_DIR/${extra%.c}.o"
+    obj_dir=$(dirname "$obj_file")
+    mkdir -p "$obj_dir"
+    if $CC $CFLAGS -c "$src_file" -o "$obj_file"; then
+        compiled=$((compiled + 1))
+        echo "  ✓ stub $(basename "$extra")"
+    else
+        failed=$((failed + 1))
+        echo "  ✗ stub $(basename "$extra")"
+    fi
+done
+
+echo ""
 echo "=================================="
 echo "📊 Статистика компиляции:"
 echo "  Скомпилировано: $compiled"
@@ -171,7 +199,8 @@ if [ -z "$OBJS" ]; then
     echo "❌ Нет объектных файлов для архивации!"
     exit 1
 fi
-$AR rcs "$OUTPUT_DIR/lib/libtor.a" $OBJS
+LIBTOOL="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool"
+$LIBTOOL -static -o "$OUTPUT_DIR/lib/libtor.a" $OBJS
 
 echo "✅ Tor для Simulator готов!"
 echo "📁 Библиотека: $OUTPUT_DIR/lib/libtor.a"

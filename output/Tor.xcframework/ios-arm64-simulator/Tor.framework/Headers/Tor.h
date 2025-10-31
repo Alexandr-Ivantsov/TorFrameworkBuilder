@@ -1,18 +1,3 @@
-//
-//  Tor.h
-//  Tor Framework
-//
-//  Umbrella header для Tor Framework
-//
-
-#import <Foundation/Foundation.h>
-
-//! Project version number for Tor.
-FOUNDATION_EXPORT double TorVersionNumber;
-
-//! Project version string for Tor.
-FOUNDATION_EXPORT const unsigned char TorVersionString[];
-
-// In this header, you should import all the public headers of your framework
-#import "TorWrapper.h"
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:623ff26c5156cadfbced092783038725e478c7c3cf954d23ba84017133312ec4
+size 391

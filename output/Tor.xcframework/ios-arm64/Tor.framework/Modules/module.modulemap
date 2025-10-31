@@ -1,5 +1,3 @@
-framework module Tor {
-    umbrella header "Tor.h"
-    export *
-    module * { export * }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:f73df5254296d38e66016fffebe933a960bb2638a83dba2c4cbbb637678ede1e
+size 152
