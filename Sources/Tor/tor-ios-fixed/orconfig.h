@@ -126,6 +126,7 @@
 #define HAVE_SYS_FCNTL_H 1
 #define HAVE_FCNTL_H 1
 #define HAVE_NETDB_H 1
+#define HAVE_NET_IF_H 1
 #define HAVE_RLIM_T 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_SOCKET_H 1
