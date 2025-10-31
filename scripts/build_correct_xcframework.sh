@@ -55,7 +55,10 @@ mkdir -p output/device-obj
 # Extract relay_client_stubs.o from libtor.a so stubs are always linked
 echo "🔧 Extracting relay_client_stubs.o from libtor.a"
 rm -f "$TOR_STUB_OBJ_DEVICE"
-(cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE" relay_client_stubs.o)
+if ! (cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE" relay_client_stubs.o); then
+    echo "   relay_client_stubs.o not indexed individually; extracting full archive"
+    (cd output/device-obj && /usr/bin/ar -x "$OLDPWD/$TOR_LIB_DEVICE")
+fi
 
 if [ ! -f "$TOR_STUB_OBJ_DEVICE" ]; then
     echo "❌ Failed to extract relay_client_stubs.o from $TOR_LIB_DEVICE"
