@@ -13,6 +13,12 @@ let package = Package(
         .library(
             name: "TorFrameworkBuilder",
             type: .static,
+            targets: ["TorBinary"]  // Use binary target (XCFramework) instead of source
+        ),
+        // Source-based product for development (use if XCFramework not available)
+        .library(
+            name: "TorFrameworkBuilderSource",
+            type: .static,
             targets: ["Tor"]
         )
     ],
@@ -219,6 +225,17 @@ let package = Package(
                 .linkedLibrary("resolv"),
             ],
             plugins: [.plugin(name: "TorPatchPlugin")]
+        ),
+        
+        // ========================================
+        // Tor Binary Target (XCFramework)
+        // ========================================
+        // This is the preferred target - pre-built XCFramework without header pollution
+        // Built automatically via CI/CD when creating a tag
+        
+        .binaryTarget(
+            name: "TorBinary",
+            path: "output/Tor.xcframework"
         ),
         
         // ========================================

@@ -1,0 +1,167 @@
+name: Build XCFramework
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on tags like v1.0.99
+  workflow_dispatch:  # Allow manual trigger from GitHub UI
+
+jobs:
+  build:
+    name: Build Tor.xcframework
+    runs-on: macos-14  # macOS 14 Sonoma
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true  # Important: Enable Git LFS for XCFramework binaries
+          fetch-depth: 0
+      
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.0'  # Xcode 15.0 or latest
+      
+      - name: Verify iOS patch
+        run: |
+          echo "🔍 Verifying iOS patch is present..."
+          bash scripts/verify_patch_before_build.sh
+        working-directory: .
+      
+      - name: Check dependencies
+        run: |
+          echo "🔍 Checking if dependencies are already built..."
+          bash scripts/build_dependencies.sh
+        working-directory: .
+        continue-on-error: true  # Continue if dependencies exist
+      
+      - name: Build dependencies for device (if needed)
+        run: |
+          echo "🔨 Building device dependencies..."
+          bash scripts/build_openssl.sh || echo "OpenSSL already built"
+          bash scripts/build_libevent.sh || echo "Libevent already built"
+          bash scripts/build_xz.sh || echo "XZ already built"
+        working-directory: .
+        continue-on-error: true
+      
+      - name: Build dependencies for simulator (if needed)
+        run: |
+          echo "🔨 Building simulator dependencies..."
+          bash scripts/build_all_simulator.sh || echo "Simulator dependencies already built"
+        working-directory: .
+        continue-on-error: true
+      
+      - name: Build Tor for device
+        run: |
+          echo "🔨 Building Tor for device (ios-arm64)..."
+          bash scripts/direct_build.sh
+        working-directory: .
+      
+      - name: Build Tor for simulator
+        run: |
+          echo "🔨 Building Tor for simulator (ios-arm64-simulator)..."
+          bash scripts/build_tor_simulator.sh
+        working-directory: .
+      
+      - name: Create correct XCFramework
+        run: |
+          echo "📦 Creating XCFramework WITHOUT header pollution..."
+          bash scripts/build_correct_xcframework.sh
+        working-directory: .
+      
+      - name: Verify XCFramework structure
+        run: |
+          echo "🔍 Verifying XCFramework structure..."
+          
+          # Check that OpenSSL headers are NOT present
+          if [ -d "output/Tor.xcframework/ios-arm64/Tor.framework/Headers/openssl" ]; then
+            echo "❌ ERROR: OpenSSL headers found in public Headers/!"
+            exit 1
+          fi
+          
+          # Check that Libevent headers are NOT present
+          if [ -d "output/Tor.xcframework/ios-arm64/Tor.framework/Headers/event2" ]; then
+            echo "❌ ERROR: Libevent headers found in public Headers/!"
+            exit 1
+          fi
+          
+          # Check that wrapper headers ARE present
+          if [ ! -f "output/Tor.xcframework/ios-arm64/Tor.framework/Headers/Tor.h" ]; then
+            echo "❌ ERROR: Tor.h not found!"
+            exit 1
+          fi
+          
+          if [ ! -f "output/Tor.xcframework/ios-arm64/Tor.framework/Headers/TorWrapper.h" ]; then
+            echo "❌ ERROR: TorWrapper.h not found!"
+            exit 1
+          fi
+          
+          # Check module.modulemap does NOT contain "export *" at framework level
+          if grep -q "framework module Tor {.*export \*" "output/Tor.xcframework/ios-arm64/Tor.framework/Modules/module.modulemap" 2>/dev/null; then
+            echo "❌ ERROR: module.modulemap contains 'export *' at framework level!"
+            exit 1
+          fi
+          
+          echo "✅ XCFramework structure verified!"
+          echo ""
+          echo "📋 Headers in XCFramework:"
+          ls -la output/Tor.xcframework/ios-arm64/Tor.framework/Headers/
+          echo ""
+          echo "📊 XCFramework size:"
+          du -sh output/Tor.xcframework
+        working-directory: .
+      
+      - name: Commit XCFramework to repository
+        run: |
+          echo "📝 Committing XCFramework to repository..."
+          
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          
+          # Add XCFramework (Git LFS will handle it automatically)
+          git add output/Tor.xcframework
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "ℹ️  No changes to commit (XCFramework already up to date)"
+          else
+            git commit -m "Build XCFramework from tag ${{ github.ref_name }}
+            
+            - Built with iOS patch applied
+            - NO OpenSSL/Libevent headers in public Headers/
+            - NO 'export *' in module.modulemap
+            - Ready for use without dns_sd.h conflicts"
+            
+            git push
+            echo "✅ XCFramework committed and pushed!"
+          fi
+        working-directory: .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload XCFramework as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Tor.xcframework
+          path: output/Tor.xcframework
+          retention-days: 30
+      
+      - name: Summary
+        run: |
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "✅ BUILD COMPLETE!"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+          echo "📁 XCFramework location: output/Tor.xcframework"
+          echo "📊 Size: $(du -sh output/Tor.xcframework | cut -f1)"
+          echo ""
+          echo "✅ Features:"
+          echo "   - iOS patch included in binary"
+          echo "   - NO OpenSSL headers in public Headers/"
+          echo "   - NO Libevent headers in public Headers/"
+          echo "   - NO 'export *' in module.modulemap"
+          echo "   - Ready for use in TorApp"
+          echo ""
+        working-directory: .
+
