@@ -163,6 +163,7 @@
 #define ENABLE_OPENSSL 1
 #undef ENABLE_NSS  /* Explicitly disable NSS */
 #define USE_OPENSSL_1_1_API 1
+#define USE_CURVE25519_DONNA 1
 
 /* Networking */
 #define HAVE_GETADDRINFO 1

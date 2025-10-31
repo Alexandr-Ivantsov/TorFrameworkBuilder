@@ -66,20 +66,35 @@ CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/src"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}"
+CFLAGS="$CFLAGS -ISources/Tor/include"
 CFLAGS="$CFLAGS -I${OPENSSL_DIR}/include"
 CFLAGS="$CFLAGS -I${LIBEVENT_DIR}/include"
 CFLAGS="$CFLAGS -I${XZ_DIR}/include"
 CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
+CFLAGS="$CFLAGS -DRSHIFT_DOES_SIGN_EXTEND=1"
+CFLAGS="$CFLAGS -DSIZE_T_CEILING=SIZE_MAX"
+CFLAGS="$CFLAGS -DTOR_UNIT_TESTS=0"
+CFLAGS="$CFLAGS -DCHAR_BIT=8"
+CFLAGS="$CFLAGS -DHAVE_MODULE_POW=1"
+CFLAGS="$CFLAGS -DUSE_CURVE25519_DONNA=1"
+CFLAGS="$CFLAGS -DHAVE_GETDELIM=1"
+CFLAGS="$CFLAGS -DHAVE_GETLINE=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_CLIENT_RANDOM=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_SERVER_RANDOM=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_SESSION_GET_MASTER_KEY=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_CLIENT_CIPHERS=1"
+CFLAGS="$CFLAGS -D__APPLE_USE_RFC_3542=1"
 CFLAGS="$CFLAGS -O2"
 CFLAGS="$CFLAGS -Wno-error"
 CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=0"
 CFLAGS="$CFLAGS -fvisibility=default"
 
 # Файлы для пропуска
-SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c"
-SKIP_DIRS="bench test lua"
+SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c main.c x509_nss.c tortls_nss.c nss_countbytes.c crypto_digest_nss.c crypto_rsa_nss.c crypto_nss_mgt.c crypto_dh_nss.c aes_nss.c mmap.c OpenBSD_malloc_Linux.c mulodi4.c test-internals.c compat_mutex_winthreads.c compat_winthreads.c"
+SKIP_DIRS="bench test lua feature/dirauth feature/relay feature/dircache ext/mulodi ext/timeouts/bench ext/timeouts/lua lib/term"
 
 COMPILE_DIRS=(
     "src/ext"
@@ -93,13 +108,14 @@ COMPILE_DIRS=(
 echo "📦 Компиляция модулей..."
 
 compiled=0
+failed=0
 for dir in "${COMPILE_DIRS[@]}"; do
     if [ ! -d "$TOR_SRC/$dir" ]; then
         continue
     fi
     
-    find "$TOR_SRC/$dir" -name "*.c" -type f | while read src_file; do
-        # Пропуск test/bench директорий
+    echo "📂 $dir"
+    while IFS= read -r src_file; do
         skip=0
         for skip_d in $SKIP_DIRS; do
             if echo "$src_file" | grep -q "/$skip_d/"; then
@@ -108,8 +124,6 @@ for dir in "${COMPILE_DIRS[@]}"; do
             fi
         done
         [ $skip -eq 1 ] && continue
-        
-        # Пропуск конфликтующих файлов
         basename_file=$(basename "$src_file")
         for skip_file in $SKIP_FILES; do
             if [ "$basename_file" = "$skip_file" ]; then
@@ -118,21 +132,46 @@ for dir in "${COMPILE_DIRS[@]}"; do
             fi
         done
         [ $skip -eq 1 ] && continue
-        
-        # Компиляция
+
         rel_path="${src_file#$TOR_SRC/}"
         obj_file="$BUILD_DIR/${rel_path%.c}.o"
         obj_dir=$(dirname "$obj_file")
-        
         mkdir -p "$obj_dir"
-        
-        $CC $CFLAGS -c "$src_file" -o "$obj_file" 2>/dev/null && echo "  ✓ $(basename $src_file)" || true
-    done
+
+        if $CC $CFLAGS -c "$src_file" -o "$obj_file"; then
+            compiled=$((compiled + 1))
+            echo "  ✓ $(basename $src_file)"
+        else
+            failed=$((failed + 1))
+            echo "  ✗ $(basename $src_file)"
+        fi
+    done < <(find "$TOR_SRC/$dir" -name "*.c" -type f)
+    echo ""
 done
 
+echo "=================================="
+echo "📊 Статистика компиляции:"
+echo "  Скомпилировано: $compiled"
+echo "  Ошибок/timeout: $failed"
+
 echo ""
+if [ $compiled -eq 0 ]; then
+    echo "❌ Нет скомпилированных файлов"
+    exit 1
+fi
+
+if [ $failed -ne 0 ]; then
+    echo "❌ Компиляция завершилась с ошибками для $failed файлов!"
+    exit 1
+fi
+
 echo "🔗 Создание libtor.a..."
-$AR rcs "$OUTPUT_DIR/lib/libtor.a" $(find "$BUILD_DIR" -name "*.o")
+OBJS=$(find "$BUILD_DIR" -name "*.o")
+if [ -z "$OBJS" ]; then
+    echo "❌ Нет объектных файлов для архивации!"
+    exit 1
+fi
+$AR rcs "$OUTPUT_DIR/lib/libtor.a" $OBJS
 
 echo "✅ Tor для Simulator готов!"
 echo "📁 Библиотека: $OUTPUT_DIR/lib/libtor.a"

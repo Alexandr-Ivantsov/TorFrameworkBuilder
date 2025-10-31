@@ -42,22 +42,37 @@ CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/src"
+CFLAGS="$CFLAGS -I${TOR_SRC}/src/ext/equix/hashx/include"
 CFLAGS="$CFLAGS -I${TOR_SRC}/src/trunnel"
 CFLAGS="$CFLAGS -I${TOR_SRC}"
+CFLAGS="$CFLAGS -ISources/Tor/include"
 CFLAGS="$CFLAGS -I${OPENSSL_DIR}/include"
 CFLAGS="$CFLAGS -I${LIBEVENT_DIR}/include"
 CFLAGS="$CFLAGS -I${XZ_DIR}/include"
 CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
+CFLAGS="$CFLAGS -DRSHIFT_DOES_SIGN_EXTEND=1"
+CFLAGS="$CFLAGS -DSIZE_T_CEILING=SIZE_MAX"
+CFLAGS="$CFLAGS -DTOR_UNIT_TESTS=0"
+CFLAGS="$CFLAGS -DCHAR_BIT=8"
+CFLAGS="$CFLAGS -DHAVE_MODULE_POW=1"
+CFLAGS="$CFLAGS -DUSE_CURVE25519_DONNA=1"
+CFLAGS="$CFLAGS -DHAVE_GETDELIM=1"
+CFLAGS="$CFLAGS -DHAVE_GETLINE=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_CLIENT_RANDOM=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_SERVER_RANDOM=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_SESSION_GET_MASTER_KEY=1"
+CFLAGS="$CFLAGS -DHAVE_SSL_GET_CLIENT_CIPHERS=1"
+CFLAGS="$CFLAGS -D__APPLE_USE_RFC_3542=1"
 CFLAGS="$CFLAGS -O2"
 CFLAGS="$CFLAGS -Wno-error"
 CFLAGS="$CFLAGS -D_FORTIFY_SOURCE=0"
 CFLAGS="$CFLAGS -fvisibility=default"
 
-# Файлы которые нужно пропустить (конфликты с iOS SDK)
-SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c"
+# Файлы которые нужно пропустить (конфликты с iOS SDK или не нужны на iOS)
+SKIP_FILES="strlcpy.c strlcat.c getdelim.c readpassphrase.c main.c x509_nss.c tortls_nss.c nss_countbytes.c crypto_digest_nss.c crypto_rsa_nss.c crypto_nss_mgt.c crypto_dh_nss.c aes_nss.c mmap.c OpenBSD_malloc_Linux.c mulodi4.c test-internals.c compat_mutex_winthreads.c compat_winthreads.c"
 
-# Директории которые нужно пропустить (тесты, бенчмарки, не нужны для библиотеки)
-SKIP_DIRS="bench test lua"
+# Директории которые нужно пропустить (тесты, бенчмарки, серверные функции и др.)
+SKIP_DIRS="bench test lua feature/dirauth feature/relay feature/dircache ext/mulodi ext/timeouts/bench ext/timeouts/lua lib/term"
 
 # Очистка и подготовка
 rm -rf "$BUILD_DIR"
@@ -181,6 +196,11 @@ echo ""
 
 if [ $compiled_files -eq 0 ]; then
     echo "❌ Ничего не скомпилировано!"
+    exit 1
+fi
+
+if [ $failed_files -ne 0 ]; then
+    echo "❌ Компиляция завершилась с ошибками для $failed_files файлов!"
     exit 1
 fi
 
