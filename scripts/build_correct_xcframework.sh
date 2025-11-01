@@ -256,6 +256,22 @@ framework module ${FRAMEWORK_NAME} {
 EOF
 done
 
+# Ensure Info.plist files carry unique build metadata so each tag has distinct LFS objects
+BUILD_METADATA="$(date -u +"%Y%m%d%H%M%S")-$(git rev-parse --short HEAD)"
+PLIST_FILES=(
+    "$DEVICE_FW/Info.plist"
+    "$SIMULATOR_FW/Info.plist"
+)
+
+for plist in "${PLIST_FILES[@]}"; do
+    if [ -f "$plist" ]; then
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_METADATA" "$plist" 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_METADATA" "$plist"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $BUILD_METADATA" "$plist" 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $BUILD_METADATA" "$plist"
+    fi
+done
+
 # ===== CREATE XCFRAMEWORK =====
 echo ""
 echo "📦 Creating XCFramework (device + simulator)..."
@@ -263,6 +279,22 @@ xcodebuild -create-xcframework \
     -framework "${DEVICE_FW}" \
     -framework "${SIMULATOR_FW}" \
     -output "$XCFRAMEWORK_DIR"
+
+# Stamp Info.plist files inside the XCFramework with the same build metadata
+XCFRAMEWORK_PLISTS=(
+    "$XCFRAMEWORK_DIR/Info.plist"
+    "$XCFRAMEWORK_DIR/ios-arm64/${FRAMEWORK_NAME}.framework/Info.plist"
+    "$XCFRAMEWORK_DIR/ios-arm64-simulator/${FRAMEWORK_NAME}.framework/Info.plist"
+)
+
+for plist in "${XCFRAMEWORK_PLISTS[@]}"; do
+    if [ -f "$plist" ]; then
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_METADATA" "$plist" 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_METADATA" "$plist"
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $BUILD_METADATA" "$plist" 2>/dev/null || \
+            /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $BUILD_METADATA" "$plist"
+    fi
+done
 
 # ===== VERIFICATION =====
 echo ""
